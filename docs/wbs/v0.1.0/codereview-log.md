@@ -25,3 +25,16 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
     pack content is owned by **M4 (rule packs)**.
 - **Gates:** suite 1084 passed · coverage ≥ 95% · `ruff` zero · `mypy --strict` clean.
 - **Resolution:** waived for the port; substantive code review resumes at **M1**.
+
+### M1 — Foundation & identity (1.CR)
+
+- **Scope:** CLI surface + reserved exit codes; configuration precedence + fail-closed (`exit 2`); policy
+  loader/validator + `check`; `doctor` self-observability; CI quality gate; identity docs.
+- **Findings & resolutions:**
+  - *`check` exited 1 on an invalid policy* → introduced `ConfigError` (exit 2); `main()` now returns
+    `exc.exit_code`. Tests updated (`tests/test_check.py`). **Resolved.**
+  - *No `doctor` command, no `make setup`, CI had no coverage step* → added `cli/doctor.py`, Makefile
+    `setup/cov/lint/typecheck`, and the CI coverage gate (`fail_under = 95`). **Resolved.**
+  - *No foundation design doc* → added `docs/design/foundation-design.md` + `docs/reference/cli.md`. **Resolved.**
+- **Gates:** suite green · coverage ≥ 95% · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open items.

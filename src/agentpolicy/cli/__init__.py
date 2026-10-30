@@ -21,6 +21,7 @@ from agentpolicy.cli import (
     calibrate,
     check,
     diff,
+    doctor,
     escalation,
     evaluate,
     explain,
@@ -67,6 +68,7 @@ def _build_parser() -> argparse.ArgumentParser:
     policy.add_parser(subparsers)
     serve_cli.add_parser(subparsers)
     escalation.add_parser(subparsers)
+    doctor.add_parser(subparsers)
     return parser
 
 
@@ -74,8 +76,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     """Run the CLI. Returns a process exit code (0 = success).
 
     Subcommand modules raise :class:`cli.CliError` for user-facing failures;
-    we print the message to stderr and return 1 so scripts see a non-zero code
-    without a traceback.
+    we print the message to stderr and return its exit code (1 for a general
+    failure, 2 for invalid configuration) so scripts see a distinct non-zero
+    code without a traceback.
     """
     parser = _build_parser()
     args = parser.parse_args(argv)
@@ -87,7 +90,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return int(func(args))
     except CliError as exc:
         print(f"agentpolicy: error: {exc}", file=sys.stderr)
-        return 1
+        return exc.exit_code
 
 
 def _climain(argv: Sequence[str] | None = None) -> NoReturn:

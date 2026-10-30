@@ -1,8 +1,9 @@
-"""Tests for M2.4 — ``agentpolicy check`` CLI (#4, F-67).
+"""Tests for the ``agentpolicy check`` CLI.
 
 ``agentpolicy check`` reads a policy file and validates it against the schema.
-A clean file exits 0 and prints the version/posture; a broken one exits 1
-with the first error and its line/column location.
+A clean file exits 0 and prints the version/posture; a broken one **fails
+closed** with exit code 2 and the first error with its line/column location
+(WBS M1 1.3 — invalid config fails closed, exit 2).
 """
 
 from pathlib import Path
@@ -21,26 +22,26 @@ class TestCheckCli:
         out = write(tmp_path, 'version: "1.0.0"')
         assert main(["check", str(out)]) == 0
 
-    def test_missing_file_exits_one(self):
-        assert main(["check", "/nope/x.yaml"]) == 1
+    def test_missing_file_fails_closed_exit_two(self):
+        assert main(["check", "/nope/x.yaml"]) == 2
 
-    def test_bad_yaml_exits_one_with_error(self, tmp_path, capsys):
+    def test_bad_yaml_fails_closed_exit_two(self, tmp_path, capsys):
         out = write(tmp_path, "version: [1, 2\n")
         rc = main(["check", str(out)])
         captured = capsys.readouterr()
-        assert rc == 1
+        assert rc == 2
         assert "invalid policy:" in captured.err
 
-    def test_schema_violation_exits_one(self, tmp_path, capsys):
+    def test_schema_violation_fails_closed_exit_two(self, tmp_path, capsys):
         out = write(tmp_path, 'version: "1.0.0"\nposture: paranoid\n')
         rc = main(["check", str(out)])
         captured = capsys.readouterr()
-        assert rc == 1
+        assert rc == 2
         assert "invalid policy:" in captured.err
 
     def test_default_path_checks_cwd(self, tmp_path, monkeypatch, capsys):
         monkeypatch.chdir(tmp_path)
         rc = main(["check"])
         captured = capsys.readouterr()
-        assert rc == 1
+        assert rc == 2
         assert "invalid policy:" in captured.err or "no such" in captured.err

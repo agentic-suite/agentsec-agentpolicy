@@ -24,7 +24,8 @@ jobs:
 
       - run: uv run mypy --strict src/
 
-      - run: rm -f ~/.agentpolicy/audit.jsonl && uv run pytest --tb=short
+      - name: Tests + coverage gate (>= 95%)
+        run: rm -f ~/.agentpolicy/audit.jsonl && uv run pytest --cov=agentpolicy --cov-report=term --tb=short
 
       - name: Secret scan (trufflehog) — no tokens in the tree
         uses: trufflesecurity/trufflehog@main

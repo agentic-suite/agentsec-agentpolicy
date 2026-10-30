@@ -15,7 +15,7 @@ from __future__ import annotations
 import argparse
 from typing import Any
 
-from agentpolicy.cli.errors import CliError
+from agentpolicy.cli.errors import ConfigError
 from agentpolicy.errors import PolicyParseError
 from agentpolicy.policy.loader import load_policy
 from agentpolicy.policy.models import Policy, default_policy
@@ -50,7 +50,7 @@ def _run(args: argparse.Namespace) -> int:
     try:
         policy = load_policy(args.policy)
     except PolicyParseError as exc:
-        raise CliError(f"invalid policy: {exc}") from exc
+        raise ConfigError(f"invalid policy: {exc}") from exc
     print(f"ok: {args.policy} (version {policy.version}, posture {policy.posture})")
     if args.migrate:
         return _report_migration(policy)
