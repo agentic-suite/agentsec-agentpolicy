@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from agentpolicy.adapters.raw import RawAdapter, AgentPolicyDecisionError
+from agentpolicy.adapters.raw import AgentPolicyDecisionError, RawAdapter
 from agentpolicy.engine.engine import Engine
 from agentpolicy.policy.models import default_policy
 

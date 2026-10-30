@@ -59,7 +59,9 @@ def _serve(args: argparse.Namespace) -> int:
     try:
         from agentpolicy.policy.loader import load_policy
     except ImportError:
-        raise CliError("Failed to import policy loader. Is agentsec-agentpolicy installed?") from None
+        raise CliError(
+            "Failed to import policy loader. Is agentsec-agentpolicy installed?"
+        ) from None
 
     from agentpolicy.audit.logger import AuditLogger
     from agentpolicy.engine.engine import Engine

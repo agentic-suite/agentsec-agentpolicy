@@ -17,8 +17,5 @@ htmlcov/
 # agentpolicy runtime state
 .agentpolicy/
 
-# uv lock (mirrors predecessor; resolved per environment)
-uv.lock
-
 # OS/editor
 .DS_Store

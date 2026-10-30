@@ -189,6 +189,8 @@ ignore = []
 "src/agentpolicy/engine/normalize.py" = ["RUF001", "RUF003"]
 # RUF003: the confusable check intentionally embeds Cyrillic lookalikes.
 "src/agentpolicy/cli/baseline.py" = ["RUF003"]
+# WBS issue-generator: long literal issue-body templates cannot be wrapped.
+"scripts/wbs_issues.py" = ["E501"]
 "tests/test_normalize.py" = ["RUF001", "RUF003"]
 "tests/test_engine.py" = ["RUF001"]
 "tests/test_acceptance_matrix.py" = ["RUF001"]
@@ -214,8 +216,8 @@ module = [
 ignore_missing_imports = true
 
 [tool.coverage.report]
-# Baseline accepted for v0.1.0 ship gate (WBS M8.8). Nudged upward in v0.2.
-fail_under = 90
+# v0.1.0 gate (WBS M0 0.C / index exit criteria): coverage ≥ 95%.
+fail_under = 95
 exclude_also = [
     "if TYPE_CHECKING:",
 ]

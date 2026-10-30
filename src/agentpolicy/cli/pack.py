@@ -48,7 +48,9 @@ def add_parser(subparsers: Any) -> None:
     parser = subparsers.add_parser(
         "pack",
         help="validate and test policy packs",
-        description="Validate a agentpolicy policy pack (tools.yaml + tests.yaml) and run its tests.",
+        description=(
+            "Validate a agentpolicy policy pack (tools.yaml + tests.yaml) and run its tests."
+        ),
     )
     sub = parser.add_subparsers(dest="pack_command", required=True, metavar="COMMAND")
 

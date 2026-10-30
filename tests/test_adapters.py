@@ -13,7 +13,7 @@ from agentpolicy.adapters.llamaindex import LlamaIndexAdapter
 from agentpolicy.adapters.mcp import AgentPolicyMCPWrapper
 from agentpolicy.adapters.openai import OpenAIAdapter
 from agentpolicy.adapters.pydantic import PydanticAIAdapter
-from agentpolicy.adapters.raw import RawAdapter, AgentPolicyDecisionError
+from agentpolicy.adapters.raw import AgentPolicyDecisionError, RawAdapter
 from agentpolicy.adapters.smolagents import SmolagentsAdapter
 from agentpolicy.engine.engine import Engine
 from agentpolicy.policy.models import default_policy

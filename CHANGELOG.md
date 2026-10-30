@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+> **Provenance.** Entries from **0.2.0** down to **0.1.0** are the release history of the predecessor policy
+> engine (`agent-tooltrust`, MIT), ported into agentpolicy at M0. See
+> [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and
+> [docs/architecture/porting-plan-v0.1.0.md](docs/architecture/porting-plan-v0.1.0.md).
+
+## [Unreleased]
+
+### Added
+
+- **M0 — ported the predecessor policy engine.** The `agent-tooltrust` codebase (MIT) now lives here as the
+  `agentpolicy` package and CLI (distribution `agentsec-agentpolicy`), renamed from the predecessor namespace:
+  `agent_tooltrust` → `agentpolicy`, CLI `tooltrust` → `agentpolicy`, `ToolTrust` → `AgentPolicy`,
+  `TOOLTRUST_*` → `AGENTPOLICY_*`. Source commit `31655747ee4290b80adb04b2a300dd991b80e018`. Adds the ported
+  suite (1084 passing), 5 rule packs, framework adapters, MCP server, audit sinks, and the predecessor's docs
+  subset.
+
+### Changed
+
+- **Version reset to `0.1.0`** — the initial port carried the predecessor's `0.2.0`.
+- **README merged** — agentpolicy's identity (five outcomes, local-first Cedar PDP, agentic-suite) combined with
+  the ported engine's detail.
+
+### Fixed
+
+- Docker-dependent tests (`test_docker_smoke`, `test_sse_integration`) now skip cleanly when no Docker daemon
+  is reachable, matching `test_docker_console`.
+
 ## [0.2.0] - 2026-08-15
 
 ### Added
