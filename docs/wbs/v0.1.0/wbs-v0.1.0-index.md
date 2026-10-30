@@ -130,7 +130,15 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Noted:** the v0.1.0 **Cedar** policy language is introduced by **M2**; M1 delivers the
   loader/validator/`check` *framework*.
 
-**⬜ M2 — Cedar decision core (five outcomes).** Next.
+**M2 — Cedar decision core (five outcomes) — ✅ closed (2026-10-30).**
+
+- **Commit:** `2ad5a09`. `src/agentpolicy/cedar/` — Cedar PDP (`cedarpy`), five-outcome shaper, mandatory
+  human-gate class, PRD 15/17 decision model (`Decision`/`Factor`/`Explanation`), sub-100 ms p99 latency;
+  `cedarpy` added as a dependency.
+- **Gate:** suite **1129 passed** · coverage **95.8%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 2.D0 · 2.1–2.5 · 2.T · 2.C · 2.L · 2.CR · 2.D.
+
+**⬜ M3 — Action normalization, taxonomy & contextual model.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
