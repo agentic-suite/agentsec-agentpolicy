@@ -109,8 +109,18 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 
 ## Progress
 
-**⬜ Not started.** M0 opens the build. As milestones close, dated checkpoints (commit refs + gate result) are
-appended here — matching agentwatch's / agentdrill's per-milestone checkpoints.
+**M0 — Port the predecessor codebase — ✅ closed (2026-10-30).** Branch `feat-0.1.0`.
+
+- **Commits:** `c760f68` (0.1/0.2/0.4) · `8428a74` (0.5) · `354d069` (0.6–0.CR + gates).
+- **Ported:** `agent-tooltrust` (MIT; source SHA `31655747ee4290b80adb04b2a300dd991b80e018`) → `agentpolicy`;
+  namespace / CLI / dist renamed; project version reset to `0.1.0`.
+- **Gate:** suite **1084 passed, 18 skipped** · coverage **95.7%** (`fail_under = 95`) · `ruff` zero ·
+  `mypy --strict` clean. Docker CI tests verified locally (16 passed).
+- **Items closed:** 0.D0 · 0.1–0.7 · 0.T · 0.C · 0.L · 0.CR · 0.D; 0.CI / 0.W recorded here.
+- **Noted (not an M0 defect):** the shipped `packs/*/tools.yaml` use the predecessor's older schema and fail
+  `PolicyDocument` validation — pre-existing upstream; **M4** owns pack content.
+
+**⬜ M1 — Foundation & identity.** Not started; opens next.
 
 ## Porting map (predecessor → agentpolicy)
 
