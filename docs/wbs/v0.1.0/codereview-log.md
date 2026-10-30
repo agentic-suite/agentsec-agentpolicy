@@ -51,3 +51,16 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
   - *`Factor` accepted out-of-range contributions* → added `__post_init__` validation. **Resolved.**
 - **Gates:** suite green · coverage ≥ 95% · `ruff` zero · `mypy --strict` clean.
 - **Resolution:** all findings resolved; no open items.
+
+### M3 — Action normalization, taxonomy & contextual model (3.CR)
+
+- **Scope:** the canonical action facade (`canonical.py`), tool-name folding, dispatcher-bypass safety, the
+  13-domain taxonomy, and the contextual model.
+- **Findings & resolutions:**
+  - *No single canonical-action entry point tying every surface to the Cedar request* → added
+    `agentpolicy/canonical.py` (`canonicalize` / `canonicalize_command` / `to_cedar_request` / `taxonomy_view`).
+    **Resolved.**
+  - Confirmed a smuggled dispatcher action (`git push --force`) canonicalizes to `force_push` (class `delete`)
+    and is **denied** by the base Cedar policy in production — the predecessor G-1/G-2 gaps stay closed.
+- **Gates:** suite green · coverage ≥ 95% · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open items.
