@@ -138,7 +138,15 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Gate:** suite **1129 passed** · coverage **95.8%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
 - **Items closed:** 2.D0 · 2.1–2.5 · 2.T · 2.C · 2.L · 2.CR · 2.D.
 
-**⬜ M3 — Action normalization, taxonomy & contextual model.** Next.
+**M3 — Action normalization, taxonomy & contextual model — ✅ closed (2026-10-30).**
+
+- **Commit:** `65a1391`. `agentpolicy/canonical.py` (one canonical action → the Cedar request); tool-name
+  folding, dispatcher-bypass safety (`git push --force` → `force_push` denied), the 13-domain taxonomy, and the
+  contextual matrix.
+- **Gate:** suite **1141 passed** · coverage **95.8%** · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 3.D0 · 3.1–3.5 · 3.T · 3.C · 3.L · 3.CR · 3.D.
+
+**⬜ M4 — Rule packs, pack tooling & policy backends.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
