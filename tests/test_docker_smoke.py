@@ -9,6 +9,20 @@ import urllib.request
 import pytest
 
 
+def _docker_available() -> bool:
+    """Docker-dependent smoke tests skip when no daemon is reachable."""
+    try:
+        subprocess.run(["docker", "version"], capture_output=True, check=True)
+        return True
+    except (OSError, subprocess.CalledProcessError):
+        return False
+
+
+pytestmark = pytest.mark.skipif(
+    not _docker_available(), reason="Docker is not available in this environment"
+)
+
+
 class TestDockerSmoke:
     IMAGE = "agentpolicy:latest"
     HEALTH_URL = "http://localhost:9000/audit/health"

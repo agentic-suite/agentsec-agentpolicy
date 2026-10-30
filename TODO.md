@@ -10,7 +10,7 @@ Issue range: #4–#16 · WBS: [Part 1](docs/wbs/v0.1.0/wbs-v0.1.0-part1-port-fou
 - [x] **0.1** (#5) — Port the entire repo tree (`src/`, `tests/`, packs, packaging, tooling, CI, docs subset)
 - [x] **0.2** (#6) — Rename namespace `tooltrust` → `agentpolicy` (code, tests, configs, docs)
 - [ ] **0.3** (#7) — Preserve git history (`git filter-repo` / subtree merge); record SHA
-- [ ] **0.4** (#8) — Adapt packaging metadata (`pyproject.toml` → `agentsec-agentpolicy`, CLI entry point)
+- [x] **0.4** (#8) — Adapt packaging metadata (`pyproject.toml` → `agentsec-agentpolicy`, CLI entry point) — closed
 - [ ] **0.5** (#9) — Ported suite green (minimal adaptation only)
 - [ ] **0.6** (#10) — Record provenance + porting notes (`THIRD_PARTY_NOTICES`, `CHANGELOG`)
 - [ ] **0.7** (#11) — Update design docs (architecture + development describe the ported tree)

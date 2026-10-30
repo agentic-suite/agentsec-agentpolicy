@@ -13,6 +13,20 @@ from agentpolicy.engine.engine import Engine
 from agentpolicy.policy.models import default_policy
 
 
+def _docker_available() -> bool:
+    """SSE transport tests run against the containerized server; skip without Docker."""
+    try:
+        subprocess.run(["docker", "version"], capture_output=True, check=True)
+        return True
+    except (OSError, subprocess.CalledProcessError):
+        return False
+
+
+pytestmark = pytest.mark.skipif(
+    not _docker_available(), reason="Docker is not available in this environment"
+)
+
+
 class TestSSEIntegration:
     SSE_URL = "http://localhost:9000/sse"
     TIMEOUT = 30
