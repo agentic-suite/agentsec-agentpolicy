@@ -146,7 +146,15 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Gate:** suite **1141 passed** · coverage **95.8%** · `ruff` zero · `mypy --strict` clean.
 - **Items closed:** 3.D0 · 3.1–3.5 · 3.T · 3.C · 3.L · 3.CR · 3.D.
 
-**⬜ M4 — Rule packs, pack tooling & policy backends.** Next.
+**M4 — Rule packs, pack tooling & policy backends — ✅ closed (2026-10-30).**
+
+- **Commit:** `c6b6683`. Cedar rule-pack format (`pack_format.py`); the three incident-anchored launch packs
+  (destructive-commands / secret-in-output / mcp-allowlist); `pack validate`/`pack test` (both formats); the 5
+  legacy catalog packs migrated to the current schema; OPA/Rego peer backend.
+- **Gate:** suite **1169 passed** · coverage **95.6%** · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 4.D0 · 4.1–4.6 · 4.T · 4.C · 4.L · 4.CR · 4.D.
+
+**⬜ M5 — Explain-decision, reason codes & event schema.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
