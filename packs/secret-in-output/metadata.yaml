@@ -1,0 +1,14 @@
+name: secret-in-output
+version: 0.1.0
+description: >-
+  Blocks / scrubs secrets and PII in tool output — a sensitive read is allowed
+  but the secret/PII content is redacted from the result.
+incident_ref: incident-register#9
+min_agentpolicy: 0.1.0
+license: Apache-2.0
+trust: launch
+domains: [secrets, db]
+tool_count: 0
+tests_passing: 3
+last_updated: "2026-10-30"
+maintainer: agentic-suite

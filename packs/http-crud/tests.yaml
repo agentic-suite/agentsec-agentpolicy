@@ -1,13 +1,16 @@
+version: '1.0'
 fixtures:
-  - tool: http_get
-    action: get
-    environment: production
-    data_class: public
-    agent_id: scraper
-    expected: allow
-  - tool: http_delete
-    action: delete
-    environment: production
-    data_class: public
-    agent_id: scraper
-    expected: deny
+- name: http_get-0
+  tool: http_get
+  action: get
+  environment: production
+  data_class: public
+  agent_id: scraper
+  expect: audit
+- name: http_delete-1
+  tool: http_delete
+  action: delete
+  environment: production
+  data_class: public
+  agent_id: scraper
+  expect: deny

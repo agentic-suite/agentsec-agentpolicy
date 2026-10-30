@@ -1,13 +1,16 @@
+version: '1.0'
 fixtures:
-  - tool: execute_shell
-    action: exec
-    environment: development
-    data_class: internal
-    agent_id: dev
-    expected: allow
-  - tool: execute_shell
-    action: exec
-    environment: production
-    data_class: internal
-    agent_id: dev
-    expected: deny
+- name: execute_shell-0
+  tool: execute_shell
+  action: exec
+  environment: development
+  data_class: internal
+  agent_id: dev
+  expect: audit
+- name: execute_shell-1
+  tool: execute_shell
+  action: exec
+  environment: production
+  data_class: internal
+  agent_id: dev
+  expect: deny

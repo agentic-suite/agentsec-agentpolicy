@@ -15,10 +15,17 @@ import argparse
 from pathlib import Path
 from typing import Any
 
-from agentpolicy.cli.errors import CliError
+from agentpolicy.cli.errors import CliError, ConfigError
+from agentpolicy.pack_format import PackFormatError, run_pack_dir, validate_pack_dir
 from agentpolicy.policy.pack import PackError, run_pack_tests, validate_pack
 
 _PACKS_DIR = Path(__file__).resolve().parents[3] / "packs"
+_RULES_FILE = "rules.cedar"
+
+
+def _is_cedar_pack(path: str | Path) -> bool:
+    """Whether *path* is a Cedar rule pack (has ``rules.cedar``)."""
+    return (Path(path) / _RULES_FILE).is_file()
 
 
 def list_packs() -> list[dict[str, Any]]:
@@ -102,6 +109,12 @@ def _run(args: argparse.Namespace) -> int:
 
 
 def _run_validate(args: argparse.Namespace) -> int:
+    if _is_cedar_pack(args.path):
+        errors = validate_pack_dir(args.path)
+        if errors:
+            raise ConfigError("; ".join(errors))
+        print(f"ok: {Path(args.path)} (Cedar pack)")
+        return 0
     try:
         errors, policy = validate_pack(args.path)
     except PackError as exc:
@@ -116,15 +129,30 @@ def _run_validate(args: argparse.Namespace) -> int:
 
 
 def _run_test(args: argparse.Namespace) -> int:
+    if _is_cedar_pack(args.path):
+        try:
+            results = run_pack_dir(args.path)
+        except PackFormatError as exc:
+            raise ConfigError(str(exc)) from exc
+        if not results:
+            print(f"no tests.yaml in {Path(args.path)}: 0 fixtures")
+            return 0
+        failed = 0
+        for r in results:
+            if not r.passed:
+                failed += 1
+            print(f"{'PASS' if r.passed else 'FAIL'} {r.name}: expected={r.expected} got={r.got}")
+        print(f"{len(results) - failed}/{len(results)} passed")
+        return 0 if failed == 0 else 1
     try:
-        results = run_pack_tests(args.path)
+        legacy_results = run_pack_tests(args.path)
     except PackError as exc:
         raise CliError(str(exc)) from exc
-    if not results:
+    if not legacy_results:
         print(f"no tests.yaml in {Path(args.path)}: 0 fixtures")
         return 0
     failed = 0
-    for result in results:
+    for result in legacy_results:
         status = "PASS" if result.passed else "FAIL"
         if not result.passed:
             failed += 1
@@ -132,7 +160,7 @@ def _run_test(args: argparse.Namespace) -> int:
             f"{status} {result.name}: expected={result.expected} "
             f"got={result.decision}"
         )
-    print(f"{len(results) - failed}/{len(results)} passed")
+    print(f"{len(legacy_results) - failed}/{len(legacy_results)} passed")
     return 0 if failed == 0 else 1
 
 

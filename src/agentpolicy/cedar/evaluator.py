@@ -36,17 +36,12 @@ class CedarEvaluator:
     ) -> None:
         self._policies = policies
         self._policy_version = policy_version
-        # Fail fast: a malformed policy must not silently become "deny everything".
-        probe = {
-            "principal": {"type": "Agent", "id": "_probe"},
-            "action": {"type": "Action", "id": "read"},
-            "resource": {"type": "Tool", "id": "_probe"},
-            "context": {"verb": "read", "environment": "staging", "data_class": "internal"},
-        }
-        result = cedarpy.is_authorized(probe, self._policies, [])
-        errors = getattr(getattr(result, "diagnostics", None), "errors", None) or []
-        if errors:
-            raise ValueError("invalid Cedar policy: " + " ; ".join(str(e) for e in errors))
+        # Fail fast on a malformed policy (pure parse; no evaluation, so a rule
+        # may reference context attributes this evaluator does not set yet).
+        try:
+            cedarpy.format_policies(self._policies)
+        except ValueError as exc:
+            raise ValueError(f"invalid Cedar policy: {exc}") from exc
 
     @property
     def policy_version(self) -> str:
@@ -68,9 +63,10 @@ class CedarEvaluator:
         *,
         budget_exhausted: bool = False,
         retry_after: int = 60,
+        extra_context: dict[str, Any] | None = None,
     ) -> Decision:
         """Evaluate *call* end to end → a five-outcome :class:`Decision`."""
-        request = policy_mod.to_request(call)
+        request = policy_mod.to_request(call, extra_context=extra_context)
         entities = policy_mod.build_entities(call)
         result = cedarpy.is_authorized(request, self._policies, entities)
         allowed = result.decision == cedarpy.Decision.Allow

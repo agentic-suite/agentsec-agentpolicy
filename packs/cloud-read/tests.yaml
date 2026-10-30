@@ -1,13 +1,16 @@
+version: '1.0'
 fixtures:
-  - tool: describe_instances
-    action: describe
-    environment: production
-    data_class: internal
-    agent_id: monitor
-    expected: allow
-  - tool: create_ec2
-    action: create
-    environment: production
-    data_class: internal
-    agent_id: engineer
-    expected: escalate
+- name: describe_instances-0
+  tool: describe_instances
+  action: describe
+  environment: production
+  data_class: internal
+  agent_id: monitor
+  expect: audit
+- name: create_ec2-1
+  tool: create_ec2
+  action: create
+  environment: production
+  data_class: internal
+  agent_id: engineer
+  expect: escalate

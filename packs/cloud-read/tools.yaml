@@ -1,17 +1,21 @@
-version: "1.0"
+version: '1.0'
 posture: balanced
 environments:
-  development: 0.0
-  production: 0.5
+  development:
+    criticality: 0.0
+  production:
+    criticality: 0.5
 data_classes:
-  public: 0.0
-  internal: 0.2
+  public:
+    sensitivity: 0.0
+  internal:
+    sensitivity: 0.2
 rules:
-  - decision: deny
-    action: delete
-    tool: describe_instances
-    reason: "Delete actions are not covered by this read-only pack."
-  - decision: escalate
-    action: write
-    environment: production
-    reason: "Write actions in cloud require approval."
+- decision: deny
+  action: delete
+  tool: describe_instances
+  reason: Delete actions are not covered by this read-only pack.
+- decision: escalate
+  action: write
+  environment: production
+  reason: Write actions in cloud require approval.

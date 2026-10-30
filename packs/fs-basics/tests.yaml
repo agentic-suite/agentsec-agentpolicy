@@ -1,13 +1,16 @@
+version: '1.0'
 fixtures:
-  - tool: read_file
-    action: read
-    environment: staging
-    data_class: internal
-    agent_id: bot1
-    expected: allow
-  - tool: delete_file
-    action: delete
-    environment: staging
-    data_class: internal
-    agent_id: bot1
-    expected: deny
+- name: read_file-0
+  tool: read_file
+  action: read
+  environment: staging
+  data_class: internal
+  agent_id: bot1
+  expect: allow
+- name: delete_file-1
+  tool: delete_file
+  action: delete
+  environment: staging
+  data_class: internal
+  agent_id: bot1
+  expect: deny

@@ -64,3 +64,18 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
     and is **denied** by the base Cedar policy in production — the predecessor G-1/G-2 gaps stay closed.
 - **Gates:** suite green · coverage ≥ 95% · `ruff` zero · `mypy --strict` clean.
 - **Resolution:** all findings resolved; no open items.
+
+### M4 — Rule packs, pack tooling & policy backends (4.CR)
+
+- **Scope:** the Cedar rule-pack format (`pack_format.py`), the three launch packs, `pack validate`/`pack test`,
+  and the OPA/Rego peer backend.
+- **Findings & resolutions:**
+  - *The 5 legacy catalog packs failed `PolicyDocument` validation* (predecessor float schema; noted at M0) →
+    their `tools.yaml`/`tests.yaml` were migrated to the current strict schema and their stale `allow` goldens
+    (legacy 4-state `audit`) regenerated. All 8 packs now validate and pass. **Resolved (this is the M4 fix for
+    the M0 finding).**
+  - *The Cedar fail-fast probe evaluated the policy against a fixed context*, breaking packs that reference
+    other context attributes → switched to a pure parse check (`cedarpy.format_policies`). **Resolved.**
+  - *Reused variable for two result types in `cli/pack.py`* (mypy) → renamed. **Resolved.**
+- **Gates:** suite green · coverage ≥ 95% · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open items.
