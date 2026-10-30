@@ -38,3 +38,16 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
   - *No foundation design doc* → added `docs/design/foundation-design.md` + `docs/reference/cli.md`. **Resolved.**
 - **Gates:** suite green · coverage ≥ 95% · `ruff` zero · `mypy --strict` clean.
 - **Resolution:** all findings resolved; no open items.
+
+### M2 — Cedar decision core (2.CR)
+
+- **Scope:** the Cedar evaluator (`cedarpy`), the five-outcome shaper, the mandatory human-gate class, the
+  PRD 15/17 decision model, and the latency budget (`src/agentpolicy/cedar/`).
+- **Findings & resolutions:**
+  - *Cedar `x in ["a","b"]` is not string-set membership under `cedarpy`* (silently made irreversible/sensitive
+    permits fail) → rewrote `BASE_POLICY` with explicit `||` disjunctions. **Resolved; covered by the matrix.**
+  - *A malformed policy returned `NoDecision` instead of raising* → `CedarEvaluator` now inspects
+    `diagnostics.errors` and fails fast (`ValueError`). **Resolved; covered by `test_malformed_policy_...`.**
+  - *`Factor` accepted out-of-range contributions* → added `__post_init__` validation. **Resolved.**
+- **Gates:** suite green · coverage ≥ 95% · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open items.

@@ -38,6 +38,7 @@ urls.Homepage = "https://github.com/agentic-suite/agentsec-agentpolicy"
 urls.Repository = "https://github.com/agentic-suite/agentsec-agentpolicy"
 urls.Issues = "https://github.com/agentic-suite/agentsec-agentpolicy/issues"
 dependencies = [
+    "cedarpy>=4.12.0",
     "cryptography>=50.0.0",
     "opentelemetry-api>=1.44.0",
     "opentelemetry-sdk>=1.44.0",
