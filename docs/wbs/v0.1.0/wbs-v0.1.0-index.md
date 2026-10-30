@@ -120,7 +120,17 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Noted (not an M0 defect):** the shipped `packs/*/tools.yaml` use the predecessor's older schema and fail
   `PolicyDocument` validation — pre-existing upstream; **M4** owns pack content.
 
-**⬜ M1 — Foundation & identity.** Not started; opens next.
+**M1 — Foundation & identity — ✅ closed (2026-10-30).**
+
+- **Commit:** `91ba95c`. Identity / CLI / config / loader / `check` / `doctor`; reserved exit codes (0/1/2) with
+  fail-closed `ConfigError` (exit 2); `make setup`/`cov`/`lint`/`typecheck`; CI coverage gate (`fail_under = 95`);
+  foundation design + CLI reference docs.
+- **Gate:** suite **1105 passed** · coverage **95.8%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 1.D0 · 1.1–1.7 · 1.T · 1.C · 1.L · 1.CR · 1.D.
+- **Noted:** the v0.1.0 **Cedar** policy language is introduced by **M2**; M1 delivers the
+  loader/validator/`check` *framework*.
+
+**⬜ M2 — Cedar decision core (five outcomes).** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
