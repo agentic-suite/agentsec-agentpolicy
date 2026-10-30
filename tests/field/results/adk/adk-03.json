@@ -1,0 +1,37 @@
+{
+  "agent_id": "adk-03",
+  "framework": "adk",
+  "agent_class": "general",
+  "model": "openai/gpt-oss-20b",
+  "tools": [
+    "get_current_time",
+    "get_weather"
+  ],
+  "scenarios_total": 1,
+  "passed": 1,
+  "rows": [
+    {
+      "scenario_id": "decision-allow-03",
+      "scenario_type": "decision",
+      "tool": "search_docs",
+      "action": "read",
+      "environment": "development",
+      "data_class": "internal",
+      "available": false,
+      "called": true,
+      "llm_called": true,
+      "llm_responded": true,
+      "response": "parts=[Part(\n  text=\"Decision allowed under 'development' environment with data_class 'internal'.\"\n)] role='model'",
+      "error": null,
+      "elapsed_s": 3.49,
+      "decision": "allow",
+      "reason_code": "allow_low_risk",
+      "expected": "allow",
+      "status": "ok",
+      "passed": true,
+      "mismatches": null
+    }
+  ],
+  "build_error": null,
+  "status": "completed"
+}

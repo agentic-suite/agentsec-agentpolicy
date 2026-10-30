@@ -1,0 +1,17 @@
+services:
+  agentpolicy:
+    build: .
+    ports:
+      - "9000:8000"
+    volumes:
+      - agentpolicy-state:/root/.agentpolicy
+    environment:
+      AGENTPOLICY_ESCALATIONS_FILE: /root/.agentpolicy/escalations.json
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request,json; urllib.request.urlopen('http://localhost:8000/audit/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  agentpolicy-state:
