@@ -32,6 +32,7 @@ from agentpolicy.enrollment import (
 from agentpolicy.errors import (
     AGENT_PROBATION,
     DENY_ARGUMENT_POLICY,
+    DENY_DELEGATION_EXCEEDS_SCOPE,
     DENY_DENY_STORM,
     DENY_EXFIL_SINK,
     DENY_OBLIGATION_FAILED,
@@ -177,6 +178,38 @@ class Engine:
             parent_id=parent_id,
             policy=self._policy,
             environments=environments,
+        )
+
+    def inter_agent(
+        self, source_id: str, target_id: str, *, environments: tuple[str, ...] = ()
+    ) -> Decision:
+        """Decide an agent→agent request through the engine (M17 ``17.3``).
+
+        An agent invoking/creating another agent is decided like any other
+        action: it runs the delegation scope-subset proof and returns a
+        :class:`Decision` (allow / deny) with the delegation reason code.
+
+        Args:
+            source_id: The requesting agent.
+            target_id: The agent being created/invoked.
+            environments: The requested environments for the target.
+
+        Returns:
+            An allow decision when the child scope is within the source's, else a
+            deny naming the exceeds-scope reason.
+        """
+        result = self._delegations.delegate(
+            child_id=target_id, parent_id=source_id, policy=self._policy,
+            environments=tuple(environments),
+        )
+        if result.allowed:
+            return Decision(
+                decision="allow", criticality="low", reason_code=result.reason_code,
+                explanation=result.explanation, policy_version=self._policy.version,
+            )
+        return Decision(
+            decision="deny", criticality="high", reason_code=result.reason_code,
+            explanation=result.explanation, policy_version=self._policy.version,
         )
 
     @property
@@ -331,6 +364,21 @@ class Engine:
                 policy_version=self._policy.version,
             )
             return self._finalize(decision, call)
+        # 1a2. Delegation-scope proof (M17 17.2). A delegated child may only act
+        #      within the intersection of its chain's scopes; an out-of-scope
+        #      action is denied naming the chain link.
+        effective = self._delegations.effective_environments(agent_id, self._policy)
+        if effective and call.environment not in effective:
+            chain = self._delegations.delegation_chain(agent_id)
+            return self._finalize(
+                deny(
+                    DENY_DELEGATION_EXCEEDS_SCOPE,
+                    f"agent {agent_id!r} (chain {' > '.join(chain)}) is not scoped to "
+                    f"environment {call.environment!r} (allowed: {list(effective)})",
+                    policy_version=self._policy.version,
+                ),
+                call,
+            )
         # 1b. Argument-level policy (M1 #142, DD-15). Pure, deterministic check
         #     of the call's arguments against the tool's args_policy. A
         #     violation is an immediate, audited deny before any scoring.

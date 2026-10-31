@@ -170,6 +170,40 @@ class DelegationManager:
             current = delegation.parent_id if delegation else None
         return tuple(chain)
 
+    def effective_environments(self, child_id: str, policy: Policy) -> tuple[str, ...] | None:
+        """The effective environment scope of a delegated child (M17 ``17.2``).
+
+        Intersects the requested scope of every link in the child's delegation
+        chain with each ancestor's profile scope. Returns ``None`` when
+        *child_id* is not a registered delegation (no delegation constraint),
+        and ``()`` when the chain imposes no restriction.
+
+        Args:
+            child_id: The identity to resolve.
+            policy: The policy (for ancestor ``AgentProfile.environments``).
+
+        Returns:
+            The allowed environments, or ``None`` when there is no delegation.
+        """
+        delegation = self._delegations.get(child_id)
+        if delegation is None:
+            return None
+        constraint: set[str] | None = set(delegation.environments) or None
+        current = delegation
+        while True:
+            profile = policy.agents.get(current.parent_id)
+            parent_envs = set(profile.environments) if profile is not None else set()
+            if parent_envs:
+                constraint = parent_envs if constraint is None else constraint & parent_envs
+            parent_delegation = self._delegations.get(current.parent_id)
+            if parent_delegation is None:
+                break
+            requested = set(parent_delegation.environments)
+            if requested:
+                constraint = requested if constraint is None else constraint & requested
+            current = parent_delegation
+        return () if constraint is None else tuple(sorted(constraint))
+
     @staticmethod
     def _is_subset(requested: tuple[str, ...], parent: AgentProfile) -> bool:
         """A child scope is a subset of the parent's when parent is unrestricted."""

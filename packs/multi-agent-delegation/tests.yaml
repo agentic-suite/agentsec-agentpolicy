@@ -1,0 +1,29 @@
+# Incident replay for the multi-agent-delegation rule class (M17 17.4 / CUJ-28).
+fixtures:
+  - name: delegated-child-prod-write-denied
+    tool: deploy_service
+    action: write
+    environment: production
+    data_class: internal
+    agent_id: child
+    agent_class: delegated-child
+    context: {delegation_chain: "root>child"}
+    expect: deny
+  - name: non-delegated-prod-write-gated
+    tool: deploy_service
+    action: write
+    environment: production
+    data_class: internal
+    agent_id: root
+    agent_class: general
+    context: {delegation_chain: ""}
+    expect: ask
+  - name: non-delegated-staging-read-allowed
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    agent_id: root
+    agent_class: general
+    context: {delegation_chain: ""}
+    expect: allow

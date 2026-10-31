@@ -341,3 +341,22 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1420 passed, 2 skipped** · coverage **95.06%** (≥ 95) · `ruff` zero · `mypy --strict` clean
   (138 files).
 - **Resolution:** all findings resolved; no open items.
+
+### M17 — Nearest-permissible-action & multi-agent governance (17.CR)
+
+- **Scope:** `permitted_alternatives[]` (`explain.py`), delegation-chain scope (`delegation.py`, `engine/engine.py`),
+  inter-agent decisions, and the `multi-agent-delegation` pack.
+- **Findings & resolutions:**
+  - *Denials were not replan-able beyond a single sentence* → `permitted_alternatives` returns the
+    **verified-permissible** variants (re-evaluated; only `allow`/`redact`/`ask`), **agent-facing** (action fields
+    + a curated description, **no** rule/condition/clause — the operator/agent split). It reuses the M5
+    actionability search (one source of truth). **Resolved.**
+  - *The delegation subset rule was enforced only at `delegate()` time* → `effective_environments` intersects the
+    whole chain's scopes and the engine denies an out-of-scope child action **naming the chain link**. **Resolved.**
+  - *No agent→agent request representation existed* → `Engine.inter_agent` decides it through the same engine
+    (scope-subset proof) and returns a `Decision`. **Resolved.**
+  - *The shipped rules had no delegation pack* → `packs/multi-agent-delegation` (keyed on
+    `context.delegation_chain`) + replay. **Resolved.**
+- **Gates:** suite **1431 passed, 2 skipped** · coverage **95.01%** (≥ 95) · `ruff` zero · `mypy --strict` clean
+  (138 files).
+- **Resolution:** all findings resolved; no open items.

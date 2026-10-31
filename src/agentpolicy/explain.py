@@ -83,6 +83,9 @@ class ExplainArtifact:
         policy_hash: The stable content hash of the policy (``sha256:<hex>``).
         event_id: The emitted event id (the telemetry join key).
         decision_id: The decision id (matches the audit entry's join key).
+        permitted_alternatives: Verified-permissible variants the agent can replan
+            to immediately (M17 17.1); each is evaluated-true and agent-facing
+            (no policy internals).
     """
 
     decision: str
@@ -97,6 +100,7 @@ class ExplainArtifact:
     policy_hash: str
     event_id: str
     decision_id: str
+    permitted_alternatives: tuple[dict[str, Any], ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
         """JSON-friendly representation (the explain contract, PRD 17)."""
@@ -114,6 +118,7 @@ class ExplainArtifact:
             "policy_hash": self.policy_hash,
             "event_id": self.event_id,
             "decision_id": self.decision_id,
+            "permitted_alternatives": [dict(a) for a in self.permitted_alternatives],
         }
 
 
@@ -211,6 +216,50 @@ def suggested_change(
     return "Use a read-only alternative, or move the action to a non-production environment."
 
 
+def permitted_alternatives(
+    decision: Decision, call: NormalizedCall, evaluator: _Evaluator | None
+) -> list[dict[str, Any]]:
+    """Verified-permissible variants the agent can replan to (M17 ``17.1``).
+
+    Each alternative is **evaluated-true** (the PDP never suggests something it
+    would itself deny) and is **agent-facing**: only the action's own fields and
+    a curated description — never a rule id, condition, or policy internal.
+
+    Args:
+        decision: The Cedar decision.
+        call: The canonical call.
+        evaluator: The Cedar evaluator; ``None`` yields no alternatives.
+
+    Returns:
+        A list of ``{action, environment, data_class, outcome, description}``.
+    """
+    if evaluator is None:
+        return []
+    alternatives: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
+    for _text, variant in _candidates(call):
+        outcome = _safe_outcome(evaluator, variant)
+        if outcome not in _PERMITTED:
+            continue
+        key = (variant.action, variant.environment, variant.data_class)
+        if key in seen:
+            continue
+        seen.add(key)
+        alternatives.append(
+            {
+                "action": variant.action,
+                "environment": variant.environment,
+                "data_class": variant.data_class,
+                "outcome": outcome,
+                "description": (
+                    f"Retry as a {variant.action} action in {variant.environment} "
+                    f"(would be {outcome})."
+                ),
+            }
+        )
+    return alternatives
+
+
 def build_artifact(
     decision: Decision,
     call: NormalizedCall,
@@ -246,6 +295,9 @@ def build_artifact(
         policy_hash=decision.policy_hash,
         event_id=event_id or new_event_id(),
         decision_id=decision_id or new_decision_id(),
+        permitted_alternatives=tuple(
+            permitted_alternatives(decision, call, evaluator)
+        ),
     )
 
 
@@ -256,5 +308,6 @@ __all__ = [
     "flip_variant",
     "new_decision_id",
     "new_event_id",
+    "permitted_alternatives",
     "suggested_change",
 ]
