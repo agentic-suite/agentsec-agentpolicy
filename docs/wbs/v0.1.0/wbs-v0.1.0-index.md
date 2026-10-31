@@ -253,7 +253,17 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Gate:** suite **1358 passed, 2 skipped** · coverage **95.21%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
 - **Items closed:** 13.D0 · 13.1–13.3 · 13.T · 13.C · 13.L · 13.CR · 13.D.
 
-**⬜ M14 — Step-up, AuthZEN interop & adversarial suite.** Next.
+**M14 — Step-up, AuthZEN interop & adversarial suite — ✅ closed (2026-10-31).**
+
+- **Commit:** `f52102d` (see `14.CI`). Conformant **AuthZEN** `POST /access/v1/evaluation` (+ boxcarring +
+  decision context, `authzen.py`); **least-privilege step-up** on a 403 challenge (`stepup.py`, narrowed scope =
+  the verified M5 actionability variant + `acr_values`); the **MCP ask path** (`ask_create`/`approve`/`deny`/
+  `ask_resolve` over `ServerCore.ask_broker`); a consolidated **adversarial suite** (injection/obfuscation/
+  dispatcher/replay/tamper/flood — distinct reasons).
+- **Gate:** suite **1377 passed, 2 skipped** · coverage **95.12%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 14.D0 · 14.1–14.4 · 14.T · 14.C · 14.L · 14.CR · 14.D.
+
+**⬜ M15 — Freeze windows & data-class derivation.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
