@@ -15,6 +15,7 @@ from agentpolicy.engine.decide import decide
 from agentpolicy.engine.delegation import DelegationManager, DelegationResult
 from agentpolicy.engine.deny_storm import DenyStormAnalyzer
 from agentpolicy.engine.escalation import EscalationManager
+from agentpolicy.engine.exfil import exfil_violation
 from agentpolicy.engine.explain import explain
 from agentpolicy.engine.fail_closed import deny, fail_closed
 from agentpolicy.engine.llm_explain import Explainer, template_explainer
@@ -25,6 +26,7 @@ from agentpolicy.engine.score import score
 from agentpolicy.errors import (
     DENY_ARGUMENT_POLICY,
     DENY_DENY_STORM,
+    DENY_EXFIL_SINK,
     DENY_OBLIGATION_FAILED,
     DENY_OUT_OF_SCOPE,
 )
@@ -187,6 +189,19 @@ class Engine:
             for tool, rules in self._policy.tool_visibility.items()
             if agent_class in rules.get("hidden_for", ())
         }
+        # M13 13.3: also hide tools the policy unconditionally denies, so an
+        # agent never even sees a tool it cannot call (enforcement is unchanged —
+        # a direct call still goes through evaluate()).
+        hidden |= {
+            rule.tool
+            for rule in self._policy.rules
+            if rule.decision == "deny"
+            and rule.tool != "*"
+            and rule.action == "*"
+            and rule.environment == "*"
+            and rule.data_class == "*"
+            and not rule.conditions
+        }
         return tuple(sorted(tool for tool in KNOWN_TOOLS if tool not in hidden))
 
     @fail_closed
@@ -270,6 +285,13 @@ class Engine:
                 f"argument {violating!r} violates policy for tool {call.tool!r}",
                 policy_version=self._policy.version,
             )
+            return self._finalize(decision, call)
+        # 1c. Exfil-sink rule class (M13 13.1). A sensitive value flowing to an
+        #     external-sink tool is an exfiltration chain — deny, naming the
+        #     source and the sink.
+        exfil = exfil_violation(call)
+        if exfil is not None:
+            decision = deny(DENY_EXFIL_SINK, exfil, policy_version=self._policy.version)
             return self._finalize(decision, call)
         # 2-4. Score → decide → explain. Order is fixed: the verdict needs the
         #      score's band, and the Decision needs both.

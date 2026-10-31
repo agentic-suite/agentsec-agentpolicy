@@ -73,6 +73,8 @@ DENY_URL_INVALID = "deny_url_invalid"
 ALLOW_VERIFIED = "allow_verified"
 #: Decision: deny. Agent self-report contradicted external ground truth.
 DENY_VERIFICATION_CONTRADICTED = "deny_verification_contradicted"
+#: Decision: deny. Sensitive data flowing to an external-sink tool (M13 exfil-sink).
+DENY_EXFIL_SINK = "deny_exfil_sink"
 
 
 class AgentPolicyError(Exception):

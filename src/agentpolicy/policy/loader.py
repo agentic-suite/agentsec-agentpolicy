@@ -154,6 +154,10 @@ def _build_policy(doc: PolicyDocument) -> Policy:
                     min=arg.min,
                     max=arg.max,
                     allowed=tuple(arg.allowed),
+                    regex=arg.regex,
+                    enum=tuple(arg.enum),
+                    path_root=arg.path_root,
+                    url_allowlist=tuple(arg.url_allowlist),
                 )
                 for name, arg in spec.args_policy.items()
             }

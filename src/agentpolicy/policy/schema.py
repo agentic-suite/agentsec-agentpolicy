@@ -209,6 +209,15 @@ class ArgumentSpecSchema(BaseModel):
     min: float | None = None
     max: float | None = None
     allowed: list[str] = Field(default_factory=list)
+    # M13 argument validators:
+    regex: str | None = Field(default=None, description="A regex the value must match")
+    enum: list[str] = Field(default_factory=list, description="Closed value set")
+    path_root: str | None = Field(
+        default=None, description="Filesystem root the path value must stay within"
+    )
+    url_allowlist: list[str] = Field(
+        default_factory=list, description="Allowed URL hosts (SSRF guard)"
+    )
 
 
 class ToolSpec(BaseModel):

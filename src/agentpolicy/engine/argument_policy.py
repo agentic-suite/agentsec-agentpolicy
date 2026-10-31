@@ -20,8 +20,11 @@ Semantics (documented, per DD-15):
 
 from __future__ import annotations
 
+import os
+import re
 from dataclasses import dataclass
 from typing import Any
+from urllib.parse import urlparse
 
 
 @dataclass(frozen=True)
@@ -34,6 +37,13 @@ class ArgumentSpec:
         min: Inclusive lower numeric bound.
         max: Inclusive upper numeric bound.
         allowed: The exact values the argument may take (when non-empty).
+        regex: A regular expression the argument's string form must match
+            (``search`` semantics — anchor with ``^``/``$`` as needed).
+        enum: The closed set of allowed values (semantic synonym of ``allowed``,
+            named for readability).
+        path_root: A filesystem root the argument (a path) must stay contained in
+            (realpath containment — defeats ``../`` traversal).
+        url_allowlist: The hosts a URL argument may resolve to (SSRF allowlist).
     """
 
     required: bool = False
@@ -41,6 +51,10 @@ class ArgumentSpec:
     min: float | None = None
     max: float | None = None
     allowed: tuple[str, ...] = ()
+    regex: str | None = None
+    enum: tuple[str, ...] = ()
+    path_root: str | None = None
+    url_allowlist: tuple[str, ...] = ()
 
 
 def _forbidden(value: Any, forbid: tuple[str, ...]) -> bool:
@@ -70,6 +84,35 @@ def _not_allowed(value: Any, spec: ArgumentSpec) -> bool:
     if not spec.allowed:
         return False
     return str(value) not in spec.allowed
+
+
+def _regex_violation(value: Any, spec: ArgumentSpec) -> bool:
+    if spec.regex is None:
+        return False
+    return re.search(spec.regex, str(value)) is None
+
+
+def _enum_violation(value: Any, spec: ArgumentSpec) -> bool:
+    if not spec.enum:
+        return False
+    return str(value) not in spec.enum
+
+
+def _path_violation(value: Any, spec: ArgumentSpec) -> bool:
+    """True when a path argument escapes ``path_root`` (realpath containment)."""
+    if spec.path_root is None:
+        return False
+    root = os.path.realpath(os.path.expanduser(spec.path_root))
+    candidate = os.path.realpath(os.path.join(root, str(value)))
+    return os.path.commonpath([root, candidate]) != root
+
+
+def _url_violation(value: Any, spec: ArgumentSpec) -> bool:
+    """True when a URL argument's host is not on the allowlist (SSRF guard)."""
+    if not spec.url_allowlist:
+        return False
+    host = urlparse(str(value)).hostname or ""
+    return host not in spec.url_allowlist
 
 
 def check_arguments(
@@ -103,5 +146,13 @@ def check_arguments(
         if _out_of_range(value, spec):
             return name
         if _not_allowed(value, spec):
+            return name
+        if _regex_violation(value, spec):
+            return name
+        if _enum_violation(value, spec):
+            return name
+        if _path_violation(value, spec):
+            return name
+        if _url_violation(value, spec):
             return name
     return None

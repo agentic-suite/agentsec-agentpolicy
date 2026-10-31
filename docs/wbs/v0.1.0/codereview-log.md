@@ -262,3 +262,22 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1339 passed, 2 skipped** · coverage **95.17%** (≥ 95) · `ruff` zero · `mypy --strict` clean
   (130 files).
 - **Resolution:** all findings resolved; no open items.
+
+### M13 — Exfil-sink, argument validation & tool hiding (13.CR)
+
+- **Scope:** the exfil-sink rule class (`engine/exfil.py` + `packs/exfil-sink`), policy-declarable argument
+  validators (`argument_policy.py`, `policy/schema.py`, `policy/loader.py`), and deny-derived tool hiding
+  (`engine/engine.py`).
+- **Findings & resolutions:**
+  - *Sensitive data could be sent to an external tool* → the exfil-sink class denies it and **names the source and
+    the sink**; shipped as a launch pack with an incident replay. **Resolved.**
+  - *The `arg_validators` registry was orphaned* (no call site; no `enum`/URL-allowlist/path enforcement in the
+    decision path) → the validators are declared on `ArgumentSpec` (the single enforcement point the engine
+    already consults) and carried through the schema/loader, so a policy declares `regex` / `enum` /
+    `path_root` / `url_allowlist` in YAML. **Resolved.**
+  - *`capabilities` hid only explicit `hidden_for` tools* → it now also hides tools the policy
+    **unconditionally denies**, derived from the same rules `evaluate` uses (no drifting allowlist); hiding stays
+    discovery-time only. **Resolved.**
+- **Gates:** suite **1358 passed, 2 skipped** · coverage **95.21%** (≥ 95) · `ruff` zero · `mypy --strict` clean
+  (131 files).
+- **Resolution:** all findings resolved; no open items.
