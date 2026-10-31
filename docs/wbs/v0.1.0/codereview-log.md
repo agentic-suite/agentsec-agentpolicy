@@ -222,3 +222,22 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1298 passed, 2 skipped** · coverage **95.11%** (≥ 95) · `ruff` zero · `mypy --strict` clean
   (125 files).
 - **Resolution:** all findings resolved; no open items.
+
+### M11 — CI regression suite & fail-closed hardening (11.CR)
+
+- **Scope:** the golden regression gate (`goldens.py`), the agentdrill incident-replay gate (`agentdrill.py`),
+  the fail-closed fuzz tests, and the standards coverage export (`compliance.py`, `cli/ci.py`).
+- **Findings & resolutions:**
+  - *Golden case names collided* (two fixtures sharing `tool:action:environment` but differing in `data_class`
+    overwrote each other in the baseline) → the default case name now includes `data_class`, so the baseline is
+    one-to-one with the fixtures (caught by the self-consistency test). **Resolved.**
+  - *The coverage matrix was hardcoded* (`/api/baselines` returned a stale `5/10`) → `compliance.py` **computes**
+    it from the shipped packs' `metadata.yaml: domains`; the export is regenerated per release. **Resolved.**
+  - *agentdrill would have duplicated the replay runner* → it reuses `pack_format.run_pack_dir` (one replay
+    engine); it only adds the block→allow detection. **Resolved.**
+  - *`hypothesis` was declared but unused, so fail-closed was only hand-sampled* → an input-space fuzz property
+    (random calls never raise, never allow a destructive production-PII action) plus a distinct-reason sweep.
+    **Resolved.**
+- **Gates:** suite **1324 passed, 2 skipped** · coverage **95.11%** (≥ 95) · `ruff` zero · `mypy --strict` clean
+  (129 files).
+- **Resolution:** all findings resolved; no open items.
