@@ -87,6 +87,7 @@ class Decision:
     matched_rule: str | None = None
     retry_after: int | None = None
     redactions: tuple[str, ...] = ()
+    ask_id: str | None = None
 
     def __post_init__(self) -> None:
         if self.decision not in OUTCOMES:
@@ -136,4 +137,6 @@ class Decision:
             out["retry_after"] = self.retry_after if self.retry_after is not None else 60
         if self.decision == "redact":
             out["redactions"] = list(self.redactions)
+        if self.decision == "ask" and self.ask_id is not None:
+            out["ask_id"] = self.ask_id
         return out

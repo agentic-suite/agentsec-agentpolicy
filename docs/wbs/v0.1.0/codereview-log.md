@@ -134,3 +134,27 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1223 passed, 2 skipped** · coverage **95.54%** (≥ 95) · `ruff` zero · `mypy --strict` clean
   (114 files).
 - **Resolution:** all findings resolved; no open items.
+
+### M7 — Ask round-trip, redaction & secrets-in-args (7.CR)
+
+- **Scope:** the ask-gate broker (`ask.py`), `agentpolicy approve`/`deny`/`ask list` (`cli/ask.py`),
+  redact-and-allow + receipts (`redaction.py`), secrets-in-arguments value scanning, and the `ask_id` link on the
+  Cedar `Decision`.
+- **Findings & resolutions:**
+  - *The Cedar `ask` outcome had no broker* (only the ported `escalate` path was tracked) → added `AskBroker`
+    keyed on `ask_id` with **timeout = deny** (`human_gate_timeout`); `ask.gate(decision, call, broker)` stamps
+    `decision.ask_id`. **Resolved.**
+  - *A second action-identity hash would have drifted from escalation's* → reused
+    `engine.escalation.action_identity` (one canonical hash), so an approval for X cannot release Y on either
+    path. **Resolved; covered by `test_approval_for_x_cannot_release_y`.**
+  - *The ask resolution reason codes were unregistered* → added `allow_ask_approved` / `deny_ask_denied` /
+    `deny_ask_pending` / `deny_ask_unknown` / `deny_action_identity_mismatch` to the M5 registry, so the ask path
+    emits only registered codes. **Resolved.**
+  - *Redaction duplicated output-inspector patterns* → `redaction.py` imports the single pattern set from
+    `engine/output_inspector.py`; no parallel pattern list. **Resolved.**
+  - *The ported redactor only stripped named sensitive keys, not pasted secrets* → `redact_argument_values`
+    scans argument **values** (free text) and composes with the key-based pass; both emit `class`/`count`/
+    `location` receipts and never return the raw value. **Resolved.**
+- **Gates:** suite **1248 passed, 2 skipped** · coverage **95.37%** (≥ 95) · `ruff` zero · `mypy --strict` clean
+  (117 files).
+- **Resolution:** all findings resolved; no open items.

@@ -27,6 +27,16 @@ IRREVERSIBLE_ACTION = "irreversible_action"
 HUMAN_GATE_REQUIRED = "human_gate_required"
 #: deny — an ask expired / timed out (M7 ask broker).
 HUMAN_GATE_TIMEOUT = "human_gate_timeout"
+#: allow — an ask was approved by a human (M7).
+ALLOW_ASK_APPROVED = "allow_ask_approved"
+#: deny — an ask was denied by a human (M7).
+DENY_ASK_DENIED = "deny_ask_denied"
+#: deny — the ask is still pending (replay) (M7).
+DENY_ASK_PENDING = "deny_ask_pending"
+#: deny — the ask id is unknown (M7).
+DENY_ASK_UNKNOWN = "deny_ask_unknown"
+#: deny — an approval was reused for a different action identity (M7).
+DENY_ACTION_IDENTITY_MISMATCH = "deny_action_identity_mismatch"
 #: rate-limit — the session budget is exhausted.
 BUDGET_EXHAUSTED = "budget_exhausted"
 #: rate-limit — a burst/op-count limit was hit (M12).
@@ -87,6 +97,16 @@ REASON_CODES: dict[str, ReasonCode] = {
         ReasonCode(IRREVERSIBLE_ACTION, "A destructive/irreversible action.", True, "deny"),
         ReasonCode(HUMAN_GATE_REQUIRED, "A human decision is required.", True, "ask"),
         ReasonCode(HUMAN_GATE_TIMEOUT, "An ask expired without a decision.", True, "deny"),
+        ReasonCode(ALLOW_ASK_APPROVED, "An ask was approved by a human.", False, "allow"),
+        ReasonCode(DENY_ASK_DENIED, "An ask was denied by a human.", True, "deny"),
+        ReasonCode(DENY_ASK_PENDING, "The ask is still pending (no approval).", True, "deny"),
+        ReasonCode(DENY_ASK_UNKNOWN, "The ask id is unknown.", True, "deny"),
+        ReasonCode(
+            DENY_ACTION_IDENTITY_MISMATCH,
+            "An approval was reused for a different action identity.",
+            True,
+            "deny",
+        ),
         ReasonCode(BUDGET_EXHAUSTED, "The session budget is exhausted.", True, "rate-limit"),
         ReasonCode(RATE_LIMITED, "A burst/op-count limit was hit.", False, "rate-limit"),
         ReasonCode(
@@ -134,11 +154,16 @@ def alertable_codes() -> frozenset[str]:
 
 
 __all__ = [
+    "ALLOW_ASK_APPROVED",
     "ALLOW_LOW_RISK",
     "AUDIT_SINK_ERROR",
     "BUDGET_EXHAUSTED",
     "CODES",
     "DEFAULT_DENY",
+    "DENY_ACTION_IDENTITY_MISMATCH",
+    "DENY_ASK_DENIED",
+    "DENY_ASK_PENDING",
+    "DENY_ASK_UNKNOWN",
     "ENGINE_UNAVAILABLE",
     "EVALUATION_TIMEOUT",
     "HUMAN_GATE_REQUIRED",
