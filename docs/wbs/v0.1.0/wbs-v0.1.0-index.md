@@ -212,7 +212,17 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Items closed:** 9.D0 · 9.1–9.5 · 9.T · 9.C · 9.L · 9.CR · 9.D.
 - **Reused:** `taxonomy.is_known_tool`, the `output_inspector` pattern set, and the M5 `policy_hash` (no drift).
 
-**⬜ M10 — Shadow mode, calibration & canary.** Next.
+**M10 — Shadow mode, calibration & canary — ✅ closed (2026-10-31).**
+
+- **Commit:** `61627a9` (see `10.CI`). `agentpolicy/calibration.py` (shadow **false-block/miss** rates +
+  counterfactual threshold table); `agentpolicy/canary.py` (**deterministic** session-percentage canary,
+  `STAGES = 5/50/100`) integrated into `Engine._finalize` as `canary_percent`; `agentpolicy audit query --dry-run`;
+  `agentpolicy calibrate report` (+`--json`).
+- **Gate:** suite **1298 passed, 2 skipped** · coverage **95.11%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 10.D0 · 10.1–10.4 · 10.T · 10.C · 10.L · 10.CR · 10.D.
+- **Determinism:** canary cohort = `sha256(session_id) % 100`; calibration rates are pure functions of the trail.
+
+**⬜ M11 — CI regression suite & fail-closed hardening.** Next (closes the v0.1.0 core).
 
 ## Porting map (predecessor → agentpolicy)
 
