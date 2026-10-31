@@ -263,7 +263,16 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Gate:** suite **1377 passed, 2 skipped** · coverage **95.12%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
 - **Items closed:** 14.D0 · 14.1–14.4 · 14.T · 14.C · 14.L · 14.CR · 14.D.
 
-**⬜ M15 — Freeze windows & data-class derivation.** Next.
+**M15 — Freeze windows & data-class derivation — ✅ closed (2026-10-31).**
+
+- **Commit:** `5602335` (see `15.CI`). `agentpolicy/freeze.py` (declared, audited freezes; an active window
+  tightens a write to `escalate`/`freeze_active` and stamps `freeze_id`); `agentpolicy freeze` CLI; the
+  `packs/code-freeze` pack; `agentpolicy/data_class.py` (deterministic derivation: tag → glob → schema hint, with a
+  loud conflict).
+- **Gate:** suite **1398 passed, 2 skipped** · coverage **95.04%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 15.D0 · 15.1–15.3 · 15.T · 15.C · 15.L · 15.CR · 15.D.
+
+**⬜ M16 — Enrollment/probation & approval analytics.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
