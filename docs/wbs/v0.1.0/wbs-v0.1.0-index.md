@@ -233,7 +233,18 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Items closed:** 11.D0 · 11.1–11.4 · 11.T · 11.C · 11.L · 11.CR · 11.D.
 - **Note:** this closes the **v0.1.0 core** (a leaner release may tag here).
 
-**⬜ M12 — Session state, blast-radius budgets & rate limits.** Next.
+**M12 — Session state, blast-radius budgets & rate limits — ✅ closed (2026-10-31).**
+
+- **Commit:** `616c65b` (see `12.CI`). Generic usage counters + capability ceilings (files/requests/spend/calls);
+  `rate_allow` token bucket with **`retry_after`**; budget state on **every** decision; exhaustion → **`rate-limit`**
+  (`budget_exhausted`/`rate_limited`); `agenthalt.HaltController` fires a halt event with evidence on hard
+  exhaustion.
+- **Gate:** suite **1339 passed, 2 skipped** · coverage **95.17%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 12.D0 · 12.1–12.4 · 12.T · 12.C · 12.L · 12.CR · 12.D.
+- **Re-pointed:** exhaustion is a reasoned `rate-limit`, not an opaque deny (PRD 18/R9); `call_budget` folds into
+  the `calls` dimension.
+
+**⬜ M13 — Exfil-sink, argument validation & tool hiding.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
