@@ -20,8 +20,32 @@ if TYPE_CHECKING:
 
 
 def _matched_rule(result: Any) -> str | None:
-    """Best-effort extraction of the deciding rule id from the diagnostics."""
+    """Extract the deciding rule id (the Cedar ``@id`` annotation) from diagnostics.
+
+    ``cedarpy`` reports the satisfied policies as ``reasons`` (``policy0`` …) and
+    maps each to its ``@id`` annotation in ``id_annotations_by_reason``. We
+    return the lexicographically smallest decisive annotation — stable across
+    runs (``cedarpy`` orders ``reasons`` by hash) — which names the clause that
+    decided the outcome: ``forbid-*`` for a deny, ``permit-*`` for the allowed
+    outcomes.
+    """
     diagnostics = getattr(result, "diagnostics", None)
+    annotations = getattr(diagnostics, "id_annotations_by_reason", None)
+    reasons = getattr(diagnostics, "reasons", None)
+    ids: list[str] = []
+    if isinstance(annotations, dict):
+        for reason in reasons if isinstance(reasons, (list, tuple)) else ():
+            rule_id = annotations.get(reason)
+            if isinstance(rule_id, str) and rule_id and rule_id not in ids:
+                ids.append(rule_id)
+        if not ids:
+            ids = sorted(
+                v for v in annotations.values() if isinstance(v, str) and v
+            )
+    if ids:
+        # ``cedarpy`` reports satisfied policies in an unstable (hash) order, so
+        # pick the lexicographically smallest id: deterministic across runs.
+        return sorted(ids)[0]
     reason = getattr(diagnostics, "reason", None)
     if isinstance(reason, str) and reason and reason not in ("None", ""):
         return reason
@@ -47,6 +71,11 @@ class CedarEvaluator:
     def policy_version(self) -> str:
         """The policy version stamped onto every decision."""
         return self._policy_version
+
+    @property
+    def policy_hash(self) -> str:
+        """The stable content hash of the policy set (``sha256:<hex>``)."""
+        return policy_mod.policy_hash(self._policies)
 
     def authorize(
         self, call: NormalizedCall, *, extra_context: dict[str, Any] | None = None
@@ -76,6 +105,7 @@ class CedarEvaluator:
             matched_rule=_matched_rule(result),
             ctx=ShaperContext(
                 policy_version=self._policy_version,
+                policy_hash=self.policy_hash,
                 budget_exhausted=budget_exhausted,
                 retry_after=retry_after,
             ),

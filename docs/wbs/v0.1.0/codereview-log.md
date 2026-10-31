@@ -79,3 +79,29 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
   - *Reused variable for two result types in `cli/pack.py`* (mypy) → renamed. **Resolved.**
 - **Gates:** suite green · coverage ≥ 95% · `ruff` zero · `mypy --strict` clean.
 - **Resolution:** all findings resolved; no open items.
+
+### M5 — Explain-decision, reason codes & event schema (5.CR)
+
+- **Scope:** the explain artifact + reason-code registry (`reason_codes.py`), actionability (`explain.py`), the
+  `agentwatch.security_event.v1` emitter (`agentwatch.py`), the offline `agentpolicy explain` CLI, and the Cedar
+  model/evaluator additions (`policy_hash`, `Explanation.clause`, real matched-rule extraction).
+- **Findings & resolutions:**
+  - *`cedarpy` reports satisfied policies in an unstable (hash) order*, so picking the first rule id made the
+    matched rule — and thus the whole `Decision` — **nondeterministic** for a call that matched two `forbid`
+    rules (e.g. destructive on production **and** customer-PII) → `CedarEvaluator._matched_rule` now collects the
+    annotations and returns the **lexicographically smallest** id, restoring determinism
+    (`tests/test_cedar_core.py::TestDeterminism`). **Resolved.**
+  - *The M2 reason-code seeds `no_matching_permit` / `sensitive_output` are not in the PRD 17 registry* → M5 is
+    the milestone that owns the registry, so the shaper now emits the PRD-canonical `default_deny` /
+    `secret_detected`; the dependents' assertions (`tests/test_cedar_core.py`) and the docs
+    (`docs/reference/decisions.md`) moved with the work. `reason_codes.py` is now the single source of truth;
+    no inline reason-code literals remain in the shaper. **Resolved.**
+  - *The ported `agentpolicy explain` printed the legacy 4-state verdict* → re-pointed to the canonicalizer +
+    Cedar core and added `--json` (the full explain artifact), per the M5 porting map. **Resolved.**
+  - *An emitted event/deduction with a blank join key would silently emit `null`* → `DecisionEvent.to_dict`
+    raises `ValueError`; a decision with no `event_id`/`decision_id` is a bug. **Resolved.**
+  - *A broad `except` around the actionability search tripped `ruff` S112/RUF100* → extracted `_safe_outcome`
+    (returns `None` on failure, no silent `continue`), so a candidate the evaluator rejects simply does not
+    count as a flip. **Resolved.**
+- **Gates:** suite **1201 passed, 2 skipped** · coverage **95.46%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open items.

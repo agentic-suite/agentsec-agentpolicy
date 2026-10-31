@@ -51,7 +51,7 @@ _MATRIX = [
     ),
     (
         "redact",
-        "sensitive_output",
+        "secret_detected",
         _call("read_secrets", "read", "production", "restricted", "secrets", "read"),
     ),
 ]
@@ -164,7 +164,7 @@ class TestFailClosed:
     def test_shape_helper_denies_on_no_cedar_allow(self) -> None:
         decision = shape(cedar_allowed=False, call=_call(), ctx=ShaperContext())
         assert decision.decision == "deny"
-        assert decision.reason_code == "no_matching_permit"
+        assert decision.reason_code == "default_deny"
 
     def test_policy_module_exposes_base_policy(self) -> None:
         assert "permit" in policy_mod.BASE_POLICY and "forbid" in policy_mod.BASE_POLICY

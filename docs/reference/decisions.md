@@ -18,14 +18,21 @@ The five-outcome decision model of the Cedar decision core (WBS M2, PRD 15/17).
 
 ## Reason codes (seed)
 
+The **closed registry** now lives in [`reason_codes.py`](../reference/reason-codes.md) (M5); the codes the
+Cedar shaper emits:
+
 | `reason_code` | Outcome | Meaning |
 |---|---|---|
 | `allow_low_risk` | allow | within the allow band |
-| `no_matching_permit` | deny | no Cedar `permit` matched (fail-closed) |
+| `default_deny` | deny | no Cedar `permit` matched (fail-closed) |
 | `irreversible_action` | deny | a destructive verb matched a `forbid` |
 | `human_gate_required` | ask | an irreversible action in production needs approval |
 | `budget_exhausted` | rate-limit | the session budget is exhausted |
-| `sensitive_output` | redact | a sensitive read was allowed but scrubbed |
+| `secret_detected` | redact | a sensitive read was allowed but scrubbed |
+
+> M5 renamed the M2 seeds `no_matching_permit` → `default_deny` and `sensitive_output` → `secret_detected` to
+> match the PRD 17 registry. See [reason-codes.md](reason-codes.md) for the full set including the failure
+> taxonomy.
 
 ## JSON shape
 
@@ -41,7 +48,8 @@ The five-outcome decision model of the Cedar decision core (WBS M2, PRD 15/17).
     {"dimension": "data_class", "value": "customer_pii", "contribution": 1.0}
   ],
   "policy_version": "0.1.0",
-  "matched_rule": null
+  "policy_hash": "sha256:...",
+  "matched_rule": "forbid-destructive-production"
 }
 ```
 

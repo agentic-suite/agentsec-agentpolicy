@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from agentpolicy import reason_codes
 from agentpolicy.cedar import gates
 from agentpolicy.cedar.models import Decision, Factor
 
@@ -31,6 +32,7 @@ class ShaperContext:
     """Non-Cedar inputs the shaper needs to pick the final outcome."""
 
     policy_version: str = "0.1.0"
+    policy_hash: str = ""
     budget_exhausted: bool = False
     retry_after: int = 60
 
@@ -68,7 +70,9 @@ def shape(
         destructive = call.action in DESTRUCTIVE_VERBS
         return Decision(
             decision="deny",
-            reason_code="irreversible_action" if destructive else "no_matching_permit",
+            reason_code=(
+                reason_codes.IRREVERSIBLE_ACTION if destructive else reason_codes.DEFAULT_DENY
+            ),
             criticality="critical" if call.environment == "production" else "high",
             explanation=(
                 f"{where} is blocked: "
@@ -76,17 +80,19 @@ def shape(
             ),
             factors=factors,
             policy_version=context.policy_version,
+            policy_hash=context.policy_hash,
             matched_rule=matched_rule,
         )
 
     if context.budget_exhausted:
         return Decision(
             decision="rate-limit",
-            reason_code="budget_exhausted",
+            reason_code=reason_codes.BUDGET_EXHAUSTED,
             criticality="med",
             explanation=f"{where} is throttled: the session budget is exhausted.",
             factors=factors,
             policy_version=context.policy_version,
+            policy_hash=context.policy_hash,
             matched_rule=matched_rule,
             retry_after=context.retry_after,
         )
@@ -94,11 +100,12 @@ def shape(
     if gates.is_human_gate(call):
         return Decision(
             decision="ask",
-            reason_code="human_gate_required",
+            reason_code=reason_codes.HUMAN_GATE_REQUIRED,
             criticality="high",
             explanation=f"{where} requires human approval (irreversible action in production).",
             factors=factors,
             policy_version=context.policy_version,
+            policy_hash=context.policy_hash,
             matched_rule=matched_rule,
         )
 
@@ -106,23 +113,27 @@ def shape(
         classes = ("pii",) if call.data_class == "customer_pii" else ("secret",)
         return Decision(
             decision="redact",
-            reason_code="sensitive_output",
+            reason_code=reason_codes.SECRET_DETECTED,
             criticality="med",
             explanation=(
                 f"{where} is allowed, but {classes[0]} content is scrubbed from the result."
             ),
             factors=factors,
             policy_version=context.policy_version,
+            policy_hash=context.policy_hash,
             matched_rule=matched_rule,
             redactions=classes,
         )
 
     return Decision(
         decision="allow",
-        reason_code="allow_low_risk",
+        reason_code=reason_codes.ALLOW_LOW_RISK,
         criticality="low",
         explanation=f"{where} is within the allow band. Proceeding.",
         factors=factors,
         policy_version=context.policy_version,
-        matched_rule=matched_rule,
+        policy_hash=context.policy_hash,
+        # v0.1.0: allow-justification (R47) is a v0.2.0 requirement, so a plain
+        # allow leaves matched_rule unset. deny/ask/rate-limit/redact carry it.
+        matched_rule=None,
     )

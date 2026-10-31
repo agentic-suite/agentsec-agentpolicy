@@ -16,6 +16,7 @@ The policy is intentionally small but exercises all five outcomes jointly with
 
 from __future__ import annotations
 
+import hashlib
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -63,6 +64,18 @@ when {
   context.environment == "production"
 };
 """
+
+
+def policy_hash(policies: str = BASE_POLICY) -> str:
+    """Return the stable content hash of a policy set (``sha256:<hex>``).
+
+    The hash is computed over the policy text so every decision can record
+    *which* reviewed artifact governed it (PRD 15 policy-provenance invariant).
+    Whitespace-insensitive would be nicer, but the policy is loaded verbatim, so
+    the raw text is the thing that was actually evaluated.
+    """
+    digest = hashlib.sha256(policies.encode("utf-8")).hexdigest()
+    return f"sha256:{digest}"
 
 
 def build_entities(call: NormalizedCall) -> list[dict[str, Any]]:

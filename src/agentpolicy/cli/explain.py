@@ -1,15 +1,22 @@
-"""``agentpolicy explain`` — explain why a tool call received its decision."""
+"""``agentpolicy explain`` — explain a tool call's decision, offline.
+
+Evaluates the call through the canonicalizer + Cedar decision core (no server,
+no network) and prints the full explain artifact: the outcome, the machine
+reason code, the matched rule/clause, the factor breakdown, and the one change
+that would flip the outcome (WBS M5 ``5.4``). ``--json`` prints the agentwatch-
+ready artifact verbatim.
+"""
 
 from __future__ import annotations
 
 import argparse
+import json
 from typing import Any
 
+from agentpolicy.canonical import canonicalize
+from agentpolicy.cedar import CedarEvaluator
 from agentpolicy.cli.errors import CliError
-from agentpolicy.engine.engine import Engine
-from agentpolicy.engine.llm_explain import llm_explainer, template_explainer
-from agentpolicy.policy.loader import load_policy
-from agentpolicy.policy.models import default_policy
+from agentpolicy.explain import build_artifact
 
 
 def add_parser(subparsers: Any) -> None:
@@ -21,15 +28,14 @@ def add_parser(subparsers: Any) -> None:
     parser = subparsers.add_parser(
         "explain",
         help="explain why a tool call received its decision",
-        description="Run a tool call and print the factor breakdown with explanation.",
+        description="Evaluate a tool call offline and print the full explain artifact.",
     )
     parser.add_argument("--tool", required=True, help="Tool name (e.g., deploy_service)")
     parser.add_argument("--action", required=True, help="Action verb (e.g., read, write)")
     parser.add_argument("--env", required=True, help="Environment (e.g., staging, production)")
     parser.add_argument("--data", required=True, help="Data class (e.g., internal, restricted)")
     parser.add_argument("--agent", required=True, help="Agent identity (e.g., release-bot)")
-    parser.add_argument("--llm", action="store_true", help="Use LLM prose (falls back to template)")
-    parser.add_argument("--policy", default=None, help="Path to agentpolicy.yaml")
+    parser.add_argument("--json", action="store_true", help="Emit the explain artifact as JSON")
     parser.set_defaults(func=_explain)
 
 
@@ -43,36 +49,39 @@ def _explain(args: argparse.Namespace) -> int:
         Exit code 0 on success, 1 on error.
     """
     try:
-        if args.policy:
-            policy = load_policy(args.policy)
-        else:
-            policy = default_policy("balanced")
-
-        explainer = llm_explainer() if args.llm else template_explainer
-
-        engine = Engine(policy, explainer=explainer)
-        decision = engine.evaluate(
-            tool_name=args.tool,
+        call = canonicalize(
+            tool=args.tool,
             action=args.action,
             environment=args.env,
             data_class=args.data,
             agent_id=args.agent,
         )
+        evaluator = CedarEvaluator()
+        decision = evaluator.evaluate(call)
+        artifact = build_artifact(decision, call, evaluator=evaluator)
     except Exception as exc:
         raise CliError(str(exc)) from exc
 
+    if args.json:
+        print(json.dumps(artifact.to_dict(), indent=2))
+        return 0
+
     print()
-    print(f"  Decision      {decision.decision.upper()}")
-    print(f"  Reason        {decision.reason_code}")
-    print(f"  Criticality   {decision.criticality}")
+    print(f"  Decision      {artifact.decision.upper()}")
+    print(f"  Reason        {artifact.reason_code}")
+    print(f"  Criticality   {artifact.criticality}")
+    print(f"  Clause        {artifact.clause}")
     print()
-    print(f"  {decision.explanation}")
+    print(f"  {artifact.explanation}")
     print()
-    if decision.factors:
-        print("  Risk factor breakdown:")
-        for f in decision.factors:
+    if artifact.factors:
+        print("  Factor breakdown:")
+        for f in artifact.factors:
             bar = "█" * int(min(f.contribution * 20, 20))
-            print(f"    {f.dimension:20s} {bar} ({f.contribution:.2f})")
+            print(f"    {f.dimension:16s} {bar} ({f.contribution:.2f})  {f.value}")
+    if artifact.suggested_change:
+        print()
+        print(f"  To change this: {artifact.suggested_change}")
     print()
 
     return 0

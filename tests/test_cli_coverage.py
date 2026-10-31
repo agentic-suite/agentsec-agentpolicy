@@ -110,7 +110,7 @@ def test_evaluate_allow_with_obligation(capsys):
 
 def test_explain_template(capsys):
     ns = _ns(tool="query_logs", action="read", env="staging", data="internal",
-             agent="release-bot", llm=False, policy=None)
+             agent="release-bot", json=False)
     assert explain._explain(ns) == 0
     out = capsys.readouterr().out
     assert "Decision" in out
@@ -118,9 +118,9 @@ def test_explain_template(capsys):
 
 def test_explain_with_factors(capsys):
     ns = _ns(tool="deploy_service", action="deploy", env="production", data="restricted",
-             agent="dev-eng", llm=False, policy=None)
+             agent="dev-eng", json=True)
     assert explain._explain(ns) == 0
-    assert "Risk factor breakdown" in capsys.readouterr().out
+    assert '"factors"' in capsys.readouterr().out
 
 
 def test_pack_validate_ok(tmp_path, capsys):

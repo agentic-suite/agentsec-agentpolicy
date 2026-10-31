@@ -46,14 +46,27 @@ class Explanation:
     """The ``explain-decision`` artifact (PRD 17)."""
 
     matched_rule: str | None
+    reason_code: str = ""
     context: dict[str, Any] = field(default_factory=dict)
     suggested_change: str | None = None
     factors: tuple[Factor, ...] = ()
+
+    @property
+    def clause(self) -> str:
+        """The clause that decided the outcome (M5 ``5.1``).
+
+        The matched Cedar rule id when a rule decided the outcome, else the
+        reason-code *class* (e.g. ``default_deny`` for a no-permit deny). Every
+        deny/ask/rate-limit carries a non-empty clause (PRD 15 invariant).
+        """
+        return self.matched_rule or self.reason_code
 
     def to_dict(self) -> dict[str, Any]:
         """JSON-friendly representation."""
         return {
             "matched_rule": self.matched_rule,
+            "reason_code": self.reason_code,
+            "clause": self.clause,
             "context": dict(self.context),
             "suggested_change": self.suggested_change,
             "factors": [f.to_dict() for f in self.factors],
@@ -70,6 +83,7 @@ class Decision:
     explanation: str
     factors: tuple[Factor, ...] = ()
     policy_version: str = "0.1.0"
+    policy_hash: str = ""
     matched_rule: str | None = None
     retry_after: int | None = None
     redactions: tuple[str, ...] = ()
@@ -91,7 +105,13 @@ class Decision:
         """Build the ``explain-decision`` artifact for this decision."""
         return Explanation(
             matched_rule=self.matched_rule,
-            context={"decision": self.decision, "reason_code": self.reason_code},
+            reason_code=self.reason_code,
+            context={
+                "decision": self.decision,
+                "reason_code": self.reason_code,
+                "policy_version": self.policy_version,
+                "policy_hash": self.policy_hash,
+            },
             suggested_change=(
                 None
                 if self.allowed
@@ -109,6 +129,7 @@ class Decision:
             "explanation": self.explanation,
             "factors": [f.to_dict() for f in self.factors],
             "policy_version": self.policy_version,
+            "policy_hash": self.policy_hash,
             "matched_rule": self.matched_rule,
         }
         if self.decision == "rate-limit":

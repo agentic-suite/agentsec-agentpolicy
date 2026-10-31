@@ -30,11 +30,16 @@ agentpolicy evaluate --tool drop_database --action delete \
 Required: `--tool --action --env --data --agent`. Options: `--session`, `--dry-run` (shadow mode), `--format {table,json}`,
 `--policy PATH`. Prints the decision, criticality, reason code, explanation, and factors.
 
-### explain — factor breakdown + explanation
+### explain — factor breakdown + explanation (offline, Cedar)
 
 ```sh
-agentpolicy explain --tool query_logs --action read --env staging --data internal --agent debug-bot [--llm]
+agentpolicy explain --tool query_logs --action read --env staging --data internal --agent debug-bot
+agentpolicy explain --tool drop_database --action delete --env production --data customer_pii --agent release-bot --json
 ```
+
+Evaluates the call offline through the canonicalizer + Cedar decision core (no server, no network) and prints the
+outcome, the machine `reason_code`, the matched rule/`clause`, the factor breakdown, and the one change that would
+flip the outcome. `--json` prints the full explain artifact (the [reason-codes reference](reason-codes.md)).
 
 ### check — validate a policy file (fail-closed)
 

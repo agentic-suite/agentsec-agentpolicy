@@ -77,8 +77,8 @@ class TestCLIIntegration:
             "--data", "restricted",
             "--agent", "release-bot",
         )
-        assert "ESCALATE" in result.stdout
-        assert "risk factor" in result.stdout.lower() or "factor" in result.stdout.lower()
+        assert "ASK" in result.stdout
+        assert "factor" in result.stdout.lower()
 
     def test_init_all_postures(self) -> None:
         for posture in ("balanced", "strict", "permissive"):
