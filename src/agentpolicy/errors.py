@@ -75,6 +75,8 @@ ALLOW_VERIFIED = "allow_verified"
 DENY_VERIFICATION_CONTRADICTED = "deny_verification_contradicted"
 #: Decision: deny. Sensitive data flowing to an external-sink tool (M13 exfil-sink).
 DENY_EXFIL_SINK = "deny_exfil_sink"
+#: Decision: escalate. A write during a declared change freeze (M15 freeze window).
+ESCALATE_FREEZE_ACTIVE = "freeze_active"
 
 
 class AgentPolicyError(Exception):

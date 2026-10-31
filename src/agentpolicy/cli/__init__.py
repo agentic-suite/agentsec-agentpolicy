@@ -29,6 +29,7 @@ from agentpolicy.cli import (
     explain,
     export,
     field_test,
+    freeze,
     init,
     lint,
     pack,
@@ -72,6 +73,7 @@ def _build_parser() -> argparse.ArgumentParser:
     policy.add_parser(subparsers)
     lint.add_parser(subparsers)
     export.add_parser(subparsers)
+    freeze.add_parser(subparsers)
     ci.add_parser(subparsers)
     serve_cli.add_parser(subparsers)
     escalation.add_parser(subparsers)

@@ -1,0 +1,18 @@
+# Incident replay for the code-freeze rule class (M15 15.2 / CUJ-21).
+fixtures:
+  - name: freeze-blocks-write
+    tool: deploy_service
+    action: write
+    environment: production
+    data_class: internal
+    agent_id: release-bot
+    context: {freeze_id: "frz_1"}
+    expect: deny
+  - name: no-freeze-allows-write
+    tool: deploy_service
+    action: write
+    environment: development
+    data_class: internal
+    agent_id: release-bot
+    context: {freeze_id: ""}
+    expect: allow

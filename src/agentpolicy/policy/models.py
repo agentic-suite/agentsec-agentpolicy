@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Any
 from agentpolicy.types import NormalizedCall
 
 if TYPE_CHECKING:
+    from agentpolicy.data_class import DataClassRule
     from agentpolicy.engine.argument_policy import ArgumentSpec
 
 DEFAULT_POSTURE = "balanced"
@@ -231,6 +232,8 @@ class Policy:
     default_agent: AgentProfile = AgentProfile("general", 0.5)
     tool_visibility: dict[str, dict[str, tuple[str, ...]]] = field(default_factory=dict)
     args_policy: dict[str, dict[str, ArgumentSpec]] = field(default_factory=dict)
+    #: Deterministic data-class derivation rules (M15 15.3), in declaration order.
+    data_class_rules: tuple[DataClassRule, ...] = ()
 
     def agent_profile(self, agent_id: str) -> AgentProfile:
         return self.agents.get(agent_id, self.default_agent)

@@ -24,6 +24,7 @@ from typing import Any
 import yaml
 from pydantic import ValidationError
 
+from agentpolicy.data_class import DataClassRule
 from agentpolicy.engine.argument_policy import ArgumentSpec
 from agentpolicy.errors import PolicyParseError
 from agentpolicy.policy.models import Policy, Rule, default_policy
@@ -172,6 +173,10 @@ def _build_policy(doc: PolicyDocument) -> Policy:
         default_agent=base.default_agent,
         tool_visibility=tool_visibility,
         args_policy=args_policy,
+        data_class_rules=tuple(
+            DataClassRule(pattern=r.pattern, data_class=r.data_class)
+            for r in doc.data_class_rules
+        ),
     )
 
 

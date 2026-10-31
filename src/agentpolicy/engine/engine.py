@@ -10,6 +10,7 @@ from typing import Any
 
 from agentpolicy.audit.logger import AuditLogger
 from agentpolicy.canary import CanaryConfig
+from agentpolicy.data_class import derive_data_class
 from agentpolicy.engine.argument_policy import check_arguments
 from agentpolicy.engine.decide import decide
 from agentpolicy.engine.delegation import DelegationManager, DelegationResult
@@ -29,7 +30,9 @@ from agentpolicy.errors import (
     DENY_EXFIL_SINK,
     DENY_OBLIGATION_FAILED,
     DENY_OUT_OF_SCOPE,
+    ESCALATE_FREEZE_ACTIVE,
 )
+from agentpolicy.freeze import FREEZE_GATED_ACTIONS, FreezeLedger
 from agentpolicy.policy.models import Policy
 from agentpolicy.taxonomy import KNOWN_TOOLS
 from agentpolicy.types import Decision, NormalizedCall
@@ -57,6 +60,7 @@ class Engine:
         deny_storm_analyzer: DenyStormAnalyzer | None = None,
         enforce_deny_storm: bool = False,
         canary_percent: int = 0,
+        freeze_ledger: FreezeLedger | None = None,
     ):
         #: The declarative policy in force for every evaluation. Immutable for
         #: the Engine's lifetime; swap engines to change policy.
@@ -96,6 +100,15 @@ class Engine:
         #: (the real decision is logged, the caller gets ``allow``). ``0`` keeps
         #: the historical full-enforce behaviour.
         self._canary = CanaryConfig(canary_percent)
+        #: Freeze-window ledger (M15 15.1). When an active window covers the
+        #: call's environment, a write is escalated and every decision carries
+        #: the ``freeze_id``.
+        self._freeze = freeze_ledger
+
+    @property
+    def freeze_ledger(self) -> FreezeLedger | None:
+        """The freeze-window ledger (or ``None`` when no freeze is configured)."""
+        return self._freeze
 
     @property
     def canary_percent(self) -> int:
@@ -229,6 +242,14 @@ class Engine:
         #    This must happen before normalize so the call carries the right
         #    agent_class into the scorer.
         profile = self._policy.agent_profile(agent_id)
+        # 1z. Data-class derivation (M15 15.3): an untagged resource resolves
+        #     from the policy's glob/tag rules instead of a hand-tag.
+        if data_class == "auto":
+            data_class = derive_data_class(
+                resource_tag or tool_name,
+                self._policy.data_class_rules,
+                schema_hint=(context or {}).get("data_class_hint"),
+            ) or "internal"
         call = normalize(
             tool=tool_name,
             action=action,
@@ -298,6 +319,24 @@ class Engine:
         risk_score = score(call, self._policy)
         verdict = decide(call, self._policy)
         decision = explain(verdict, risk_score, call, self._policy)
+        # 3a. Freeze window (M15 15.1). An active, declared freeze covering the
+        #     call's environment tightens the posture: a write is escalated with
+        #     reason `freeze_active`, and every decision carries the freeze_id.
+        if self._freeze is not None:
+            freeze = self._freeze.active_freeze(call.environment)
+            if freeze is not None:
+                if call.action in FREEZE_GATED_ACTIONS and decision.decision != "deny":
+                    decision = replace(
+                        decision,
+                        decision="escalate",
+                        criticality="high",
+                        reason_code=ESCALATE_FREEZE_ACTIVE,
+                        explanation=(
+                            f"{call.tool} ({call.action}) in {call.environment} is gated "
+                            f"by freeze {freeze.freeze_id}: {freeze.reason or 'change freeze'}"
+                        ),
+                    )
+                decision = replace(decision, freeze_id=freeze.freeze_id)
         # 3b. Escalation registry (M3 #84, F-09). When the verdict escalates,
         #     create a pending approval record bound to the call's action
         #     identity, and pin the decision's escalation_id to the registered

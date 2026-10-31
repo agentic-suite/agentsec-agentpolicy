@@ -195,6 +195,7 @@ class TestDecision:
             "dry_run",
             "obligations",
             "counterfactual",
+            "freeze_id",
         }
 
     def test_decision_to_dict_matches_asdict(self):

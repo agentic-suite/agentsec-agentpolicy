@@ -241,6 +241,15 @@ class ToolSpec(BaseModel):
     )
 
 
+class DataClassRuleSchema(BaseModel):
+    """A data-class derivation rule (M15 15.3)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    pattern: str = Field(min_length=1, description="fnmatch glob over the resource path/id")
+    data_class: str = Field(min_length=1, description="The data class the pattern maps to")
+
+
 class PolicyDocument(BaseModel):
     """A validated agentpolicy.yaml file.
 
@@ -263,6 +272,10 @@ class PolicyDocument(BaseModel):
     tools: list[ToolSpec] = Field(
         default_factory=list,
         description="Per-tool definitions: hiding + argument policy",
+    )
+    data_class_rules: list[DataClassRuleSchema] = Field(
+        default_factory=list,
+        description="Deterministic data-class derivation rules (M15 15.3)",
     )
     escalation: EscalationConfig = Field(default_factory=EscalationConfig)
     audit: AuditConfig = Field(default_factory=AuditConfig)

@@ -300,3 +300,22 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1377 passed, 2 skipped** · coverage **95.12%** (≥ 95) · `ruff` zero · `mypy --strict` clean
   (133 files).
 - **Resolution:** all findings resolved; no open items.
+
+### M15 — Freeze windows & data-class derivation (15.CR)
+
+- **Scope:** the freeze ledger + engine tightening (`freeze.py`, `engine/engine.py`), the `code-freeze` pack, and
+  deterministic data-class derivation (`data_class.py`, `policy/{models,schema,loader}.py`).
+- **Findings & resolutions:**
+  - *No freeze artifact existed* (Replit's condition was inexpressible) → `FreezeLedger` declares/expires windows
+    (audited events); the engine tightens a gated write to `escalate`/`freeze_active` and stamps `freeze_id` on
+    every decision in a frozen environment; overlap resolves strictest-narrowest (deterministic). **Resolved.**
+  - *`data_class` was always hand-supplied* → a deterministic deriver (tag → glob → schema hint) with a loud
+    `DataClassConflictError` (fail-closed deny) and a policy `data_class_rules` table; `data_class="auto"`
+    resolves an untagged resource. **Resolved.**
+  - *Adding `freeze_id` to `Decision` changed the JSON key set* → the dependent shape test moved with the work
+    (additive field). **Resolved.**
+  - *The `code-freeze` pack rule keys on `context.freeze_id`* → its fixtures supply the context (the engine
+    supplies it at runtime), so the replay is self-contained. **Resolved.**
+- **Gates:** suite **1398 passed, 2 skipped** · coverage **95.04%** (≥ 95) · `ruff` zero · `mypy --strict` clean
+  (136 files).
+- **Resolution:** all findings resolved; no open items.
