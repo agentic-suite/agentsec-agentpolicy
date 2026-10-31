@@ -154,7 +154,20 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Gate:** suite **1169 passed** · coverage **95.6%** · `ruff` zero · `mypy --strict` clean.
 - **Items closed:** 4.D0 · 4.1–4.6 · 4.T · 4.C · 4.L · 4.CR · 4.D.
 
-**⬜ M5 — Explain-decision, reason codes & event schema.** Next.
+**M5 — Explain-decision, reason codes & event schema — ✅ closed (2026-10-31).**
+
+- **Commit:** `fab651e` (see `5.CI`). `agentpolicy/reason_codes.py` (the closed registry — single source of
+  truth), `agentpolicy/explain.py` (explain artifact + verified actionability `suggested_change`), the offline
+  `agentpolicy explain` CLI (+`--json`), and `agentpolicy/agentwatch.py` (the
+  `agentwatch.security_event.v1` / `policy.decision` emitter with the shared `event_id`/`decision_id` join key).
+  The Cedar core now extracts the real matched rule (`forbid-*`/`permit-*` `@id`) and stamps
+  `policy_version` + `policy_hash` on every decision.
+- **Gate:** suite **1201 passed, 2 skipped** · coverage **95.46%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 5.D0 · 5.1–5.5 · 5.T · 5.C · 5.L · 5.CR · 5.D.
+- **Re-pointed:** the shaper now emits the PRD-canonical `default_deny` / `secret_detected` (M2 seeds
+  `no_matching_permit` / `sensitive_output` retired); `agentpolicy explain` runs the Cedar path offline.
+
+**⬜ M6 — Audit, policy versioning & tamper evidence.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
