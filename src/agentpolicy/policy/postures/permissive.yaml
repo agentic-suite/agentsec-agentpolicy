@@ -1,3 +1,14 @@
+# agentpolicy — posture preset: permissive
+#
+# This file is an overlay on the shipped preset: only the fields you edit
+# change the policy; everything else stays at the preset default.
+#
+# Next steps:
+#   agentpolicy check  agentpolicy.yaml   # validate
+#   agentpolicy diff   agentpolicy.yaml   # kept / overridden / gaps
+#   agentpolicy lint   agentpolicy.yaml   # unused/shadowed/over-permissive/secrets
+#   agentpolicy export --format cedar     # compile to Cedar
+
 version: 1.0.0
 posture: permissive
 environments:

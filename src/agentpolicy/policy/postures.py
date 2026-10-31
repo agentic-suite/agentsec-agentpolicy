@@ -54,7 +54,7 @@ def available_postures() -> list[str]:
 
 
 def render_preset(posture: str) -> str:
-    """Render the shipped posture preset as a agentpolicy.yaml document.
+    """Render the shipped posture preset as a commented agentpolicy.yaml.
 
     Raises :class:`ValueError` for unknown postures so callers can't silently
     generate a misconfigured file.
@@ -72,7 +72,28 @@ def render_preset(posture: str) -> str:
         "escalation": {"threshold": 0.5, "ttl_seconds": 300},
         "audit": {"sink": "jsonl", "path": "~/.agentpolicy/audit.jsonl", "postgres_url": None},
     }
-    return _yaml_dump(document)
+    return _preset_header(posture) + _yaml_dump(document)
+
+
+def _preset_header(posture: str) -> str:
+    """A commented header explaining the preset and the next commands.
+
+    The comment block is ignored by the YAML loader, so the emitted document
+    still round-trips to exactly ``default_policy(posture)``.
+    """
+    return (
+        f"# agentpolicy — posture preset: {posture}\n"
+        "#\n"
+        "# This file is an overlay on the shipped preset: only the fields you edit\n"
+        "# change the policy; everything else stays at the preset default.\n"
+        "#\n"
+        "# Next steps:\n"
+        "#   agentpolicy check  agentpolicy.yaml   # validate\n"
+        "#   agentpolicy diff   agentpolicy.yaml   # kept / overridden / gaps\n"
+        "#   agentpolicy lint   agentpolicy.yaml   # unused/shadowed/over-permissive/secrets\n"
+        "#   agentpolicy export --format cedar     # compile to Cedar\n"
+        "\n"
+    )
 
 
 def _rule_spec(rule: Rule) -> dict[str, str]:

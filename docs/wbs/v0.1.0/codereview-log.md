@@ -180,3 +180,24 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1263 passed, 2 skipped** · coverage **95.07%** (≥ 95) · `ruff` zero · `mypy --strict` clean
   (119 files).
 - **Resolution:** all findings resolved; no open items.
+
+### M9 — Posture presets, init, diff & lint (9.CR)
+
+- **Scope:** commented posture presets, the `init` scaffold, the kept/overridden/gaps `diff`, the new
+  rule/policy `lint` (`lint.py`, `cli/lint.py`), and the policyweave `export` (`export.py`, `cli/export.py`).
+- **Findings & resolutions:**
+  - *A commented preset could drift from `default_policy`* → the comment header is emitted by
+    `postures._preset_header` and regenerated into the shipped files; the loader ignores comments, so
+    `load_policy_text(render_preset(name)) == default_policy(name)` still holds (no drift). **Resolved.**
+  - *`lint` needed a taxonomy source for unknown tools* → uses `taxonomy.is_known_tool`; the literal-secret scan
+    reuses the `engine/output_inspector` pattern set (one pattern list, no drift). **Resolved.**
+  - *`export` needed a policy hash* → reuses `cedar.policy.policy_hash` (the M5/M6 hash function), so the export
+    provenance matches the audit/explain provenance. **Resolved.**
+  - *Enhancing `diff` risked breaking the shipped output contract* → the legacy `0.7 -> 0.95` / `0.0 -> 0.1`
+    lines and the 0/1 exit codes are unchanged; kept/overridden/gaps are added alongside, plus `--json`.
+    **Resolved.**
+  - *`init` scaffold had to stay backward-compatible* → `--adapter`/`--scaffold-dir` are additive; the default
+    `init` output is byte-for-byte the commented preset. **Resolved.**
+- **Gates:** suite **1286 passed, 2 skipped** · coverage **95.09%** (≥ 95) · `ruff` zero · `mypy --strict` clean
+  (123 files).
+- **Resolution:** all findings resolved; no open items.
