@@ -222,7 +222,18 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Items closed:** 10.D0 · 10.1–10.4 · 10.T · 10.C · 10.L · 10.CR · 10.D.
 - **Determinism:** canary cohort = `sha256(session_id) % 100`; calibration rates are pure functions of the trail.
 
-**⬜ M11 — CI regression suite & fail-closed hardening.** Next (closes the v0.1.0 core).
+**M11 — CI regression suite & fail-closed hardening — ✅ closed (2026-10-31).**
+
+- **Commit:** `748ade9` (see `11.CI`). `agentpolicy/goldens.py` (golden replay + **deny→allow flip** detection);
+  `agentpolicy/agentdrill.py` (incident-replay gate: an un-blocked named incident fails the build);
+  `agentpolicy/compliance.py` (**computed** OWASP ASI/LLM + ATLAS coverage matrix → agentcomply);
+  `agentpolicy goldens check` / `drill check` / `compliance export`; **hypothesis** fuzz (never raises, never
+  allows a destructive production-PII action) + a distinct-failure-reason sweep.
+- **Gate:** suite **1324 passed, 2 skipped** · coverage **95.11%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 11.D0 · 11.1–11.4 · 11.T · 11.C · 11.L · 11.CR · 11.D.
+- **Note:** this closes the **v0.1.0 core** (a leaner release may tag here).
+
+**⬜ M12 — Session state, blast-radius budgets & rate limits.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
