@@ -202,7 +202,17 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Parity:** library / CLI / MCP / HTTP all delegate to the same engine (MCP+HTTP via `ServerCore`), so a caller
   gets the same decision on every surface (R28).
 
-**⬜ M9 — Posture presets, init, diff & lint.** Next.
+**M9 — Posture presets, init, diff & lint — ✅ closed (2026-10-31).**
+
+- **Commit:** `ccb2a6a` (see `9.CI`). Commented posture presets; `init` scaffold (`--adapter`/`--scaffold-dir` →
+  adapter stub + `QUICKSTART.md`); `diff` now classifies **kept / overridden / gaps** (+`--json`); new
+  `agentpolicy lint` (unreachable/over-permissive/unknown-tool/conflict/literal-secret findings, CI-failable);
+  new `agentpolicy export` (Cedar source + **policyweave** artifact).
+- **Gate:** suite **1286 passed, 2 skipped** · coverage **95.09%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 9.D0 · 9.1–9.5 · 9.T · 9.C · 9.L · 9.CR · 9.D.
+- **Reused:** `taxonomy.is_known_tool`, the `output_inspector` pattern set, and the M5 `policy_hash` (no drift).
+
+**⬜ M10 — Shadow mode, calibration & canary.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
