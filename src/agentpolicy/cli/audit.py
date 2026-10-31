@@ -79,6 +79,10 @@ def add_parser(subparsers: Any) -> None:
     query.add_argument("--decision", help="decision filter (allow/audit/escalate/deny)")
     query.add_argument("--agent", help="agent id filter")
     query.add_argument("--since", help="ISO timestamp filter (>=)")
+    query.add_argument(
+        "--dry-run", action="store_true",
+        help="only shadow (dry_run) decisions — what would have been blocked/escalated",
+    )
     query.add_argument("--format", choices=["json", "csv"], default="json")
     query.set_defaults(func=_run_query)
 
@@ -148,6 +152,8 @@ def _run_query(args: argparse.Namespace) -> int:
         entries = [e for e in entries if e.agent_id == args.agent]
     if args.since:
         entries = [e for e in entries if e.timestamp >= args.since]
+    if args.dry_run:
+        entries = [e for e in entries if e.dry_run]
     _emit(entries, args.format)
     return 0
 

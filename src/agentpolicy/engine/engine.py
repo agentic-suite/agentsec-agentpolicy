@@ -9,6 +9,7 @@ from dataclasses import replace
 from typing import Any
 
 from agentpolicy.audit.logger import AuditLogger
+from agentpolicy.canary import CanaryConfig
 from agentpolicy.engine.argument_policy import check_arguments
 from agentpolicy.engine.decide import decide
 from agentpolicy.engine.delegation import DelegationManager, DelegationResult
@@ -53,6 +54,7 @@ class Engine:
         escalation_manager: EscalationManager | None = None,
         deny_storm_analyzer: DenyStormAnalyzer | None = None,
         enforce_deny_storm: bool = False,
+        canary_percent: int = 0,
     ):
         #: The declarative policy in force for every evaluation. Immutable for
         #: the Engine's lifetime; swap engines to change policy.
@@ -87,6 +89,16 @@ class Engine:
         #: scoring. Off by default so the detector is a pure observer unless
         #: an operator opts in to active defense.
         self._enforce_deny_storm = enforce_deny_storm
+        #: Canary rollout (M10 10.4). When ``percent > 0``, only sessions inside
+        #: the deterministic canary cohort are *enforced*; the rest are shadowed
+        #: (the real decision is logged, the caller gets ``allow``). ``0`` keeps
+        #: the historical full-enforce behaviour.
+        self._canary = CanaryConfig(canary_percent)
+
+    @property
+    def canary_percent(self) -> int:
+        """The canary rollout percentage (0 = full enforce, no canary)."""
+        return self._canary.percent
 
     @property
     def obligation_store(self) -> ObligationStore:
@@ -321,15 +333,21 @@ class Engine:
         #     decision (pre dry-run) so a probe in shadow mode is still
         #     flagged; the analyzer never raises.
         self._deny_storm.observe(decision, call)
-        # 5b. Audit. Record the *real* (pre-dry-run) decision so the audit
+        # 5a2. Canary rollout (M10 10.4). With a canary percentage set, only
+        #      sessions in the deterministic cohort are enforced; the rest are
+        #      shadowed for this call. ``dry_run`` (full shadow) always wins.
+        shadow = bool(self._dry_run)
+        if not shadow and self._canary.percent > 0:
+            shadow = not self._canary.enforces(call.session_id or call.agent_id)
+        # 5b. Audit. Record the *real* (pre-shadow) decision so the audit
         #     trail shows what would have been enforced in shadow mode. The
         #     logger swallows its own failures, so this never raises.
         if self._audit_logger is not None:
-            self._audit_logger.log(decision, call, dry_run=bool(self._dry_run))
+            self._audit_logger.log(decision, call, dry_run=shadow)
         # 6. Shadow / dry-run mode: return ``allow`` but keep the real verdict
         #    in the audit trail (callers can inspect ``decision.dry_run`` and
         #    the original decision details).
-        if self._dry_run:
+        if shadow:
             decision = replace(
                 decision,
                 decision="allow",

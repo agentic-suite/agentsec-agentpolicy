@@ -201,3 +201,24 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1286 passed, 2 skipped** · coverage **95.09%** (≥ 95) · `ruff` zero · `mypy --strict` clean
   (123 files).
 - **Resolution:** all findings resolved; no open items.
+
+### M10 — Shadow mode, calibration & canary (10.CR)
+
+- **Scope:** `audit query --dry-run`, the shadow calibration report (`calibration.py`), the deterministic canary
+  (`canary.py`) and its engine integration, and shadow docs.
+- **Findings & resolutions:**
+  - *Canary selection had to be reproducible* (a session must not flicker between enforced and shadowed) → the
+    cohort is a stable `sha256(session_id) % 100 < percent`; a missing session id is treated as not-selected
+    (safe default) until `percent == 100`. **Resolved; covered by the determinism/cohort tests.**
+  - *"False-block/miss rates" need a definition without ground truth* → an explicit, documented counterfactual
+    heuristic over the audit trail's `dry_run` + `counterfactual` fields (no new state): a block whose governing
+    boundary is low is a false-block candidate; an allow near the critical boundary is a false-miss candidate.
+    The report also emits the raw threshold table so the heuristic is auditable. **Resolved.**
+  - *Wiring the canary into the engine risked changing full-enforce behaviour* → the canary is folded into
+    `_finalize` alongside `dry_run`; `canary_percent == 0` is the historical behaviour and `dry_run=True` always
+    wins, so existing shadow tests are unchanged. **Resolved.**
+  - *Both shadow modes needed one query in the CLI* → `audit query --dry-run` filters the trail to shadow
+    decisions. **Resolved.**
+- **Gates:** suite **1298 passed, 2 skipped** · coverage **95.11%** (≥ 95) · `ruff` zero · `mypy --strict` clean
+  (125 files).
+- **Resolution:** all findings resolved; no open items.
