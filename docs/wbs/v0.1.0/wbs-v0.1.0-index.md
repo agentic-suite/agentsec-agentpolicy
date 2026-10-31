@@ -167,7 +167,20 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Re-pointed:** the shaper now emits the PRD-canonical `default_deny` / `secret_detected` (M2 seeds
   `no_matching_permit` / `sensitive_output` retired); `agentpolicy explain` runs the Cedar path offline.
 
-**⬜ M6 — Audit, policy versioning & tamper evidence.** Next.
+**M6 — Audit, policy versioning & tamper evidence — ✅ closed (2026-10-31).**
+
+- **Commit:** `1796da5` (see `6.CI`). `AuditEntry` carries provenance + the chain
+  (`seq`/`prev_hash`/`entry_hash`(=`chain_hash`)/`policy_version`/`policy_hash`/`matched_rule`/`decision_id`);
+  every sink (JSONL/SQLite/Postgres) assigns `seq` and persists the provenance; `rotation_anchor` links a rotated
+  segment to the prior head; `audit/versioning.py` pins the reviewed policy (`unreviewed_policy_change` flag);
+  `audit/evidence.py` produces the **offline EvidenceArtifact** (`verify()` re-derives the decision against the
+  pinned policy); `agentpolicy audit evidence` exposes it.
+- **Gate:** suite **1223 passed, 2 skipped** · coverage **95.54%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 6.D0 · 6.1–6.5 · 6.T · 6.C · 6.L · 6.CR · 6.D.
+- **Re-pointed:** one `AuditEntry` model now serves both the ported engine and the Cedar core; `from_decision`
+  reads the path-specific fields via `getattr`. The on-disk format is unchanged apart from the additive columns.
+
+**⬜ M7 — Ask round-trip, redaction & secrets-in-args.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
