@@ -282,7 +282,16 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Gate:** suite **1420 passed, 2 skipped** · coverage **95.06%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
 - **Items closed:** 16.D0 · 16.1–16.4 · 16.T · 16.C · 16.L · 16.CR · 16.D.
 
-**⬜ M17 — Nearest-permissible-action & multi-agent governance.** Next.
+**M17 — Nearest-permissible-action & multi-agent governance — ✅ closed (2026-10-31).**
+
+- **Commit:** `fedf517` (see `17.CI`). `explain.permitted_alternatives` (**verified-permissible**, agent-facing
+  variants — reusing the M5 actionability search; attached to the `ExplainArtifact`); delegation-chain scope
+  (`effective_environments`; an out-of-scope child action is denied naming the chain link); `Engine.inter_agent`
+  (an agent→agent request decided like any action); the `packs/multi-agent-delegation` pack.
+- **Gate:** suite **1431 passed, 2 skipped** · coverage **95.01%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 17.D0 · 17.1–17.4 · 17.T · 17.C · 17.L · 17.CR · 17.D.
+
+**⬜ M18 — Break-glass & dual-control.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
