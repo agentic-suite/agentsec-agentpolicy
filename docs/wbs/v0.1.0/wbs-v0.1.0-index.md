@@ -244,7 +244,16 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Re-pointed:** exhaustion is a reasoned `rate-limit`, not an opaque deny (PRD 18/R9); `call_budget` folds into
   the `calls` dimension.
 
-**⬜ M13 — Exfil-sink, argument validation & tool hiding.** Next.
+**M13 — Exfil-sink, argument validation & tool hiding — ✅ closed (2026-10-31).**
+
+- **Commit:** `0efe897` (see `13.CI`). `engine/exfil.py` + `packs/exfil-sink` (exfil-sink rule class — sensitive
+  data to an `http`/`email`/`notify` sink is denied, naming **source + sink**); policy-declarable argument
+  validators (`regex` / `enum` / `path_root` / `url_allowlist` on `args_policy`); `capabilities` now also hides
+  tools the policy **unconditionally denies**.
+- **Gate:** suite **1358 passed, 2 skipped** · coverage **95.21%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 13.D0 · 13.1–13.3 · 13.T · 13.C · 13.L · 13.CR · 13.D.
+
+**⬜ M14 — Step-up, AuthZEN interop & adversarial suite.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
