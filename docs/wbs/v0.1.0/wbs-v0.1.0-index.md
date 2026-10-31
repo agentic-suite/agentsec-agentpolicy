@@ -272,7 +272,17 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Gate:** suite **1398 passed, 2 skipped** · coverage **95.04%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
 - **Items closed:** 15.D0 · 15.1–15.3 · 15.T · 15.C · 15.L · 15.CR · 15.D.
 
-**⬜ M16 — Enrollment/probation & approval analytics.** Next.
+**M16 — Enrollment/probation & approval analytics — ✅ closed (2026-10-31).**
+
+- **Commit:** `fc3a1a2` (see `16.CI`). `agentpolicy/enrollment.py` (first-seen agent → **probation**; a gated write
+  escalates with `agent_probation`; `classify` logs the human decision); `packs/enrollment-probation`;
+  `agentwatch.classification_event` (fleet-inventory link); `agentpolicy/approvals.py` + `agentpolicy report
+  approvals` (approval rate, **latency**, shadow→enforce delta, **rubber-stamp gates**); gate records gain
+  `resolved_at`.
+- **Gate:** suite **1420 passed, 2 skipped** · coverage **95.06%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 16.D0 · 16.1–16.4 · 16.T · 16.C · 16.L · 16.CR · 16.D.
+
+**⬜ M17 — Nearest-permissible-action & multi-agent governance.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
