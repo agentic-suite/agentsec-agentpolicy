@@ -191,7 +191,18 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Reused:** the ask identity hash is escalation's `action_identity` (one canonical hash); the redaction pattern
   set is `engine/output_inspector.py` (one pattern list).
 
-**⬜ M8 — Delivery surfaces & adapters.** Next.
+**M8 — Delivery surfaces & adapters — ✅ closed (2026-10-31).**
+
+- **Commit:** `5c88224` (see `8.CI`). Library surface `agentpolicy.api.evaluate` (+ exported as
+  `agentpolicy.evaluate`); the **validated adapter registry** (`adapters/registry.py`: unknown adapter / missing
+  extra / missing kwarg → `ConfigError`, exit 2); a shared `denial_message` rejection shape; all adapters
+  re-exported.
+- **Gate:** suite **1263 passed, 2 skipped** · coverage **95.07%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 8.D0 · 8.1–8.5 · 8.T · 8.C · 8.L · 8.CR · 8.D.
+- **Parity:** library / CLI / MCP / HTTP all delegate to the same engine (MCP+HTTP via `ServerCore`), so a caller
+  gets the same decision on every surface (R28).
+
+**⬜ M9 — Posture presets, init, diff & lint.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
