@@ -87,8 +87,9 @@ class TestServerIntegration:
                 session_id=sid, call_budget=5,
             )
 
-        assert result["decision"] == "deny"
+        assert result["decision"] == "rate-limit"
         assert "budget" in result["reason_code"].lower()
+        assert result["budget_state"]["over"] == ["calls"]
 
     def test_consent_blocks_out_of_scope(self, core: ServerCore) -> None:
         sid = str(uuid.uuid4())

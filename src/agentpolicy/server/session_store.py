@@ -44,6 +44,10 @@ class SessionState:
     burst_limit: int | None = None
     _bucket: float = 0.0
     _last_bucket_fill: float = 0.0
+    #: Cumulative usage counters (M12): files / requests / spend / calls …
+    usage: dict[str, float] = field(default_factory=dict)
+    #: Capability ceilings keyed by the same dimension names as ``usage`` (M12).
+    budgets: dict[str, float] = field(default_factory=dict)
 
 
 class SessionStore:
@@ -64,6 +68,9 @@ class SessionStore:
         call_budget: int | None = None,
         token_budget: int | None = None,
         consent_scopes: list[dict[str, str]] | None = None,
+        budgets: dict[str, float] | None = None,
+        rate_limit: float | None = None,
+        burst_limit: int | None = None,
     ) -> SessionState:
         """Return existing session or create a new one.
 
@@ -72,6 +79,9 @@ class SessionStore:
             call_budget: Optional call count ceiling for new sessions.
             token_budget: Optional token budget ceiling for new sessions.
             consent_scopes: Optional consent scopes for new sessions.
+            budgets: Capability ceilings by dimension (M12: files/requests/spend/calls).
+            rate_limit: Per-second call ceiling for the token bucket (M12).
+            burst_limit: Maximum burst size for the token bucket (M12).
 
         Returns:
             The existing or newly created SessionState.
@@ -84,6 +94,11 @@ class SessionStore:
                 call_budget=call_budget,
                 token_budget=token_budget,
                 consent_scopes=list(consent_scopes or []),
+                budgets=dict(budgets or {}),
+                rate_limit=rate_limit,
+                burst_limit=burst_limit,
+                _last_bucket_fill=time.monotonic(),
+                _bucket=float(burst_limit or 0),
             )
             self._sessions[session_id] = state
             return state
@@ -235,3 +250,96 @@ class SessionStore:
                 return True, f"rate limit exceeded ({rate}/s, burst {burst})"
             state._bucket -= 1.0
             return False, None
+
+    def record_usage(
+        self, session_id: str, usage: dict[str, float] | None = None
+    ) -> dict[str, float]:
+        """Accumulate capability usage counters for a session (M12).
+
+        Args:
+            session_id: Unique session identifier.
+            usage: Counters to add by dimension (e.g. ``{"files": 3, "spend": 0.5}``).
+                ``None``/empty is a no-op.
+
+        Returns:
+            The session's cumulative usage after the update.
+        """
+        with self._lock:
+            state = self._sessions.get(session_id)
+            if state is None:
+                return {}
+            for dimension, amount in (usage or {}).items():
+                state.usage[dimension] = state.usage.get(dimension, 0.0) + float(amount)
+            if usage:
+                state.last_updated = time.monotonic()
+            return dict(state.usage)
+
+    def exceeds_budgets(self, session_id: str) -> tuple[bool, str | None]:
+        """Whether any capability ceiling is exhausted (M12).
+
+        Args:
+            session_id: Unique session identifier.
+
+        Returns:
+            ``(exhausted, reason)`` — the reason names the first over-budget
+            dimension. A dimension with no declared budget is never a ceiling.
+        """
+        with self._lock:
+            state = self._sessions.get(session_id)
+            if state is None:
+                return False, None
+            for dimension, ceiling in state.budgets.items():
+                used = state.usage.get(dimension, 0.0)
+                if used > ceiling:
+                    return True, f"{dimension} budget exceeded ({used:g}/{ceiling:g})"
+            return False, None
+
+    def budget_state(self, session_id: str) -> dict[str, Any]:
+        """The budget state to attach to every decision (M12 ``12.2``).
+
+        Returns ``{budgets, usage, over: [dimension…]}`` — present (empty when no
+        budget is declared) so a decision can always report where it stands.
+        """
+        with self._lock:
+            state = self._sessions.get(session_id)
+            if state is None:
+                return {"budgets": {}, "usage": {}, "over": []}
+            over = [
+                dimension
+                for dimension, ceiling in state.budgets.items()
+                if state.usage.get(dimension, 0.0) > ceiling
+            ]
+            return {
+                "budgets": dict(state.budgets),
+                "usage": dict(state.usage),
+                "over": over,
+            }
+
+    def rate_allow(self, session_id: str) -> tuple[bool, int]:
+        """Per-session rate/burst check (M12 ``12.3``) with ``retry_after``.
+
+        Uses the session's configured ``rate_limit``/``burst_limit`` (set at
+        session creation). A session with no rate limit is always allowed.
+
+        Args:
+            session_id: Unique session identifier.
+
+        Returns:
+            ``(allowed, retry_after)`` — ``retry_after`` is 0 when allowed, else
+            the whole seconds until the next token.
+        """
+        with self._lock:
+            state = self._sessions.get(session_id)
+            if state is None or not state.rate_limit:
+                return True, 0
+            burst = float(state.burst_limit or state.rate_limit or 1)
+            now = time.monotonic()
+            elapsed = now - state._last_bucket_fill
+            state._bucket = min(burst, state._bucket + elapsed * state.rate_limit)
+            state._last_bucket_fill = now
+            if state._bucket >= 1.0:
+                state._bucket -= 1.0
+                return True, 0
+            deficit = 1.0 - state._bucket
+            retry_after = max(1, int(deficit / state.rate_limit + 0.999))
+            return False, retry_after

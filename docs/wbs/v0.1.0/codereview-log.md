@@ -241,3 +241,24 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1324 passed, 2 skipped** · coverage **95.11%** (≥ 95) · `ruff` zero · `mypy --strict` clean
   (129 files).
 - **Resolution:** all findings resolved; no open items.
+
+### M12 — Session state, blast-radius budgets & rate limits (12.CR)
+
+- **Scope:** generic usage counters + capability ceilings (`session_store.py`), rate/burst with `retry_after`,
+  server enforcement (`server_core.py`), and the agenthalt trigger (`agenthalt.py`).
+- **Findings & resolutions:**
+  - *Budget exhaustion returned an opaque `deny`* (contradicting PRD 18/R9) → exhaustion now returns a
+    **`rate-limit`** with `reason_code="budget_exhausted"` + `retry_after` (the two dependent tests moved with
+    the work); an over-budget capability is throttled *with a reason*, not denied without one. **Resolved.**
+  - *`rate_limit`/`burst_limit` were stored but never set or enforced; `RATE_LIMITED` was never emitted* →
+    `get_or_create(rate_limit, burst_limit)` + `rate_allow()` (token bucket returning `retry_after`), wired into
+    the server as `rate-limit`/`rate_limited`. **Resolved.**
+  - *Budget state was invisible* → `budget_state(session_id)` is attached to **every** decision. **Resolved.**
+  - *A second budget model would have drifted from `call_budget`* → `call_budget` is folded into the `calls`
+    dimension, so the legacy path keeps working under the new semantics (no parallel budget store). **Resolved.**
+  - *Hard exhaustion had no halt path* → `HaltController.maybe_halt` fires a `HaltEvent` (evidence = budget
+    state); it is a pure observer and a failing `on_halt` callback is swallowed (never blocks a decision).
+    **Resolved.**
+- **Gates:** suite **1339 passed, 2 skipped** · coverage **95.17%** (≥ 95) · `ruff` zero · `mypy --strict` clean
+  (130 files).
+- **Resolution:** all findings resolved; no open items.

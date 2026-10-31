@@ -10,6 +10,7 @@ import sys
 from datetime import UTC, datetime
 from typing import Any
 
+from agentpolicy.agenthalt import HaltController
 from agentpolicy.audit.logger import AuditLogger
 from agentpolicy.audit.models import AuditEntry
 from agentpolicy.engine.engine import Engine
@@ -25,6 +26,8 @@ class ServerCore:
         engine: The AgentPolicy decision engine.
         session_store: In-memory session state tracker.
         audit_logger: Audit sink for persisting and querying decisions.
+        halt_controller: Optional agenthalt controller (M12) fired on budget
+            exhaustion.
     """
 
     def __init__(
@@ -32,10 +35,12 @@ class ServerCore:
         engine: Engine,
         session_store: SessionStore,
         audit_logger: AuditLogger,
+        halt_controller: HaltController | None = None,
     ) -> None:
         self._engine = engine
         self._session_store = session_store
         self._audit_logger = audit_logger
+        self._halt = halt_controller or HaltController()
 
     @property
     def engine(self) -> Engine:
@@ -70,6 +75,10 @@ class ServerCore:
         call_budget: int | None = None,
         token_budget: int | None = None,
         consent_scopes: list[dict[str, str]] | None = None,
+        budgets: dict[str, float] | None = None,
+        rate_limit: float | None = None,
+        burst_limit: int | None = None,
+        usage: dict[str, float] | None = None,
     ) -> dict[str, Any]:
         """Evaluate a tool call through Engine, track session, audit.
 
@@ -102,14 +111,27 @@ class ServerCore:
         decision_dict = decision.to_dict()
 
         session_risk_score: float = 0.0
+        budget_state: dict[str, Any] = {"budgets": {}, "usage": {}, "over": []}
+        halt_event: Any = None
         if session_id is not None:
+            merged_budgets = dict(budgets or {})
+            if call_budget is not None:
+                merged_budgets.setdefault("calls", float(call_budget))
             self._session_store.get_or_create(
                 session_id,
                 call_budget=call_budget,
                 token_budget=token_budget,
                 consent_scopes=consent_scopes,
+                budgets=merged_budgets,
+                rate_limit=rate_limit,
+                burst_limit=burst_limit,
             )
 
+            # M12: accumulate capability usage (implicit requests/calls + any
+            # explicit usage counters the caller supplies).
+            self._session_store.record_usage(
+                session_id, {"requests": 1.0, "calls": 1.0, **(usage or {})}
+            )
             if decision_dict["decision"] not in ("deny",):
                 self._session_store.update(
                     session_id,
@@ -117,17 +139,30 @@ class ServerCore:
                     call_id="pending",
                 )
 
-            exceeded, reason = self._session_store.exceeds_budget(session_id)
-            if exceeded:
-                decision_dict = dict(decision_dict)
-                decision_dict["decision"] = "deny"
-                decision_dict["reason_code"] = "budget_exceeded"
-                decision_dict["explanation"] = f"Session budget exceeded: {reason}"
+            # M12 12.3: rate/burst limit → rate-limit with retry_after.
+            rate_ok, retry_after = self._session_store.rate_allow(session_id)
+            # M12 12.2: capability-budget exhaustion → rate-limit with a reason.
+            exceeded, reason = self._session_store.exceeds_budgets(session_id)
+            budget_state = self._session_store.budget_state(session_id)
 
-            if not exceeded and not self._session_store.within_consent(
+            decision_dict = dict(decision_dict)
+            if not rate_ok:
+                decision_dict["decision"] = "rate-limit"
+                decision_dict["reason_code"] = "rate_limited"
+                decision_dict["explanation"] = (
+                    f"Rate/burst limit reached; retry in {retry_after}s."
+                )
+                decision_dict["retry_after"] = retry_after
+            if exceeded:
+                decision_dict["decision"] = "rate-limit"
+                decision_dict["reason_code"] = "budget_exhausted"
+                decision_dict["explanation"] = f"Session budget exceeded: {reason}"
+                decision_dict["retry_after"] = 60
+                # M12 12.4: hard exhaustion raises a halt event (with evidence).
+                halt_event = self._halt.maybe_halt(session_id, budget_state)
+            if not exceeded and rate_ok and not self._session_store.within_consent(
                 session_id, tool_name, environment, data_class
             ):
-                decision_dict = dict(decision_dict)
                 decision_dict["decision"] = "escalate"
                 decision_dict["reason_code"] = "scope_boundary"
                 decision_dict["explanation"] = (
@@ -168,6 +203,10 @@ class ServerCore:
         result = dict(decision_dict)
         result["session_risk_score"] = session_risk_score
         result["call_id"] = entry.call_id
+        # M12: every decision carries the session's budget state.
+        result["budget_state"] = budget_state
+        if halt_event is not None:
+            result["halt"] = halt_event.to_dict()
         return result
 
     def explain_from_audit(self, call_id: str) -> dict[str, Any] | None:

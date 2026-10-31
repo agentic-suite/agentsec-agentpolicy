@@ -75,7 +75,7 @@ class TestServerCore:
                 session_id=sid, call_budget=3,
             )
 
-        assert result["decision"] == "deny"
+        assert result["decision"] == "rate-limit"
         assert "budget" in result["reason_code"].lower()
 
     def test_evaluate_consent_boundary_escalates(self, core: ServerCore) -> None:
