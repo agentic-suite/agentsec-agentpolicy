@@ -83,3 +83,16 @@ class BaseAdapter(ABC):
         raise NotImplementedError(
             f"{type(self).__name__} does not support wrap_tool; use intercept() directly"
         )
+
+
+def denial_message(decision: Decision) -> str:
+    """The shared, model-consumable rejection sentence for a non-allow decision.
+
+    Framework adapters render this so a rejected tool call carries the outcome,
+    the human explanation, and the machine reason code — everything the model
+    needs to **replan** (e.g. switch to a read-only alternative).
+    """
+    return (
+        f"[AgentPolicy] {decision.decision}: {decision.explanation} "
+        f"(reason_code {decision.reason_code})"
+    )

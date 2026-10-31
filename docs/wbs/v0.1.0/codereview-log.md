@@ -158,3 +158,25 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1248 passed, 2 skipped** · coverage **95.37%** (≥ 95) · `ruff` zero · `mypy --strict` clean
   (117 files).
 - **Resolution:** all findings resolved; no open items.
+
+### M8 — Delivery surfaces & adapters (8.CR)
+
+- **Scope:** the library surface (`api.py`), the adapter registry (`adapters/registry.py`), adapter re-exports,
+  and the shared rejection shape (`adapters/base.py.denial_message`).
+- **Findings & resolutions:**
+  - *A Cedar-backed library surface would have diverged from the running server* (MCP/HTTP go through
+    `ServerCore` → the ported `Engine`) → the library surface (`api.evaluate`) wraps the **same** engine, so the
+    library, CLI, MCP, and HTTP surfaces return the identical decision (R28); parity is proved by
+    `tests/test_m8_surfaces.py::TestSurfaceParity`. Re-pointing the server core to Cedar is tracked by the
+    budget/session milestones, not M8. **Resolved.**
+  - *No adapter registry existed* (only lazy `ImportError`s at call time) → added `registry.py` with
+    `available`/`get`/`validate`/`load`; an unknown name, a missing extra, or a missing required kwarg raises
+    `ConfigError` (exit 2) **at load**. **Resolved.**
+  - *Each adapter invented its own rejection string* → the MCP wrapper and raw adapter now render the shared
+    `denial_message(decision)`, so a rejected call carries the outcome + explanation + reason code (replan-able).
+    **Resolved.**
+  - *Only 6 of ~11 adapters were re-exported* → `adapters/__init__.py` now exports all adapters + the registry
+    API. **Resolved.**
+- **Gates:** suite **1263 passed, 2 skipped** · coverage **95.07%** (≥ 95) · `ruff` zero · `mypy --strict` clean
+  (119 files).
+- **Resolution:** all findings resolved; no open items.

@@ -17,7 +17,7 @@ import functools
 from collections.abc import Callable
 from typing import Any
 
-from agentpolicy.adapters.base import BaseAdapter, CallContext
+from agentpolicy.adapters.base import BaseAdapter, CallContext, denial_message
 from agentpolicy.types import Decision
 
 
@@ -30,9 +30,7 @@ class AgentPolicyDecisionError(Exception):
 
     def __init__(self, decision: Decision) -> None:
         self.decision = decision
-        super().__init__(
-            f"[AgentPolicy] {decision.decision}: {decision.explanation} ({decision.reason_code})"
-        )
+        super().__init__(denial_message(decision))
 
 
 _current_session: contextvars.ContextVar[dict[str, str] | None] = contextvars.ContextVar(

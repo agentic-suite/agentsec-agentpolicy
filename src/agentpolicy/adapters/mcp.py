@@ -11,7 +11,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-from agentpolicy.adapters.base import BaseAdapter, CallContext
+from agentpolicy.adapters.base import BaseAdapter, CallContext, denial_message
 from agentpolicy.types import Decision
 
 
@@ -92,7 +92,7 @@ class AgentPolicyMCPWrapper(BaseAdapter):
                 "content": [
                     {
                         "type": "text",
-                        "text": f"[AgentPolicy] {decision.decision}: {decision.explanation}",
+                        "text": denial_message(decision),
                     }
                 ],
             }
