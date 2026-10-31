@@ -73,6 +73,7 @@ class Escalation:
     expires_at: str
     approver: str | None = None
     denied_reason: str | None = None
+    resolved_at: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """JSON-friendly representation for the CLI and web dashboard."""
@@ -92,6 +93,7 @@ class Escalation:
             "expired": self.is_expired(),
             "approver": self.approver,
             "denied_reason": self.denied_reason,
+            "resolved_at": self.resolved_at,
         }
 
     def is_expired(self, now: datetime | None = None) -> bool:
@@ -241,6 +243,7 @@ class EscalationManager:
                 expires_at=item["expires_at"],
                 approver=item.get("approver"),
                 denied_reason=item.get("denied_reason"),
+                resolved_at=item.get("resolved_at"),
             )
             manager._records[record.escalation_id] = record
             if record.status == EscalationStatus.APPROVED:
@@ -338,7 +341,10 @@ class EscalationManager:
         if record.is_expired(now):
             self._expire(record, now)
             raise ValueError("escalation expired")
-        approved = _with(record, status=EscalationStatus.APPROVED, approver=approver)
+        approved = _with(
+            record, status=EscalationStatus.APPROVED, approver=approver,
+            resolved_at=(now or _utcnow()).isoformat(),
+        )
         self._records[escalation_id] = approved
         self._record_event("approved", approved)
 
@@ -377,6 +383,7 @@ class EscalationManager:
         denied = _with(
             record, status=EscalationStatus.DENIED, approver=approver,
             denied_reason=reason or None,
+            resolved_at=(now or _utcnow()).isoformat(),
         )
         self._records[escalation_id] = denied
         self._record_event("denied", denied)
@@ -445,7 +452,10 @@ class EscalationManager:
         return self._identity_index.get(action_identity)
 
     def _expire(self, record: Escalation, now: datetime | None = None) -> None:
-        self._records[record.escalation_id] = _with(record, status=EscalationStatus.EXPIRED)
+        self._records[record.escalation_id] = _with(
+            record, status=EscalationStatus.EXPIRED,
+            resolved_at=(now or _utcnow()).isoformat(),
+        )
         self._record_event("expired", record)
 
     def _record_event(self, kind: str, record: Escalation) -> None:

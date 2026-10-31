@@ -77,6 +77,8 @@ DENY_VERIFICATION_CONTRADICTED = "deny_verification_contradicted"
 DENY_EXFIL_SINK = "deny_exfil_sink"
 #: Decision: escalate. A write during a declared change freeze (M15 freeze window).
 ESCALATE_FREEZE_ACTIVE = "freeze_active"
+#: Decision: escalate. A write by an agent in enrollment probation (M16).
+AGENT_PROBATION = "agent_probation"
 
 
 class AgentPolicyError(Exception):

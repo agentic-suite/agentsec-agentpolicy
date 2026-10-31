@@ -24,7 +24,13 @@ from agentpolicy.engine.normalize import normalize
 from agentpolicy.engine.obligations import ObligationError, ObligationStore, run_obligations
 from agentpolicy.engine.scoping import SessionScope, scoping_violation
 from agentpolicy.engine.score import score
+from agentpolicy.enrollment import (
+    PROBATION_GATED_ACTIONS,
+    EnrollmentLedger,
+    EnrollmentStatus,
+)
 from agentpolicy.errors import (
+    AGENT_PROBATION,
     DENY_ARGUMENT_POLICY,
     DENY_DENY_STORM,
     DENY_EXFIL_SINK,
@@ -61,6 +67,7 @@ class Engine:
         enforce_deny_storm: bool = False,
         canary_percent: int = 0,
         freeze_ledger: FreezeLedger | None = None,
+        enrollment: EnrollmentLedger | None = None,
     ):
         #: The declarative policy in force for every evaluation. Immutable for
         #: the Engine's lifetime; swap engines to change policy.
@@ -104,6 +111,14 @@ class Engine:
         #: call's environment, a write is escalated and every decision carries
         #: the ``freeze_id``.
         self._freeze = freeze_ledger
+        #: Enrollment ledger (M16 16.1). A first-seen unknown agent is in
+        #: probation: reads proceed, gated writes escalate for classification.
+        self._enrollment = enrollment
+
+    @property
+    def enrollment_ledger(self) -> EnrollmentLedger | None:
+        """The enrollment ledger (or ``None`` when enrollment is not configured)."""
+        return self._enrollment
 
     @property
     def freeze_ledger(self) -> FreezeLedger | None:
@@ -261,6 +276,26 @@ class Engine:
             context=context,
             resource_tag=resource_tag,
         )
+        # 0a. Enrollment probation (M16 16.1). A first-seen unknown agent is
+        #     observed into probation; a gated write escalates for classification
+        #     (reads proceed), never silently allowed.
+        if self._enrollment is not None:
+            record = self._enrollment.observe(agent_id, agent_class=profile.agent_class)
+            if record.status == EnrollmentStatus.PROBATION and (
+                call.action in PROBATION_GATED_ACTIONS
+            ):
+                return self._finalize(
+                    Decision(
+                        decision="escalate",
+                        criticality="high",
+                        reason_code=AGENT_PROBATION,
+                        explanation=(
+                            f"agent {agent_id!r} is in probation; a human must "
+                            f"classify it before {call.action}"
+                        ),
+                    ),
+                    call,
+                )
         # 0. Active deny-storm defense (M4 #143). When enforcement is enabled
         #    and this agent/session has already tripped a storm threshold,
         #    deny the call outright with a dedicated reason code. Reading the

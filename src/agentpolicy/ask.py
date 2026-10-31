@@ -61,6 +61,7 @@ class Ask:
     arguments: dict[str, Any] | None = None
     approver: str | None = None
     denied_reason: str | None = None
+    resolved_at: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """JSON-friendly representation for the CLI."""
@@ -79,6 +80,7 @@ class Ask:
             "expired": self.is_expired(),
             "approver": self.approver,
             "denied_reason": self.denied_reason,
+            "resolved_at": self.resolved_at,
         }
 
     def is_expired(self, now: datetime | None = None) -> bool:
@@ -144,7 +146,10 @@ class AskBroker:
         record = self._require_pending(ask_id, now)
         if not approver or not approver.strip():
             raise ValueError("approver must be a non-blank string")
-        approved = replace(record, status=AskStatus.APPROVED, approver=approver)
+        approved = replace(
+            record, status=AskStatus.APPROVED, approver=approver,
+            resolved_at=(now or _utcnow()).isoformat(),
+        )
         self._records[ask_id] = approved
         self._identity_index[approved.action_identity] = ask_id
         return approved
@@ -158,6 +163,7 @@ class AskBroker:
         denied = replace(
             record, status=AskStatus.DENIED, approver=approver,
             denied_reason=reason or None,
+            resolved_at=(now or _utcnow()).isoformat(),
         )
         self._records[ask_id] = denied
         return denied
@@ -248,6 +254,7 @@ class AskBroker:
                     arguments=item.get("arguments"),
                     approver=item.get("approver"),
                     denied_reason=item.get("denied_reason"),
+                    resolved_at=item.get("resolved_at"),
                 )
             except (KeyError, ValueError):
                 continue

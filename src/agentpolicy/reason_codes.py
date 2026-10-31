@@ -37,6 +37,8 @@ DENY_ASK_PENDING = "deny_ask_pending"
 DENY_ASK_UNKNOWN = "deny_ask_unknown"
 #: deny — an approval was reused for a different action identity (M7).
 DENY_ACTION_IDENTITY_MISMATCH = "deny_action_identity_mismatch"
+#: ask — a write by an agent in enrollment probation (M16).
+AGENT_PROBATION = "agent_probation"
 #: rate-limit — the session budget is exhausted.
 BUDGET_EXHAUSTED = "budget_exhausted"
 #: rate-limit — a burst/op-count limit was hit (M12).
@@ -107,6 +109,7 @@ REASON_CODES: dict[str, ReasonCode] = {
             True,
             "deny",
         ),
+        ReasonCode(AGENT_PROBATION, "A write by an agent in enrollment probation.", True, "ask"),
         ReasonCode(BUDGET_EXHAUSTED, "The session budget is exhausted.", True, "rate-limit"),
         ReasonCode(RATE_LIMITED, "A burst/op-count limit was hit.", False, "rate-limit"),
         ReasonCode(
@@ -154,6 +157,7 @@ def alertable_codes() -> frozenset[str]:
 
 
 __all__ = [
+    "AGENT_PROBATION",
     "ALLOW_ASK_APPROVED",
     "ALLOW_LOW_RISK",
     "AUDIT_SINK_ERROR",

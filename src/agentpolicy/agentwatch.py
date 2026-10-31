@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import secrets
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
@@ -26,6 +27,33 @@ from agentpolicy.types import NormalizedCall
 SCHEMA = "agentwatch.security_event.v1"
 #: The event type for a policy decision.
 EVENT_TYPE = "policy.decision"
+#: The event type for an agent classification (M16 enrolment inventory link).
+CLASSIFICATION_EVENT = "agent.classification"
+
+
+def classification_event(
+    agent_id: str,
+    status: str,
+    *,
+    agent_class: str | None = None,
+    at: str | None = None,
+    source: str = "agentpolicy",
+) -> dict[str, Any]:
+    """Build an agent-classification event for the fleet inventory (M16 ``16.4``).
+
+    A first-seen agent entering probation and its later classification both emit
+    this event, so agentwatch/agentcomply see the agent's state change without a
+    shadow IdP.
+    """
+    return {
+        "schema": SCHEMA,
+        "event_type": CLASSIFICATION_EVENT,
+        "event_id": "evt_" + secrets.token_hex(8),
+        "source": source,
+        "principal": {"agent_id": agent_id, "agent_class": agent_class},
+        "status": status,
+        "timestamp": at or _utc_now(),
+    }
 
 
 def event_args_hash(arguments: dict[str, Any] | None) -> str | None:
@@ -173,9 +201,11 @@ def event_for(
 
 
 __all__ = [
+    "CLASSIFICATION_EVENT",
     "EVENT_TYPE",
     "SCHEMA",
     "DecisionEvent",
+    "classification_event",
     "decision_event",
     "event_args_hash",
     "event_for",

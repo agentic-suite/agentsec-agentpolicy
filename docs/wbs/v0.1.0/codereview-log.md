@@ -319,3 +319,25 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1398 passed, 2 skipped** · coverage **95.04%** (≥ 95) · `ruff` zero · `mypy --strict` clean
   (136 files).
 - **Resolution:** all findings resolved; no open items.
+
+### M16 — Enrollment/probation & approval analytics (16.CR)
+
+- **Scope:** the enrollment ledger + probation posture (`enrollment.py`, `engine/engine.py`), the
+  `enrollment-probation` pack, approval analytics (`approvals.py`, `cli/report.py`), and the agentwatch
+  classification event.
+- **Findings & resolutions:**
+  - *No notion of an unknown agent existed* (`agent_profile` silently defaulted) → `EnrollmentLedger.observe`
+    records a first-seen agent into **probation** (logged event); the engine escalates a gated write with
+    `agent_probation` while reads proceed; `classify` logs the human classification. **Resolved.**
+  - *Approval latency was uncomputable* (gate records had no resolution time) → added `resolved_at` to both
+    `Escalation` and `Ask` (set on approve/deny/expire, persisted), so the report's mean latency is real.
+    **Resolved.**
+  - *No rubber-stamp detector existed* → `analyze_approvals` computes approval rate, latency, the shadow→enforce
+    delta, and **flags a (near-)always-approved gate**. **Resolved.**
+  - *The classification had no inventory feed* → `agentwatch.classification_event` emits an
+    `agent.classification` event (no shadow IdP). **Resolved.**
+  - *Adding `report approvals` risked breaking `agentpolicy report`* → `report` keeps its default behaviour and
+    gains an optional `approvals` subcommand. **Resolved.**
+- **Gates:** suite **1420 passed, 2 skipped** · coverage **95.06%** (≥ 95) · `ruff` zero · `mypy --strict` clean
+  (138 files).
+- **Resolution:** all findings resolved; no open items.

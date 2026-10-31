@@ -32,6 +32,44 @@ def add_parser(subparsers: Any) -> None:
         help="Output format (default: html)",
     )
     parser.set_defaults(func=_report)
+    sub = parser.add_subparsers(dest="report_command", metavar="SUBCOMMAND")
+    approvals = sub.add_parser(
+        "approvals", help="approval analytics: rate, latency, rubber-stamp gates"
+    )
+    approvals.add_argument("--json", action="store_true")
+    approvals.set_defaults(func=_report_approvals)
+
+
+def _report_approvals(args: argparse.Namespace) -> int:
+    """Approval analytics from the escalation + ask stores (M16 16.3)."""
+    import json
+    import os
+
+    from agentpolicy.approvals import analyze_approvals
+    from agentpolicy.ask import AskBroker
+    from agentpolicy.engine.escalation import EscalationManager
+
+    esc_path = os.environ.get("AGENTPOLICY_ESCALATIONS_FILE", "~/.agentpolicy/escalations.json")
+    ask_path = os.environ.get("AGENTPOLICY_ASKS_FILE", "~/.agentpolicy/asks.json")
+    escalations = list(EscalationManager.load(esc_path).records.values())
+    asks = list(AskBroker.load(ask_path).records.values())
+    entries = AuditLogger().query()
+    report = analyze_approvals(escalations, asks, audit_entries=entries)
+
+    if args.json:
+        print(json.dumps(report.to_dict(), indent=2, sort_keys=True))
+        return 0
+    print("=== Approval analytics ===")
+    print(f"  total: {report.total} (approved {report.approved}, denied {report.denied}, "
+          f"expired {report.expired}, pending {report.pending})")
+    print(f"  approval rate: {report.approval_rate:.0%}")
+    if report.mean_latency_seconds is not None:
+        print(f"  mean latency: {report.mean_latency_seconds:.1f}s")
+    if report.shadow_delta is not None:
+        print(f"  shadow->enforce delta: {report.shadow_delta:+.0%}")
+    if report.rubber_stamp_gates:
+        print(f"  rubber-stamp gates: {', '.join(report.rubber_stamp_gates)}")
+    return 0
 
 
 def _report(args: argparse.Namespace) -> int:
