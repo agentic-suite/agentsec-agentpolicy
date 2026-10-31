@@ -180,7 +180,18 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Re-pointed:** one `AuditEntry` model now serves both the ported engine and the Cedar core; `from_decision`
   reads the path-specific fields via `getattr`. The on-disk format is unchanged apart from the additive columns.
 
-**⬜ M7 — Ask round-trip, redaction & secrets-in-args.** Next.
+**M7 — Ask round-trip, redaction & secrets-in-args — ✅ closed (2026-10-31).**
+
+- **Commit:** `ee25525` (see `7.CI`). `agentpolicy/ask.py` (ask-gate broker keyed on `ask_id`, action-identity
+  bound, **timeout = deny** → `human_gate_timeout`); `agentpolicy approve`/`deny`/`ask list`; `agentpolicy/redaction.py`
+  (**redact-and-allow** + **secrets-in-arguments** value scanning, `class`/`count`/`location` receipts; raw value
+  never returned or persisted).
+- **Gate:** suite **1248 passed, 2 skipped** · coverage **95.37%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 7.D0 · 7.1–7.4 · 7.T · 7.C · 7.L · 7.CR · 7.D.
+- **Reused:** the ask identity hash is escalation's `action_identity` (one canonical hash); the redaction pattern
+  set is `engine/output_inspector.py` (one pattern list).
+
+**⬜ M8 — Delivery surfaces & adapters.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
