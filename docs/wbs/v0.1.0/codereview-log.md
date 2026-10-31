@@ -281,3 +281,22 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1358 passed, 2 skipped** · coverage **95.21%** (≥ 95) · `ruff` zero · `mypy --strict` clean
   (131 files).
 - **Resolution:** all findings resolved; no open items.
+
+### M14 — Step-up, AuthZEN interop & adversarial suite (14.CR)
+
+- **Scope:** the AuthZEN binding (`authzen.py`), step-up (`stepup.py`), the MCP ask path
+  (`server/mcp_tools.py`, `ServerCore.ask_broker`), and the consolidated adversarial suite.
+- **Findings & resolutions:**
+  - *A parallel AuthZEN evaluator would have drifted from the engine* → `POST /access/v1/evaluation` maps the
+    AuthZEN request to the same `ServerCore.evaluate` call as every surface and renders the boolean `decision` +
+    decision context; boxcarring combines the same responses. **Resolved.**
+  - *Step-up had to be least-privilege by construction* → the narrowed scope is the M5 **actionability variant**
+    (`explain.flip_variant`), which is *verified* to change the outcome and only ever removes scope; carried with
+    a step-up `acr_values`. **Resolved.**
+  - *The human gate was unreachable from an MCP host* → four MCP tools back the shared `AskBroker` on
+    `ServerCore`; an MCP client gets the same resolution as in-process (parity test). **Resolved.**
+  - *Adversarial coverage was scattered* → one suite covering injection / obfuscation / dispatcher / replay /
+    tamper / flood, each asserting a block and a **distinct** reason code. **Resolved.**
+- **Gates:** suite **1377 passed, 2 skipped** · coverage **95.12%** (≥ 95) · `ruff` zero · `mypy --strict` clean
+  (133 files).
+- **Resolution:** all findings resolved; no open items.

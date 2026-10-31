@@ -11,6 +11,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from agentpolicy.agenthalt import HaltController
+from agentpolicy.ask import AskBroker
 from agentpolicy.audit.logger import AuditLogger
 from agentpolicy.audit.models import AuditEntry
 from agentpolicy.engine.engine import Engine
@@ -36,11 +37,14 @@ class ServerCore:
         session_store: SessionStore,
         audit_logger: AuditLogger,
         halt_controller: HaltController | None = None,
+        ask_broker: AskBroker | None = None,
     ) -> None:
         self._engine = engine
         self._session_store = session_store
         self._audit_logger = audit_logger
         self._halt = halt_controller or HaltController()
+        #: The ask broker (M14 14.3) — the human gate reachable from an MCP client.
+        self._ask_broker = ask_broker or AskBroker()
 
     @property
     def engine(self) -> Engine:
@@ -61,6 +65,11 @@ class ServerCore:
     def escalation_manager(self) -> EscalationManager:
         """The escalation registry for human approval (M3)."""
         return self._engine.escalation_manager
+
+    @property
+    def ask_broker(self) -> AskBroker:
+        """The ask broker for the human gate (M14 14.3)."""
+        return self._ask_broker
 
     def evaluate(
         self,

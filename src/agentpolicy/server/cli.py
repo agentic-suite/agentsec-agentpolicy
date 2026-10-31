@@ -111,6 +111,9 @@ def _serve(args: argparse.Namespace) -> int:
     register_dashboard_route(mcp, core)
     register_seed_route(mcp, core)
     register_pdp_routes(mcp, core)
+    from agentpolicy.authzen import register_authzen_routes
+
+    register_authzen_routes(mcp, core)
 
     print(f"AgentPolicy MCP server starting on http://{args.host}:{args.port}")
     print(f"  Policy: {policy_path or f'preset ({args.posture})'}")

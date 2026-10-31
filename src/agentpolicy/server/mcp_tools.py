@@ -152,9 +152,78 @@ def register_tools(
             core,
         )
 
+    @mcp.tool(  # type: ignore[untyped-decorator]
+        name="agentpolicy.ask_create",
+        description=(
+            "Create a pending human ask for a tool call (the M14 ask path). "
+            "Returns the ask record with its ask_id; resolve it with "
+            "agentpolicy.approve / agentpolicy.deny."
+        ),
+    )
+    def ask_create(
+        tool_name: str,
+        action: str,
+        environment: str,
+        data_class: str,
+        agent_id: str,
+        arguments: dict[str, Any] | None = None,
+        reason: str = "",
+    ) -> dict[str, Any]:
+        from agentpolicy.canonical import canonicalize
+
+        try:
+            call = canonicalize(
+                tool=tool_name, action=action, environment=environment,
+                data_class=data_class, agent_id=agent_id, arguments=arguments,
+            )
+        except Exception as exc:
+            return {"error": str(exc)}
+        return core.ask_broker.create(call, reason=reason).to_dict()  # type: ignore[no-any-return]
+
+    @mcp.tool(name="agentpolicy.approve")  # type: ignore[untyped-decorator]
+    def approve(ask_id: str, approver: str) -> dict[str, Any]:
+        try:
+            return core.ask_broker.approve(ask_id, approver=approver).to_dict()  # type: ignore[no-any-return]
+        except ValueError as exc:
+            return {"error": str(exc)}
+
+    @mcp.tool(name="agentpolicy.deny")  # type: ignore[untyped-decorator]
+    def deny(ask_id: str, approver: str, reason: str = "") -> dict[str, Any]:
+        try:
+            return core.ask_broker.deny(  # type: ignore[no-any-return]
+                ask_id, approver=approver, reason=reason
+            ).to_dict()
+        except ValueError as exc:
+            return {"error": str(exc)}
+
+    @mcp.tool(name="agentpolicy.ask_resolve")  # type: ignore[untyped-decorator]
+    def ask_resolve(
+        ask_id: str,
+        tool_name: str,
+        action: str,
+        environment: str,
+        data_class: str,
+        agent_id: str,
+        arguments: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        from agentpolicy.canonical import canonicalize
+
+        try:
+            call = canonicalize(
+                tool=tool_name, action=action, environment=environment,
+                data_class=data_class, agent_id=agent_id, arguments=arguments,
+            )
+        except Exception as exc:
+            return {"error": str(exc)}
+        return core.ask_broker.resolve(ask_id, call=call)  # type: ignore[no-any-return]
+
     return {
         "agentpolicy.evaluate": evaluate,
         "agentpolicy.explain": explain,
         "agentpolicy.session_status": session_status,
         "agentpolicy.authorize_data_source": authorize_data_source,
+        "agentpolicy.ask_create": ask_create,
+        "agentpolicy.approve": approve,
+        "agentpolicy.deny": deny,
+        "agentpolicy.ask_resolve": ask_resolve,
     }
