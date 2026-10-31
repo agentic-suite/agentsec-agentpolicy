@@ -57,6 +57,17 @@ class AuditEntry:
     redacted: bool = False
     credential_status: str | None = None
     counterfactual: float | None = None
+    # --- M6 provenance / chain (additive) ---------------------------------
+    seq: int | None = None
+    policy_hash: str = ""
+    matched_rule: str | None = None
+    decision_id: str | None = None
+    policy_reviewed: bool | None = None
+
+    @property
+    def entry_hash(self) -> str | None:
+        """PRD 15's name for the entry's chain link (alias of ``chain_hash``)."""
+        return self.chain_hash
 
     @classmethod
     def from_decision(
@@ -71,11 +82,21 @@ class AuditEntry:
         arguments: dict[str, Any] | None = None,
         redacted: bool = False,
         credential_status: str | None = None,
+        policy_hash: str | None = None,
+        matched_rule: str | None = None,
+        decision_id: str | None = None,
+        reviewed: bool | None = None,
     ) -> AuditEntry:
         """Build an audit entry from a finished decision and its call.
 
+        Tolerant of both decision paths: the ported ``types.Decision`` and the
+        Cedar ``cedar.models.Decision``. Fields unique to one path
+        (``dry_run``/``escalation_id``/``counterfactual``) are read with
+        ``getattr``; the M5 provenance fields (``policy_hash``/``matched_rule``)
+        are read from the decision unless passed explicitly.
+
         Args:
-            decision: The Decision returned by ``Engine.evaluate``.
+            decision: The Decision returned by the evaluator (Cedar or ported).
             call: The NormalizedCall that produced the decision.
             session_id: Session id to record (defaults to the call's).
             timestamp: ISO-8601 timestamp (defaults to now, UTC).
@@ -88,7 +109,17 @@ class AuditEntry:
             redacted: Whether arguments were redacted.
             credential_status: Post-decision credential status (e.g. ``"stale"``)
                 when the engine allowed the call but the underlying API rejected it.
+            policy_hash: The governing policy's content hash (M6 provenance).
+            matched_rule: The deciding clause (M5 ``clause``).
+            decision_id: The M5 join key shared with the emitted event.
+            reviewed: Whether the governing policy was reviewed (M6 review flag).
         """
+        resolved_hash = policy_hash if policy_hash is not None else getattr(
+            decision, "policy_hash", ""
+        )
+        resolved_rule = matched_rule if matched_rule is not None else getattr(
+            decision, "matched_rule", None
+        )
         return cls(
             session_id=session_id if session_id is not None else call.session_id,
             timestamp=timestamp if timestamp is not None else _utc_now(),
@@ -104,15 +135,22 @@ class AuditEntry:
             criticality=decision.criticality,
             reason_code=decision.reason_code,
             explanation=decision.explanation,
-            factors=list(decision.factors),
+            factors=[
+                Factor(dimension=f.dimension, value=f.value, contribution=f.contribution)
+                for f in decision.factors
+            ],
             policy_version=decision.policy_version,
-            dry_run=decision.dry_run if dry_run is None else dry_run,
-            escalation_id=decision.escalation_id,
+            dry_run=bool(getattr(decision, "dry_run", False)) if dry_run is None else dry_run,
+            escalation_id=getattr(decision, "escalation_id", None),
             approver=approver,
             arguments=arguments if arguments is not None else call.arguments,
             redacted=redacted,
             credential_status=credential_status,
-            counterfactual=decision.counterfactual,
+            counterfactual=getattr(decision, "counterfactual", None),
+            policy_hash=resolved_hash,
+            matched_rule=resolved_rule,
+            decision_id=decision_id,
+            policy_reviewed=reviewed,
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -151,6 +189,11 @@ class AuditEntry:
             redacted=bool(data.get("redacted", False)),
             credential_status=data.get("credential_status"),
             counterfactual=data.get("counterfactual"),
+            seq=int(data["seq"]) if data.get("seq") is not None else None,
+            policy_hash=data.get("policy_hash", ""),
+            matched_rule=data.get("matched_rule"),
+            decision_id=data.get("decision_id"),
+            policy_reviewed=data.get("policy_reviewed"),
         )
         if "call_id" in data:
             kwargs["call_id"] = data["call_id"]

@@ -24,14 +24,14 @@ from agentpolicy.policy.schema import AuditConfig
 
 
 def _unchained(entry: AuditEntry) -> AuditEntry:
-    """Drop the tamper-chain fields so a round-tripped entry compares equal.
+    """Drop the sink-assigned chain/provenance fields so a round-trip compares equal.
 
-    Sinks persist ``chain_hash``/``prev_hash`` at write time (see
-    ``audit.tamper_proof``), so a queried entry legitimately carries them
-    even though the fixture was constructed without them. Content equality
-    is what these round-trip tests care about.
+    Sinks persist ``seq``/``chain_hash``/``prev_hash`` at write time (see
+    ``audit.tamper_proof``), so a queried entry legitimately carries them even
+    though the fixture was constructed without them. Content equality is what
+    these round-trip tests care about.
     """
-    return replace(entry, chain_hash=None, prev_hash=None)
+    return replace(entry, seq=None, chain_hash=None, prev_hash=None)
 
 
 @pytest.fixture

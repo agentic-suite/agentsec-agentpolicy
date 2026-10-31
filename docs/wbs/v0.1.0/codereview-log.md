@@ -105,3 +105,32 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
     count as a flip. **Resolved.**
 - **Gates:** suite **1201 passed, 2 skipped** · coverage **95.46%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
 - **Resolution:** all findings resolved; no open items.
+
+### M6 — Audit, policy versioning & tamper evidence (6.CR)
+
+- **Scope:** the `AuditEntry` provenance + chain fields, the JSONL/SQLite/Postgres sinks, the tamper-evident hash
+  chain + rotation anchor (`tamper_proof.py`), policy versioning + the review flag (`versioning.py`), the offline
+  `EvidenceArtifact` (`evidence.py`), and the `agentpolicy audit` CLI (+ the `evidence` subcommand).
+- **Findings & resolutions:**
+  - *The ported `AuditEntry.from_decision` was bound to the legacy `types.Decision`* (it read
+    `decision.dry_run`/`escalation_id`/`counterfactual` directly) → it now reads the shared fields directly and
+    the path-specific ones via `getattr`, so **one** entry model serves both the ported engine and the Cedar
+    core; the whole audit surface is re-pointable without a parallel model. **Resolved.**
+  - *A Cedar decision's `factors` round-tripped unequal* (Cedar `Factor` vs `types.Factor`) → `from_decision`
+    normalizes factors to `types.Factor`, so persisted→reloaded entries compare equal
+    (`tests/test_m6_audit.py::test_from_dict_round_trips_new_fields`). **Resolved.**
+  - *The sinks hardcoded columns and dropped provenance* (`policy_hash`/`matched_rule`/`decision_id`/`seq`) →
+    added the columns + migrations to the SQLite and Postgres sinks; JSONL persists the full payload. Provenance
+    ("which policy governed this?") is now answerable from every sink. **Resolved.**
+  - *No `seq` was assigned, so entry order was implicit* → each sink assigns the next `seq` from its own tail;
+    `seq` is folded into the content hash, so **renumbering** an entry is detectable
+    (`tests/test_m6_audit.py::test_renumbering_is_detected`). **Resolved.**
+  - *JSONL rotation renamed the file without committing to the retiring head* → the sink writes a
+    `rotation_anchor` before rotating, and `verify_rotation` checks it, so a rotated segment links to its
+    predecessor (rotation never breaks the chain). **Resolved.**
+  - *Renaming the chain-bookkeeping field would have invalidated persisted logs* → kept the persisted
+    `chain_hash` and exposed PRD 15's `entry_hash` as a read-only alias (`AuditEntry.entry_hash`); the on-disk
+    format is unchanged apart from the additive columns. **Resolved.**
+- **Gates:** suite **1223 passed, 2 skipped** · coverage **95.54%** (≥ 95) · `ruff` zero · `mypy --strict` clean
+  (114 files).
+- **Resolution:** all findings resolved; no open items.

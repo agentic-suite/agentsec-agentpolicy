@@ -44,6 +44,11 @@ _COLUMNS = (
     "escalation_id",
     "chain_hash",
     "prev_hash",
+    "seq",
+    "policy_hash",
+    "matched_rule",
+    "decision_id",
+    "policy_reviewed",
 )
 
 _CREATE = (
@@ -57,7 +62,11 @@ _PLACEHOLDERS_SQL = ", ".join("?" for _ in _COLUMNS)
 _INSERT_SQL = f"INSERT INTO audit_entries ({_COLUMNS_SQL}) VALUES ({_PLACEHOLDERS_SQL})"  # noqa: S608
 _SELECT_ALL_SQL = f"SELECT {_COLUMNS_SQL} FROM audit_entries"  # noqa: S608
 _SELECT_SESSION_SQL = f"SELECT {_COLUMNS_SQL} FROM audit_entries WHERE session_id = ?"  # noqa: S608
-_SELECT_CHAIN_SQL = "SELECT chain_hash FROM audit_entries ORDER BY id DESC LIMIT 1"
+_SELECT_CHAIN_SQL = "SELECT chain_hash, seq FROM audit_entries ORDER BY id DESC LIMIT 1"
+
+#: Columns added after the original table (migrated in ``_migrate``).
+_ADDED_COLUMNS = ("chain_hash", "prev_hash", "seq", "policy_hash", "matched_rule",
+                  "decision_id", "policy_reviewed")
 
 
 def _default_path() -> Path:
@@ -94,7 +103,7 @@ class SqliteSink(AuditSink):
             row[1]
             for row in conn.execute("PRAGMA table_info(audit_entries)").fetchall()
         }
-        for column in ("chain_hash", "prev_hash"):
+        for column in _ADDED_COLUMNS:
             if column not in existing:
                 conn.execute(f"ALTER TABLE audit_entries ADD COLUMN {column} TEXT")
 
@@ -103,7 +112,10 @@ class SqliteSink(AuditSink):
             with self._connect() as conn:
                 prev_row = conn.execute(_SELECT_CHAIN_SQL).fetchone()
                 prev_hash = prev_row[0] if prev_row else None
-                chained = chain_entry(entry, prev_hash)
+                prev_seq = int(prev_row[1]) if prev_row and prev_row[1] is not None else None
+                seq = 0 if prev_seq is None else prev_seq + 1
+                chained = chain_entry(entry, prev_hash, seq=seq)
+                reviewed = chained.policy_reviewed
                 params = [
                     chained.session_id,
                     chained.call_id,
@@ -126,6 +138,11 @@ class SqliteSink(AuditSink):
                     chained.escalation_id,
                     chained.chain_hash,
                     chained.prev_hash,
+                    chained.seq,
+                    chained.policy_hash,
+                    chained.matched_rule,
+                    chained.decision_id,
+                    None if reviewed is None else int(reviewed),
                 ]
                 conn.execute(_INSERT_SQL, params)
         except sqlite3.Error as exc:
@@ -153,5 +170,10 @@ def _row_to_entry(row: tuple[object, ...]) -> AuditEntry:
         for f in factors
     ]
     values["dry_run"] = str(values["dry_run"]).lower() in ("1", "true", "yes", "on")
+    values["seq"] = int(str(values["seq"])) if values.get("seq") is not None else None
+    reviewed = values.get("policy_reviewed")
+    values["policy_reviewed"] = (
+        None if reviewed is None else str(reviewed).lower() in ("1", "true", "yes", "on")
+    )
     data = {k: v for k, v in values.items() if v is not None}
     return AuditEntry.from_dict(data)

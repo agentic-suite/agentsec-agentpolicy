@@ -19,7 +19,7 @@ from agentpolicy.audit.models import AuditEntry
 
 #: Keys excluded from the content hash so a persisted chain's own bookkeeping
 #: fields can never be folded into (and thus "hide inside") the content digest.
-_CHAIN_KEYS = ("chain_hash", "prev_hash", "signature", "public_key", "root_hash")
+_CHAIN_KEYS = ("chain_hash", "entry_hash", "prev_hash", "signature", "public_key", "root_hash")
 
 
 def _hash_entry(entry: AuditEntry) -> str:
@@ -41,26 +41,70 @@ def _hash_entry(entry: AuditEntry) -> str:
     return hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
 
 
-def chain_entry(entry: AuditEntry, prev_hash: str | None) -> AuditEntry:
-    """Attach ``prev_hash`` + a freshly computed ``chain_hash`` to a copy.
+def chain_entry(entry: AuditEntry, prev_hash: str | None, *, seq: int | None = None) -> AuditEntry:
+    """Attach ``seq``/``prev_hash`` + a freshly computed ``chain_hash`` to a copy.
 
     Returns a new entry (the input is untouched) so the persisted record and
-    any in-memory copy stay independent. The computed ``chain_hash`` matches
-    what :func:`build_hash_chain` would assign for the same position.
+    any in-memory copy stay independent. ``seq`` is the entry's monotonic
+    position; when ``None`` the entry's existing ``seq`` is kept (so a
+    recomputation over a persisted entry reproduces its link). ``seq`` is part
+    of the content hash, so renumbering an entry is detectable.
 
     Args:
         entry: The entry to link.
         prev_hash: The previous entry's ``chain_hash`` (``None`` for root).
+        seq: The monotonic position to stamp, or ``None`` to keep the entry's.
 
     Returns:
-        A copy of *entry* with ``prev_hash``/``chain_hash`` set.
+        A copy of *entry* with ``seq``/``prev_hash``/``chain_hash`` set.
     """
-    entry_hash = _hash_entry(entry)
+    stamped = entry if seq is None else replace(entry, seq=seq)
+    entry_hash = _hash_entry(stamped)
     chain_input = json.dumps(
         {"prev_hash": prev_hash, "entry_hash": entry_hash}, sort_keys=True
     )
     chain_hash = hashlib.sha256(chain_input.encode()).hexdigest()
-    return replace(entry, prev_hash=prev_hash, chain_hash=chain_hash)
+    return replace(stamped, prev_hash=prev_hash, chain_hash=chain_hash)
+
+
+def entry_head(entries: list[AuditEntry]) -> str | None:
+    """The head (newest ``chain_hash``) of a persisted entry list, or ``None``."""
+    return entries[-1].chain_hash if entries else None
+
+
+def rotation_anchor(entries: list[AuditEntry], *, at: str) -> dict[str, Any]:
+    """Build a rotation anchor committing to the prior segment's head.
+
+    Written when a log rotates to a new file/segment so the new segment links
+    to the retired one: the anchor records the prior head, the number of
+    committed entries, and the rotation time.
+
+    Args:
+        entries: The entries of the segment being retired, in write order.
+        at: ISO-8601 rotation timestamp.
+
+    Returns:
+        A dict ``{kind, prev_head, count, at}``.
+    """
+    return {
+        "kind": "audit_rotation_anchor",
+        "prev_head": entry_head(entries),
+        "count": len(entries),
+        "at": at,
+    }
+
+
+def verify_rotation(anchor: dict[str, Any], prior_head: str | None) -> bool:
+    """Whether *anchor* correctly commits to *prior_head*.
+
+    A ``None`` prior head is valid only for an empty prior segment (count 0) —
+    an anchor that claims entries but no head is a loud finding.
+    """
+    if anchor.get("kind") != "audit_rotation_anchor":
+        return False
+    if anchor.get("prev_head") != prior_head:
+        return False
+    return not (prior_head is None and anchor.get("count", 0) not in (0, None))
 
 
 def build_hash_chain(entries: list[AuditEntry]) -> list[dict[str, Any]]:
@@ -167,7 +211,8 @@ def verify_chain(chained: list[dict[str, Any]]) -> dict[str, Any]:
         content_data = {
             k: v
             for k, v in entry.items()
-            if k not in ("chain_hash", "prev_hash", "signature", "public_key", "root_hash")
+            if k not in ("chain_hash", "entry_hash", "prev_hash", "signature",
+                         "public_key", "root_hash")
         }
         entry_hash = hashlib.sha256(
             json.dumps(content_data, sort_keys=True).encode()

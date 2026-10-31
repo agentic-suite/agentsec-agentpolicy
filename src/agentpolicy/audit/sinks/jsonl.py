@@ -16,11 +16,12 @@ from __future__ import annotations
 import json
 import os
 import sys
+from datetime import UTC, datetime
 from pathlib import Path
 
 from agentpolicy.audit.models import AuditEntry
 from agentpolicy.audit.sink import AuditSink
-from agentpolicy.audit.tamper_proof import chain_entry
+from agentpolicy.audit.tamper_proof import chain_entry, rotation_anchor
 
 
 class JsonlSink(AuditSink):
@@ -37,7 +38,9 @@ class JsonlSink(AuditSink):
         return self._path
 
     def write(self, entry: AuditEntry) -> None:
-        chained = chain_entry(entry, self._last_chain_hash())
+        prev_hash, prev_seq = self._tail()
+        seq = 0 if prev_seq is None else prev_seq + 1
+        chained = chain_entry(entry, prev_hash, seq=seq)
         line = json.dumps(chained.to_dict(), sort_keys=True) + "\n"
         try:
             self._maybe_rotate()
@@ -47,10 +50,10 @@ class JsonlSink(AuditSink):
         except OSError as exc:
             print(f"agentpolicy audit: jsonl write failed: {exc}", file=sys.stderr)
 
-    def _last_chain_hash(self) -> str | None:
-        """The ``chain_hash`` of the newest persisted line, if any."""
+    def _tail(self) -> tuple[str | None, int | None]:
+        """The ``(chain_hash, seq)`` of the newest persisted line, if any."""
         if not self._path.exists():
-            return None
+            return None, None
         try:
             lines = [
                 ln.strip()
@@ -58,17 +61,27 @@ class JsonlSink(AuditSink):
                 if ln.strip()
             ]
             if not lines:
-                return None
-            value = json.loads(lines[-1]).get("chain_hash")
-            return value if isinstance(value, str) else None
+                return None, None
+            record = json.loads(lines[-1])
+            chain_hash = record.get("chain_hash")
+            seq = record.get("seq")
+            return (
+                chain_hash if isinstance(chain_hash, str) else None,
+                seq if isinstance(seq, int) else None,
+            )
         except (OSError, ValueError, KeyError):
-            return None
+            return None, None
 
     def _maybe_rotate(self) -> None:
         if self._max_bytes is None or not self._path.exists():
             return
         size = self._path.stat().st_size
         if size > self._max_bytes:
+            # Commit to the retiring segment's head before rotating, so the new
+            # segment links to the old one across files (M6 6.3).
+            anchor = rotation_anchor(self.query(), at=datetime.now(UTC).isoformat())
+            anchor_path = self._path.with_suffix(self._path.suffix + ".anchor.json")
+            anchor_path.write_text(json.dumps(anchor, sort_keys=True), encoding="utf-8")
             self._path.rename(self._path.with_suffix(self._path.suffix + ".1"))
 
     def query(self, session_id: str | None = None) -> list[AuditEntry]:

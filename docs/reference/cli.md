@@ -61,14 +61,19 @@ agentpolicy init --posture strict -o policy.yaml
 agentpolicy doctor [--policy PATH] [--json]   # exit 0 healthy / 1 unhealthy
 ```
 
-### audit — query / show / replay / verify the trail
+### audit — query / show / replay / verify / evidence the trail
 
 ```sh
 agentpolicy audit query [--decision deny] [--agent release-bot] [--format json|csv]
 agentpolicy audit show --session <id>
 agentpolicy audit session --replay <id>
 agentpolicy audit verify [--sign]
+agentpolicy audit evidence --tool drop_database --action delete --env production --data customer_pii --agent release-bot
 ```
+
+`audit evidence` emits the offline-verifiable `EvidenceArtifact` (action + matched_rule + policy_version +
+policy_hash + event_ref + hash). Entries carry their provenance (`policy_version`, `policy_hash`, `matched_rule`,
+`seq`); `audit session --replay` verifies the whole hash chain before replaying. See [audit.md](audit.md).
 
 ### pack — validate + test rule packs
 

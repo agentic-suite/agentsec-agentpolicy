@@ -46,8 +46,11 @@ _FIELDS = (
     "reason_code",
     "explanation",
     "policy_version",
+    "policy_hash",
+    "matched_rule",
     "dry_run",
     "escalation_id",
+    "seq",
 )
 
 
@@ -99,6 +102,16 @@ def add_parser(subparsers: Any) -> None:
     _add_sink_args(verify)
     verify.add_argument("--sign", action="store_true", help="Sign root entry with ed25519")
     verify.set_defaults(func=_run_verify)
+
+    evidence = sub.add_parser(
+        "evidence", help="produce an offline evidence artifact for a call"
+    )
+    evidence.add_argument("--tool", required=True, help="Tool name")
+    evidence.add_argument("--action", required=True, help="Action verb")
+    evidence.add_argument("--env", required=True, help="Environment")
+    evidence.add_argument("--data", required=True, help="Data class")
+    evidence.add_argument("--agent", required=True, help="Agent identity")
+    evidence.set_defaults(func=_run_evidence)
 
 
 def _add_sink_args(parser: argparse.ArgumentParser) -> None:
@@ -206,6 +219,42 @@ def _run_verify(args: argparse.Namespace) -> int:
             print("  Signature verification failed")
             return 1
 
+    return 0
+
+
+def _run_evidence(args: argparse.Namespace) -> int:
+    """Produce an offline-verifiable EvidenceArtifact for a call.
+
+    Evaluates the call through the canonicalizer + Cedar core and emits the
+    self-contained evidence record (action + matched_rule + policy_version +
+    policy_hash + event_ref + hash) that a third party can re-derive offline
+    (WBS M6 ``6.5`` / CUJ-20).
+
+    Args:
+        args: Parsed arguments (requires ``--tool/--action/--env/--data/--agent``).
+
+    Returns:
+        Exit code 0 on success, 1 on error.
+    """
+    from agentpolicy.audit.evidence import evidence_for
+    from agentpolicy.canonical import canonicalize
+    from agentpolicy.cedar import CedarEvaluator
+    from agentpolicy.explain import build_artifact
+
+    try:
+        call = canonicalize(
+            tool=args.tool,
+            action=args.action,
+            environment=args.env,
+            data_class=args.data,
+            agent_id=args.agent,
+        )
+        evaluator = CedarEvaluator()
+        artifact = build_artifact(evaluator.evaluate(call), call, evaluator=evaluator)
+        evidence = evidence_for(artifact, call)
+    except Exception as exc:
+        raise CliError(str(exc)) from exc
+    print(json.dumps(evidence.to_dict(), indent=2))
     return 0
 
 

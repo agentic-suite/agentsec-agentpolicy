@@ -61,6 +61,11 @@ class AuditLogger:
             approver: str | None = None,
             dry_run: bool | None = None,
             credential_status: str | None = None,
+            policy_hash: str | None = None,
+            matched_rule: str | None = None,
+            decision_id: str | None = None,
+            reviewed: bool | None = None,
+            timestamp: str | None = None,
         ) -> AuditEntry:
             """Build and persist the audit entry for one decision.
 
@@ -68,7 +73,7 @@ class AuditLogger:
             dropped (the decision itself is already complete and safe to return).
 
             Args:
-                decision: The decision to record.
+                decision: The decision to record (Cedar or ported).
                 call: The normalized call that produced it.
                 session_id: Session id (defaults to the call's).
                 approver: Human approver for escalation entries.
@@ -77,10 +82,18 @@ class AuditLogger:
                     real decision was not enforced.
                 credential_status: Post-decision credential status (e.g. ``"stale"``)
                     when the engine allowed the call but the underlying API rejected it.
+                policy_hash: The governing policy's content hash (M6 provenance);
+                    defaults to the decision's.
+                matched_rule: The deciding clause (M5); defaults to the decision's.
+                decision_id: The M5 join key shared with the emitted event.
+                reviewed: Whether the governing policy was reviewed (M6 review flag).
+                timestamp: ISO-8601 timestamp (defaults to now, UTC).
             """
             entry = AuditEntry.from_decision(
                 decision, call, session_id=session_id, approver=approver, dry_run=dry_run,
-                credential_status=credential_status,
+                credential_status=credential_status, policy_hash=policy_hash,
+                matched_rule=matched_rule, decision_id=decision_id, reviewed=reviewed,
+                timestamp=timestamp,
             )
             redacted_args, was_redacted = redact_arguments(call.arguments, self._redact_keys)
             entry = replace(entry, arguments=redacted_args, redacted=was_redacted)

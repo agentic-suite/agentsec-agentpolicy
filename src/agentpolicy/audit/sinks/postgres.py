@@ -50,7 +50,12 @@ _DDL = (
     "escalation_id TEXT, "
     "approver TEXT, "
     "chain_hash TEXT, "
-    "prev_hash TEXT"
+    "prev_hash TEXT, "
+    "seq INTEGER, "
+    "policy_hash TEXT, "
+    "matched_rule TEXT, "
+    "decision_id TEXT, "
+    "policy_reviewed BOOLEAN"
     ")"
 )
 
@@ -58,25 +63,40 @@ _INSERT = (
     "INSERT INTO audit_entries (session_id, call_id, timestamp, tool, tool_category, "
     "action, action_class, environment, data_class, agent_id, agent_class, "
     "decision, criticality, reason_code, explanation, factors, policy_version, "
-    "dry_run, escalation_id, approver, chain_hash, prev_hash) "
-    "VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22)"
+    "dry_run, escalation_id, approver, chain_hash, prev_hash, "
+    "seq, policy_hash, matched_rule, decision_id, policy_reviewed) "
+    "VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,"
+    "$21,$22,$23,$24,$25,$26,$27)"
 )
 
 _SELECT = (
     "SELECT session_id, call_id, timestamp, tool, tool_category, action, action_class, "
     "environment, data_class, agent_id, agent_class, decision, criticality, "
     "reason_code, explanation, factors, policy_version, dry_run, escalation_id, "
-    "approver, chain_hash, prev_hash FROM audit_entries"
+    "approver, chain_hash, prev_hash, seq, policy_hash, matched_rule, decision_id, "
+    "policy_reviewed FROM audit_entries"
 )
 
 _SELECT_SESSION = (
     "SELECT session_id, call_id, timestamp, tool, tool_category, action, action_class, "
     "environment, data_class, agent_id, agent_class, decision, criticality, "
     "reason_code, explanation, factors, policy_version, dry_run, escalation_id, "
-    "approver, chain_hash, prev_hash FROM audit_entries WHERE session_id = $1"
+    "approver, chain_hash, prev_hash, seq, policy_hash, matched_rule, decision_id, "
+    "policy_reviewed FROM audit_entries WHERE session_id = $1"
 )
 
-_SELECT_CHAIN = "SELECT chain_hash FROM audit_entries ORDER BY id DESC LIMIT 1"
+_SELECT_CHAIN = "SELECT chain_hash, seq FROM audit_entries ORDER BY id DESC LIMIT 1"
+
+#: Columns added after the original table (migrated in ``_migrate``).
+_ADDED_COLUMNS = (
+    ("chain_hash", "TEXT"),
+    ("prev_hash", "TEXT"),
+    ("seq", "INTEGER"),
+    ("policy_hash", "TEXT"),
+    ("matched_rule", "TEXT"),
+    ("decision_id", "TEXT"),
+    ("policy_reviewed", "BOOLEAN"),
+)
 
 
 def _require_asyncpg() -> None:
@@ -153,7 +173,9 @@ class PostgresSink(AuditSink):
             await self._migrate(conn)
             prev_row = await conn.fetchrow(_SELECT_CHAIN)
             prev_hash = prev_row[0] if prev_row else None
-            chained = chain_entry(entry, prev_hash)
+            prev_seq = int(prev_row[1]) if prev_row and prev_row[1] is not None else None
+            seq = 0 if prev_seq is None else prev_seq + 1
+            chained = chain_entry(entry, prev_hash, seq=seq)
             await conn.execute(
                 _INSERT,
                 chained.session_id,
@@ -178,16 +200,21 @@ class PostgresSink(AuditSink):
                 chained.approver,
                 chained.chain_hash,
                 chained.prev_hash,
+                chained.seq,
+                chained.policy_hash,
+                chained.matched_rule,
+                chained.decision_id,
+                chained.policy_reviewed,
             )
 
     async def _migrate(self, conn: Any) -> None:
-        """Add the tamper-chain columns to tables created before v0.2."""
+        """Add the tamper-chain/provenance columns to tables created earlier."""
         record = await conn.fetchrow("SELECT * FROM audit_entries LIMIT 0")
         existing = {k for k in record.keys()}
-        for column in ("chain_hash", "prev_hash"):
+        for column, coltype in _ADDED_COLUMNS:
             if column not in existing:
                 await conn.execute(
-                    f"ALTER TABLE audit_entries ADD COLUMN IF NOT EXISTS {column} TEXT"
+                    f"ALTER TABLE audit_entries ADD COLUMN IF NOT EXISTS {column} {coltype}"
                 )
 
     def query(self, session_id: str | None = None) -> list[AuditEntry]:
