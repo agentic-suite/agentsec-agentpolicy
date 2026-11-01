@@ -42,7 +42,7 @@
 | PASS (raw verdict) | 87 |
 | — of which grounded (asserting check re-derived, not exit-0) | 87 (0 over-claimed) |
 | FAIL | **2** (`FT-FWK-CREW`, `FT-FWK-PAI` — live-model tool-call flakiness; §Small-Group Run Journal) |
-| declared (P/F\|D, environment cannot provide — named) | 2 (Cursor: GUI host absent; Gemini: local model routing needs a Gemma/LiteRT download, interrupted) |
+| declared (P/F\|D, environment cannot provide — named) | 2 (Cursor: GUI IDE, no headless surface; Gemini: gemma router is classifier-only + sunset OAuth gate — §Small-Group Run Journal Group 22) |
 | not run | 8 (all s16 — the interrupted suite) |
 | N/A (retired) | 0 |
 
@@ -214,6 +214,34 @@ the **box-local oMLX model** — no hosted LLM, **no OpenAI key**.
   `artifacts/codex-call{1,2}.txt` (live transcripts), `artifacts/audit.ndjson` (3 parity decisions),
   `artifacts/llm/` (4 pairs), `codex-home/config.toml` (the oMLX provider wiring, reproducible).
 
+### Group 22 — `FT-T1-GEMINI` (Tier-1) — the gemma investigation — **◆ declared, reason UPGRADED with evidence; parity ✅** (2026-11-01)
+Tried to bring Gemini local ("do gemini gemma setup and bring from claude"). What happened, in order:
+- **`gemini gemma setup` hung twice** — root-caused to **two interactive prompts** (a setup consent, then the
+  Gemma Terms `Y/N`); the non-interactive route is `--consent` + piped `yes`. Install then completed:
+  **LiteRT-LM binary (88.8 MB) + `gemma3-1b-gpu-custom`, server up on :9379** — genuinely local.
+- **But the CLI loop still cannot run box-local.** With the server up, `gemini -p` **crashes at startup**:
+  `IneligibleTierError: This client is no longer supported for Gemini Code Assist for individuals … migrate to
+  the Antigravity suite` — the OAuth/CodeAssist tier check runs **before any model routing**. Auth-mode
+  overrides (`gemini-api`, `gemma-api`, dummy `GEMINI_API_KEY`) all hit the same wall.
+- **Reading the bundle source settled why:** the `gemmaModelRouter` is a **CLASSIFIER ONLY** — `route()` sends
+  intent-classification prompts to the local `gemma3-1b` (the SDK comment even says "The LiteRT-LM server does
+  not require an API key… dummy value"); the **main LLM still goes to Google Code Assist**, which is sunset.
+  So there is no wiring that makes the Gemini CLI headless loop local on this build — a translation proxy is
+  pointless because the blocker is the client's own OAuth gate, not the wire format.
+- **Verdict stays `declared` — but now with the accurate reason** (an upgrade over "not installed"):
+  classifier-only gemma + sunset OAuth + no-hosted pin; the guard `_ft_gemini_loop_local_ok` in `lib.sh`
+  re-derives this per run (probe headless gemini; pass only if it completes without the sunset error), so a
+  future CLI build that fixes the OAuth gate flips the case to a real run automatically.
+- **What the case proves locally:** `t1-gemini-evaluate-parity` **PASS** — the same destructive-prod triple
+  decided `deny` by agentpolicy, identical to the in-process path (the plan's parity assertion).
+- **Learnings:** (a) a vendor "local mode" can be partial — *classifier-only* local routing with a *hosted*
+  main loop is a trap worth naming; (b) probe the auth gate before the transport — the crash was in
+  `_doSetupUser`, not any model call; (c) the verdict vocabulary earns its keep: "declared + reason +
+  local stand-in + auto-un-declare guard" is a complete answer, not a shrug.
+- **Captured evidence:** `field-test/v0.1.0/results/s18-tier1/cases/FT-T1-GEMINI/` — verdict (declared,
+  limitation text), `t1-gemini-evaluate-parity` assertion PASS; gemma install log + bundle-source findings
+  summarized here.
+
 ---
 
 ## Environment
@@ -373,7 +401,7 @@ silent skip).
 | FT-T1-CLAUDE | s18-tier1 | P/F\|D | ✅ PASS | ✓ grounded — LIVE Claude Code ↔ oMLX triple (allow/ask/deny) + 6 LLM pairs + audit trail |
 | FT-T1-CODEX | s18-tier1 | P/F\|D | ✅ PASS | ✓ grounded — LIVE Codex CLI ↔ oMLX (Responses API): allow-executes, deny-holds+replans, parity audit, 4 LLM pairs |
 | FT-T1-CURSOR | s18-tier1 | P/F\|D | ◆ declared | no Cursor host; policyweave compile-out proven by the export test |
-| FT-T1-GEMINI | s18-tier1 | P/F\|D | ◆ declared | Gemini CLI present; local loop needs `gemini gemma setup` (LiteRT-LM + Gemma model — not installed; download interrupted); MCP/agentgate surface covered at the lower layer |
+| FT-T1-GEMINI | s18-tier1 | P/F\|D | ◆ declared | gemma router is **classifier-only** (LiteRT-LM :9379 → gemma3-1b routes intents, not the main loop); main LLM = Google Code Assist OAuth, **sunset for this CLI build** (`IneligibleTierError` → Antigravity); hosted would violate the no-hosted pin; parity + MCP surface proven locally |
 | FT-ALLOW-JUSTIFY | s2-explain | P/F | ✅ PASS | ✓ grounded |
 | FT-AUDIT-CHAIN | s2-explain | P/F | ✅ PASS | ✓ grounded |
 | FT-AUDIT-PROVENANCE | s2-explain | P/F | ✅ PASS | ✓ grounded |
@@ -665,12 +693,17 @@ traps; plus how to honestly scope a harness test when the vendor surface differs
 ### 13. Gemini and Cursor — why "declared" is the honest verdict (the anti-pattern write-up)
 Both have the tools installed; neither passed. The reasons differ, and neither is "we didn't get to it":
 
-- **Gemini:** CLI present, hooks surface present (`gemini hooks migrate` — it accepts Claude-Code-style
-  hooks), **but its only sanctioned local model path is `gemini gemma setup`** — a LiteRT-LM runtime +
-  Gemma model download that was **interrupted and left incomplete**. Its default backend (Google OAuth,
-  hosted) **violates the no-hosted-models pin** and was never used. Declared with exactly that reason:
-  what's missing, what would un-declare it (finish the gemma install, or a Gemini-format endpoint), and the
-  lower-layer MCP/agentgate coverage that stands meanwhile.
+- **Gemini:** the deepest rabbit hole of the sweep. The sanctioned local path (`gemini gemma setup`) **installed
+  successfully** — LiteRT-LM binary + `gemma3-1b-gpu-custom`, server on :9379, fully local. **And the loop still
+  can't run local:** the CLI crashes at startup with `IneligibleTierError` ("migrate to the Antigravity suite") —
+  the OAuth/CodeAssist tier gate runs **before any model routing**, and reading the bundle source shows the gemma
+  router is **classifier-only** (it routes *intent classification* to the local 1B model; the **main LLM always
+  goes to Google-hosted Code Assist**, which is sunset for this build). No proxy fixes a client-side auth gate.
+  So FT-T1-GEMINI keeps `declared` — with the **exact, evidenced reason**, the parity stand-in passing locally
+  (`deny` == in-process decision), and an **auto-un-declare guard** (`_ft_gemini_loop_local_ok` probes headless
+  gemini per run): if a future CLI build lifts the OAuth gate, the case flips to a real run with zero edits.
+  Two trappings worth writing up: `gemini gemma setup` hangs on **two interactive prompts** (consent + Gemma
+  Terms `Y/N`) — the non-interactive route is `--consent` + piped `yes`.
 - **Cursor:** the interesting one — **it can never pass on this box, by design**. Cursor is a **GUI IDE
   (VS Code fork)**: its agent loop and permission surface live inside a desktop Electron app driven by a
   human; no supported headless/CLI server surface exists for the plan's `permissions.json` flow, and this
@@ -705,11 +738,16 @@ Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so fa
     Cedar policy deterministically, and the export test grounds it) — the plan's FT-T1-CURSOR assertion
     ("the compiled artifact governs; drift is flagged") minus the GUI-side execution. Declared with this reason,
     never silently skipped; un-declaring requires a macOS host with Cursor installed + a signed-in session.
-  - **`FT-T1-GEMINI`** — Gemini CLI is installed, but its only sanctioned **local** model path is
-    `gemini gemma setup` (a **LiteRT-LM runtime + Gemma model download**); that install was **interrupted and
-    not completed** on this box. The alternative (its default Google-hosted OAuth backend) **violates the
-    no-hosted-models pin** and was not used. Its MCP/agentgate surface (the plan's CUJ-14 route) is covered at
-    the lower layer. Un-declaring requires completing the gemma install (or a Gemini-format endpoint on oMLX).
+  - **`FT-T1-GEMINI`** — Gemini CLI is installed, and the **gemma local routing installed successfully**
+    (LiteRT-LM binary + `gemma3-1b-gpu-custom`, server on :9379 — fully local) — **but the headless loop still
+    cannot run box-local**: the gemma router is **classifier-only** (intent prompts → local 1B model; the main
+    LLM always goes to Google Code Assist), and that OAuth path is **sunset for this CLI build**
+    (`IneligibleTierError` → "migrate to Antigravity") — the crash happens before any model routing, so no
+    proxy or endpoint can fix it. The hosted path would also **violate the no-hosted-models pin**. What stands
+    locally: the **parity stand-in** (the destructive-prod triple decided `deny`, identical to the in-process
+    engine) plus the MCP/agentgate surface (CUJ-14) at the lower layer. **Un-declare path:** the
+    `_ft_gemini_loop_local_ok` guard re-probes headless gemini every run — a future CLI build that lifts the
+    OAuth gate flips the case to a real run automatically.
 - **Not run (8):** the interrupted `s16-frameworks` remainder — `FT-FWK-OAI` (cut off mid-case) and
   `FT-FWK-ADK/AG2/LI/SMOL/SWE/MCP` + `FT-REPLAN` (never started this sweep).
 - **Gaps:** the s16 remainder needs the live sweep to finish (vendor repos are present, oMLX is up); Cursor
@@ -764,8 +802,9 @@ Done:
 Next:
 9. [ ] Finish `s16-frameworks`: `FT-FWK-OAI` (interrupted mid-case) + `FT-FWK-ADK/AG2/LI/SMOL/SWE/MCP`, `FT-REPLAN`.
 10. [ ] Retry `FT-FWK-CREW` / `FT-FWK-PAI` (flaky tool-call rows; LG flipped green on re-run) — consider a per-row retry budget in `run_field_agents.py`.
-11. [ ] Gemini: complete `gemini gemma setup` (LiteRT-LM + Gemma download, interrupted) → re-run FT-T1-GEMINI
-       through its hooks surface; **Cursor stays declared** (GUI IDE, no headless surface — §Coverage).
+11. [ ] Gemini: **stays declared** — gemma install is local but classifier-only; CLI OAuth gate is sunset
+       (IneligibleTierError). The `_ft_gemini_loop_local_ok` guard auto-flips the case if a future build
+       fixes the gate. **Cursor stays declared** (GUI IDE, no headless surface — §Coverage).
 12. [ ] Keep updating **this report by hand** with the verdicts + RCA + learnings (§Field Notes).
 
 ---

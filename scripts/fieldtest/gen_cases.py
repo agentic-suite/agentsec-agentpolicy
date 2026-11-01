@@ -556,16 +556,19 @@ CASES: list[dict[str, str]] = [
      "layer": "host", "llm": "no", "requires": "python", "prd": "R28,PRD 19", "cuj": "2,14",
      "class": "P/F|D", "suite": "s18-tier1",
      "steps": (
-         'if command -v gemini >/dev/null 2>&1 && _ft_gemini_local_ok; then\n'
+         'if _ft_gemini_loop_local_ok; then\n'
          '  ft_llm_up\n'
          'else\n'
-         '  ft_declare "Gemini CLI present but its model backend is Google-hosted only '
-         '(no local-Gemini endpoint on the box); MCP/agentgate surface covered at the lower layer" "PRD 19 Tier-1"\n'
+         '  ft_declare "Gemini CLI headless loop CANNOT run box-local: the gemma router is a '
+         'CLASSIFIER ONLY (LiteRT-LM :9379 serves gemma3-1b for intent routing, not the main loop); '
+         'the main LLM goes to Google Code Assist OAuth, which is SUNSET for this CLI build '
+         '(IneligibleTierError -> migrate to Antigravity). Hosted OAuth would violate the no-hosted-models '
+         'pin. Parity + MCP/agentgate surface proven locally below" "PRD 19 Tier-1"\n'
          'fi\n'
-         'ft_cmd "t1-gemini-evaluate-parity" bash -c \'DEC=$("$FT_PY" "$REPO_ROOT/scripts/fieldtest/t1_evaluate.py" '
+         'ft_assert "t1-gemini-evaluate-parity" bash -c \'DEC=$("$FT_PY" "$REPO_ROOT/scripts/fieldtest/t1_evaluate.py" '
          '--tool execute_shell --action delete --env production --data restricted --agent gemini-t1 '
-         '--policy "$REPO_ROOT/scripts/fieldtest/t1_policy.yaml") 2>/dev/null || true; '
-         'test "$(printf "%s" "$DEC" | "$FT_PY" -c "import json,sys;print(json.load(sys.stdin)[\\"decision\\"])" 2>/dev/null)" = deny && echo PARITY-OK\'\n'
+         '--policy "$REPO_ROOT/scripts/fieldtest/t1_policy.yaml"); '
+         'test "$(printf "%s" "$DEC" | "$FT_PY" -c "import json,sys;print(json.load(sys.stdin)[\\"decision\\"])")" = deny && echo PARITY-OK\'\n'
          'ft_finalize\n')},
 ]
 
