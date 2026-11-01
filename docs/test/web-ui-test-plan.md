@@ -1,6 +1,6 @@
 # M7.5 UI Test Plan — Operator Console / Web Dashboard
 
-> **Milestone:** M7.5 (Operator Console & Web Dashboard) — [wbs-v0.2.0.md](../../wbs/v0.2.0/wbs-v0.2.0.md)
+> **Milestone:** M7.5 (Operator Console & Web Dashboard) — [WBS](../wbs/v0.1.0/wbs-v0.1.0-index.md)
 > **Backend:** `server/` (ServerCore + audit sinks + EscalationManager) | **E2E driver:** Playwright
 > **Status:** Draft v1 — pending review
 

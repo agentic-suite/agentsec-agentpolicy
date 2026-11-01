@@ -6,7 +6,7 @@
 is detectable. Every decision also produces an **offline-verifiable EvidenceArtifact**
 (`action` + `matched_rule` + `policy_version` + `policy_hash` + `event_ref`) a third party can re-derive without
 installing agentpolicy. This is the design of record (`6.D0`); it delivers **CUJ-6** and **CUJ-20**
-([PRD 17](../../prd/17-explain-decision-and-evidence.md), [PRD 15](../../prd/15-data-model.md), R7).
+([PRD 17](../prd/17-explain-decision-and-evidence.md), [PRD 15](../prd/15-data-model.md), R7).
 
 > Status: **Done** — branch `feat-0.1.0`. Modules: `src/agentpolicy/audit/` (`models.py`, `logger.py`,
 > `tamper_proof.py`, `versioning.py`, `evidence.py`, `sinks/`); CLI `agentpolicy audit`.

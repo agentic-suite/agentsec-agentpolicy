@@ -3,7 +3,7 @@
 **Status:** Released ✅
 **Package:** `agentsec-agentpolicy` · **Version:** 0.2.0
 **Released:** 2026-08-15
-**Related:** [WBS v0.2.0](../wbs/v0.2.0/wbs-v0.2.0.md) · [decisions-v0.2.0](../design/decisions-v0.2.0.md) · [Field Test Report](../field-test/FIELD_TEST_REPORT-v0.2.0.md) · [Migration Guide](../design/migration-guide-v0.2.0.md) · [CHANGELOG](../../CHANGELOG.md)
+**Related:** [WBS](../wbs/v0.1.0/wbs-v0.1.0-index.md) · [decisions-v0.2.0](../design/decisions-v0.2.0.md) · [Field Test Report](../field-test/v0.1.0/FIELD_TEST_REPORT.md) · [Migration Guide](../design/migration-guide-v0.2.0.md) · [CHANGELOG](../../CHANGELOG.md)
 
 ---
 
@@ -78,7 +78,7 @@ AgentPolicy v0.2.0 ships a **fleet-ready, auditable, hardened** policy decision 
 
 ## Field test summary
 
-Plan A (one scenario per agent) passes **100%** for all 10 frameworks. Plan B proves every framework surfaces allow/audit/escalate/deny; the only misses are 7 tier-1 rows where the LLM picked the wrong tool when 5 tools share near-identical names — an LLM tool-selection limit, not an engine defect. Full findings, model comparison (gpt-oss-20b vs deepseek-v4-flash vs glm-5 vs local Qwen), observations, and lessons in the [Field Test Report](../field-test/FIELD_TEST_REPORT-v0.2.0.md).
+Plan A (one scenario per agent) passes **100%** for all 10 frameworks. Plan B proves every framework surfaces allow/audit/escalate/deny; the only misses are 7 tier-1 rows where the LLM picked the wrong tool when 5 tools share near-identical names — an LLM tool-selection limit, not an engine defect. Full findings, model comparison (gpt-oss-20b vs deepseek-v4-flash vs glm-5 vs local Qwen), observations, and lessons in the [Field Test Report](../field-test/v0.1.0/FIELD_TEST_REPORT.md).
 
 ---
 

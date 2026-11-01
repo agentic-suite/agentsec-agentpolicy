@@ -120,7 +120,7 @@ agentpolicy baseline check hardened   # 15/15 PASS expected
 
 ## Known limitations in v0.2.0
 
-- Field-test tier-1 (5 tools on one agent) is unreliable with LLM tool-selection; engine itself validated 100% deterministically (see [field test report](../field-test/FIELD_TEST_REPORT-v0.2.0.md)).
+- Field-test tier-1 (5 tools on one agent) is unreliable with LLM tool-selection; engine itself validated 100% deterministically (see [field test report](../field-test/v0.1.0/FIELD_TEST_REPORT.md)).
 - smolagents works against local OMLX; LiteLLM cloud-path interop documented as a caveat for some host integrations.
 - `agentpolicy serve` remains SSE-based; HTTP `/authorize` mounts there as a custom route.
 

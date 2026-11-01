@@ -5,7 +5,7 @@ machine-readable `reason_code` from a **closed, stable registry**, a human `expl
 `factors[]`, the `matched_rule`, and the **one change that flips it** (`suggested_change`). Every decision is
 emitted in the **agentwatch security-event schema** (`agentwatch.security_event.v1`, `policy.decision`) with a
 shared `event_id`/`decision_id` join key. This is the design of record (`5.D0`); it delivers **CUJ-3** and
-**R5/R6** ([PRD 17](../../prd/17-explain-decision-and-evidence.md)).
+**R5/R6** ([PRD 17](../prd/17-explain-decision-and-evidence.md)).
 
 > Status: **Done** — branch `feat-0.1.0`. Modules: `src/agentpolicy/reason_codes.py`,
 > `src/agentpolicy/explain.py`, `src/agentpolicy/agentwatch.py`; the Cedar core
@@ -47,7 +47,7 @@ matched rule). Invariant (PRD 15): a `deny`/`ask`/`rate-limit` always carries a 
 `matched_rule` is the Cedar `@id` annotation of the deciding policy (`forbid-*` for a deny, `permit-*` for an
 `ask`/`rate-limit`/`redact`); it is populated on `deny`/`ask`/`rate-limit`/`redact`. On a plain `allow` it is
 left `null` in v0.1.0 — allow-justification (R47, "who authorized this?") is a **v0.2.0** requirement
-([PRD 17](../../prd/17-explain-decision-and-evidence.md) §Requirements).
+([PRD 17](../prd/17-explain-decision-and-evidence.md) §Requirements).
 
 ## 2. Reason-code registry (`5.2`)
 
@@ -109,7 +109,7 @@ so a script can consume it. This re-points the command from the ported engine to
 ## 5. Event emitter — agentwatch (`5.5`, R6)
 
 `src/agentpolicy/agentwatch.py` renders every decision as an `agentwatch.security_event.v1` event
-(`event_type: policy.decision`) per [ADR-0007](../../adr/0007-agentwatch-event-schema.md) / PRD 15:
+(`event_type: policy.decision`) per [ADR-0007](../adr/0007-agentwatch-event-schema.md) / PRD 15:
 
 ```json
 {

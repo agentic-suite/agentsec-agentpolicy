@@ -88,7 +88,7 @@ See the [CLI reference](api.md) for full usage.
 
 ## Demo
 
-A runnable [demo agent](../demo-agent/README.md) shows the full decision
+A runnable [demo agent](../examples.md) shows the full decision
 spectrum in one session — allow → audit → escalate → deny → replan — plus an
 adversarial variant that correctly denies prompt injection and Unicode
 obfuscation. Run:
@@ -167,7 +167,7 @@ per-framework. Every supported row is described in
 
 - [CHANGELOG](../../CHANGELOG.md)
 - [API Reference](api.md)
-- [Architecture](../../architecture/architecture-v0.1.0.md)
-- [Demo Agent](../demo-agent/README.md)
-- [PRD](../../design/PRD.md)
-- [WBS](../../wbs/README.md)
+- [Architecture](../architecture/architecture-v0.1.0.md)
+- [Demo Agent](../examples.md)
+- [PRD](../design/PRD.md)
+- [WBS](../wbs/v0.1.0/wbs-v0.1.0-index.md)
