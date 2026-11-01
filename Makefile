@@ -72,3 +72,6 @@ fieldtest-scan:  ## leak gate over the (committed) results
 fieldtest-report:  ## write a GENERATED draft (FIELD_TEST_REPORT.generated.md) — never the canonical report
 	python3 scripts/fieldtest/build_report.py
 	@echo "NOTE: FIELD_TEST_REPORT.md is HAND-MAINTAINED — update it by hand, not from the draft."
+
+release-dry-run:  ## build wheel+sdist + CycloneDX SBOM + SHA256SUMS + SLSA provenance, then verify
+	python3 scripts/release/release_tooling.py --dist dist --build
