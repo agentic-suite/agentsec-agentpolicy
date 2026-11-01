@@ -166,6 +166,30 @@ Endpoint/model are recorded in the per-run environment fingerprint; `temperature
 LLM-backed case also asserts the model was actually called (`llm_called_ok`); a silent fallback is not a
 pass.
 
+### 4.1 Model selection — the OMLX benchmark (applied)
+
+The live-sweep model is chosen for exactly two things: it must **reliably emit a tool call**
+(`scn_<id>`) and it must be **fast**. `scripts/fieldtest/omlx_bench.py` measures every model served by
+the box's OMLX with a field-test-shaped request (`tools=[scn_…]`, `tool_choice=auto`). Findings
+(2026-11-01, this box, 3 trials, `temperature=0`):
+
+| OMLX model | tool calls | p50 latency | tps | verdict |
+|---|---|---|---|---|
+| **Qwen3-4B-Instruct-2507-4bit** | **3/3** | **~1.0 s** | 19.1 | ✅ **pinned — best fit** |
+| mlx-community--Qwen3.5-4B-4bit | 3/3 | ~6.6 s | 25.7 | ok (faster tps, ~7× slower) |
+| Qwen3.5-4B-4bit | 3/3 | ~6.8 s | 23.2 | ok |
+| Qwen3.5-9B-MLX-4bit | 3/3 | ~12.9 s | 17.0 | slow |
+| Qwen3-8B-4bit | 3/3 | ~27.5 s | 20.3 | too slow |
+| Llama-3.2-3B-Instruct-4bit | **0/3** | ~0.8 s | 16.6 | ❌ **disqualified** — never emits a tool call |
+
+**Recommendation (applied):** pin **`Qwen3-4B-Instruct-2507-4bit`** — the fastest model that reliably
+emits a tool call (~7× faster than the Qwen3.5-4B pair at p50, ~27× faster than Qwen3-8B), and the
+predecessor's (agentdrill's) primary pin. Tool-call reliability is the gating criterion, so
+Llama-3.2-3B is out despite the lowest raw latency; the 8B/9B models are out on latency. The pin lives
+in `.env.example`, `lib.sh`, `docker-compose.fieldtest.yml`, `tests/field/agents/__init__.py`, and
+`field/replan.py`; re-run `python3 scripts/fieldtest/omlx_bench.py` on a new box to re-derive it.
+`MarkItDown` is a document converter, not an LLM, and is excluded.
+
 ---
 
 ## 5. Layer 0 — the predecessor regression gate (mandatory, unchanged)

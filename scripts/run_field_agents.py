@@ -123,11 +123,16 @@ def _field_agents(roster: list[dict[str, Any]]) -> list[FieldAgent]:
 def _load_scenario_dicts() -> list[dict[str, Any]]:
     """Load the scenario matrix as plain dicts.
 
+    Cedar-engine scenarios (``engine: cedar``) are excluded: the live sweep
+    drives the framework guard, which calls the legacy ``Engine`` — the
+    five-outcome Cedar path is proven by the deterministic matrix + L1 drivers.
+
     Returns:
         The raw scenario dicts from scenarios.yaml.
     """
     data = yaml.safe_load(SCENARIOS_PATH.read_text(encoding="utf-8"))
-    return list(data.get("scenarios", data if isinstance(data, list) else []))
+    return [s for s in data.get("scenarios", data if isinstance(data, list) else [])
+            if s.get("engine", "legacy") != "cedar"]
 
 
 def _load_field_scenarios() -> list[FieldScenario]:

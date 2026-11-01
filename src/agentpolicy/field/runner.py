@@ -18,6 +18,8 @@ from typing import Any
 
 import yaml
 
+from agentpolicy.canonical import canonicalize
+from agentpolicy.cedar import CedarEvaluator
 from agentpolicy.engine.engine import Engine
 from agentpolicy.field.models import CELL_FIELDS, FieldAgent, FieldScenario, FieldTestCase
 from agentpolicy.policy.models import AgentProfile, Policy, default_policy
@@ -155,6 +157,8 @@ class FieldTestRunner:
         self._engine = engine
         self._scenarios = list(scenarios)
         self._agents = list(agents)
+        #: Lazily-built Cedar five-outcome evaluator (scenarios with engine=cedar).
+        self._cedar: CedarEvaluator | None = None
 
     def add_scenario(self, scenario: FieldScenario) -> None:
         """Add a scenario to the matrix.
@@ -257,13 +261,7 @@ class FieldTestRunner:
 
     def _run_case(self, agent: FieldAgent, scenario: FieldScenario) -> FieldTestCase:
         expected = scenario.expected_for(agent.agent_class)
-        decision = self._engine.evaluate(
-            tool_name=scenario.tool,
-            action=scenario.action,
-            environment=scenario.environment,
-            data_class=scenario.data_class,
-            agent_id=agent.agent_id,
-        )
+        decision = self._evaluate(scenario, agent.agent_id)
         actual = decision.decision
         actual_criticality = decision.criticality
         actual_reason = decision.reason_code
@@ -311,6 +309,7 @@ class FieldTestRunner:
         expected: dict[str, dict[str, str]] = {}
         for key, value in (item.get("expected") or {}).items():
             expected[str(key)] = {str(k): str(v) for k, v in value.items()}
+        context = item.get("context")
         return FieldScenario(
             id=str(item["id"]),
             type=str(item.get("type", "decision")),  # type: ignore[arg-type]
@@ -319,6 +318,45 @@ class FieldTestRunner:
             environment=item["environment"],
             data_class=item["data_class"],
             expected=expected,
+            engine=str(item.get("engine", "legacy")),
+            context=dict(context) if isinstance(context, dict) else None,
+            budget_exhausted=bool(item.get("budget_exhausted", False)),
+            retry_after=(int(item["retry_after"]) if item.get("retry_after") is not None else None),
+        )
+
+    def _evaluate(self, scenario: FieldScenario, agent_id: str) -> Any:
+        """Evaluate a scenario through the legacy Engine or the Cedar core.
+
+        ``engine: cedar`` (default ``legacy``) routes the call through the Cedar
+        five-outcome core, so the matrix can exercise ``ask`` / ``rate-limit`` /
+        ``redact`` (which the legacy 4-state engine cannot express). The extra
+        fields (``context`` / ``budget_exhausted`` / ``retry_after``) are passed
+        to the Cedar evaluator.
+        """
+        if scenario.engine != "cedar":
+            # Pass the raw fields (no str() coercion): the engine must fail closed
+            # on a non-string action/tool (adversarial-nonstring-08).
+            return self._engine.evaluate(
+                tool_name=scenario.tool,
+                action=scenario.action,
+                environment=scenario.environment,
+                data_class=scenario.data_class,
+                agent_id=agent_id,
+            )
+        if self._cedar is None:
+            self._cedar = CedarEvaluator()
+        call = canonicalize(
+            tool=str(scenario.tool),
+            action=str(scenario.action),
+            environment=str(scenario.environment),
+            data_class=str(scenario.data_class),
+            agent_id=agent_id,
+        )
+        return self._cedar.evaluate(
+            call,
+            budget_exhausted=scenario.budget_exhausted,
+            retry_after=(scenario.retry_after if scenario.retry_after is not None else 60),
+            extra_context=scenario.context,
         )
 
     @staticmethod

@@ -192,6 +192,11 @@ ignore = []
 "src/agentpolicy/cli/baseline.py" = ["RUF003"]
 # WBS issue-generator: long literal issue-body templates cannot be wrapped.
 "scripts/wbs_issues.py" = ["E501"]
+# Field-test harness (M24): trusted local tooling — it shells out to pytest/docker
+# and calls the box-local OMLX endpoint; assert is the self-check's contract.
+"scripts/fieldtest/*.py" = ["S101", "S310", "S603", "S607"]
+# The case registry is a long literal table; wrapping the rows hurts readability.
+"scripts/fieldtest/gen_cases.py" = ["E501"]
 "tests/test_normalize.py" = ["RUF001", "RUF003"]
 "tests/test_engine.py" = ["RUF001"]
 "tests/test_acceptance_matrix.py" = ["RUF001"]

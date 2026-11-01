@@ -55,6 +55,10 @@ class FieldScenario:
     environment: Any
     data_class: Any
     expected: dict[str, dict[str, str]] = field(default_factory=dict)
+    engine: str = "legacy"
+    context: dict[str, Any] | None = None
+    budget_exhausted: bool = False
+    retry_after: int | None = None
 
     def expected_for(self, agent_class: str) -> dict[str, str] | None:
         """Return the expected cell for an agent class.

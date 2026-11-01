@@ -116,6 +116,34 @@ jobs:
         if: always()
         run: docker compose down
 
+  # M24 field-test harness — the deterministic host suites run with no LLM and
+  # no Docker; the Docker/LLM legs resolve to `declared` (never a silent skip).
+  # The deep-verification gate + leak scan block a shallow or leaky pass.
+  fieldtest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - uses: astral-sh/setup-uv@v2
+
+      - run: uv sync --group dev
+
+      - name: Verify the verifier (grounding gate catches shallow passes)
+        run: python3 scripts/fieldtest/verify_harness.py
+
+      - name: Run the field-test case set (no Docker/LLM → declared)
+        run: bash scripts/fieldtest/run-all.sh
+
+      - name: Deep-verification gate (every PASS grounded)
+        run: python3 scripts/fieldtest/check_grounding.py --strict
+
+      - name: Leak gate over results
+        run: python3 scripts/fieldtest/scan_results.py
+
   # M7 release gate — field test. CI has no local LLM (OMLX), so this runs the
   # deterministic sub-matrix (2490 assertions), the scripted (LLM-free) replan
   # round-trip, and the agent-build smoke test that constructs every roster

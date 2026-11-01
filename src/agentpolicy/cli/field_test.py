@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -182,13 +183,22 @@ def _field_test(args: argparse.Namespace) -> int:
             print(f"  ... and {remaining} more failures")
 
     from agentpolicy.field.report import build_report
+    from agentpolicy.field.report_guard import refuse_overwrite
 
     report_path = args.report or _DEFAULT_REPORT
     if report_path and report_path != "none":
         path = Path(report_path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(build_report(report), encoding="utf-8")
-        if not args.json:
-            print(f"\n  Report written to {report_path}")
+        # A hand-maintained report is never clobbered by automation.
+        if refuse_overwrite(path):
+            print(
+                f"\n  REFUSING to overwrite the hand-maintained report {report_path} "
+                "(update it by hand).",
+                file=sys.stderr,
+            )
+        else:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(build_report(report), encoding="utf-8")
+            if not args.json:
+                print(f"\n  Report written to {report_path}")
 
     return 0 if (report.failed == 0 and not replan_failed) else 1

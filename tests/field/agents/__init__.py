@@ -26,11 +26,13 @@ ENDPOINT = (
     or os.environ.get("EVALFORGE_FIELD_ENDPOINT")
     or "http://127.0.0.1:8000/v1"
 )
-#: Model identifier served at the endpoint.
+#: Model identifier served at the endpoint. Pinned from the OMLX benchmark
+#: (scripts/fieldtest/omlx_bench.py): the fastest model that reliably emits tool
+#: calls — see docs/field-test/v0.1.0/FIELD_TEST_PLAN.md §4.
 MODEL = (
     os.environ.get("AGENTPOLICY_FIELD_MODEL")
     or os.environ.get("EVALFORGE_FIELD_MODEL")
-    or "Qwen3.5-4B-4bit"
+    or "Qwen3-4B-Instruct-2507-4bit"
 )
 #: API key for the local endpoint.
 API_KEY = (
