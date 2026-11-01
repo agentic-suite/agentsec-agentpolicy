@@ -57,5 +57,6 @@ class TestSecurityAuditDoc:
 
     def test_doc_records_threat_model_and_scan(self) -> None:
         text = DOC.read_text(encoding="utf-8").lower()
-        for token in ("threat model", "pip-audit", "dependency", "unresolved", "0 unresolved"):
+        for token in ("threat model", "pip-audit", "dependency", "unresolved",
+                      "0 unresolved", "trufflehog", "gitleaks", "secret scan"):
             assert token in text, f"security audit must record {token!r}"

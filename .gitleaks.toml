@@ -1,0 +1,28 @@
+# gitleaks configuration — AgentPolicy v0.1.0
+#
+# The default ruleset is extended; every allowance below is a *documented*
+# benign match (a scanner false positive, an intentional test fixture, or a
+# non-credential identifier in sanitized field-test evidence). A real secret is
+# never allowlisted — it is fixed. See docs/release/v0.1.0/SECURITY_AUDIT.md.
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Intentional secret fixtures the output inspector must detect (fake, non-functional)"
+paths = [
+  '''tests/test_output_inspector\.py$''',
+]
+
+[[allowlists]]
+description = "gitleaks generic-api-key false positive: a variable name, not a secret"
+regexTarget = "match"
+regexes = [
+  '''temperature\s*=\s*TEMPERATURE''',
+]
+
+[[allowlists]]
+description = "Sanitized field-test LLM evidence: the only match is a Codex prompt-cache/session UUID (an identifier, not a credential); secrets are already masked by the capture sanitizer"
+paths = [
+  '''field-test/.*/results/.*/artifacts/llm/.*\.json$''',
+]

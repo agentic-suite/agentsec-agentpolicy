@@ -39,6 +39,18 @@ consumer gets from `pip install agentsec-agentpolicy`:
 
 _None._
 
+## Secret scan (trufflehog + gitleaks)
+
+**trufflehog** (filesystem, verified-only) + **gitleaks** (git history, full
+ruleset against `.gitleaks.toml`). Every allowance in that file is a
+*documented* benign match (an intentional test fixture, a scanner false
+positive, or a non-credential identifier in sanitized field-test evidence); a
+real secret is never allowlisted.
+
+### Confirmed secrets
+
+_None._ Both scanners ran: **trufflehog** (filesystem, `--only-verified`) and **gitleaks** (git history, full ruleset with the documented `.gitleaks.toml` allowlist).
+
 ## Verdict
 
 **0 unresolved findings.** — the release condition ("0 unresolved findings") is met.
@@ -48,4 +60,6 @@ _None._
 ```sh
 make release-dry-run                # SBOM + SHA256SUMS + provenance
 python3 scripts/release/security_audit.py
+trufflehog filesystem . --only-verified
+gitleaks detect --source .          # uses .gitleaks.toml
 ```
