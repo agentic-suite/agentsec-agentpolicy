@@ -320,7 +320,37 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Gate:** suite **1489 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
 - **Items closed:** 20.D0 · 20.1–20.3 · 20.T · 20.C · 20.L · 20.CR · 20.D.
 
-**⬜ M21 — Narrow-only layering & action-space coverage report.** Next.
+**M21 — Narrow-only layering & action-space coverage report — ✅ closed (2026-11-01).**
+
+- **Commit:** see `21.CI`. `agentpolicy/layering.py` (`compose` = the intersection: rules concatenated parent-first
+  so a deny in any layer wins; `narrow_only_violations` reuses `lint._broadens` — one containment definition);
+  `agentpolicy/coverage.py` (four quadrants; `gap_unexplained` = dangerous minus out-of-scope); `check --parent`
+  (a widening overlay fails at PR time, naming the rule); `report coverage`.
+- **Gate:** suite **1545 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 21.D0 · 21.1–21.3 · 21.T · 21.C · 21.L · 21.CR · 21.D.
+
+**M22 — Self-attack pack & allow-justification — ✅ closed (2026-11-01).**
+
+- **Commit:** see `22.CI`. `packs/self-attack/` (a normal pack attacking agentpolicy's own surface — tamper /
+  bypass / replay / budget-split / audit-truncation / event-forgery, with a benign control fixture);
+  `agentpolicy/selfattack.py` + `self-attack check` + a Makefile target + a CI job (a miss blocks the release);
+  allow-justification (`types.Decision.matched_rule` + `clause`, the `Verdict` carries the matched rule, the
+  audit entry names it, and approvals flag always-allowed patterns).
+- **Gate:** suite **1545 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 22.D0 · 22.1–22.3 · 22.T · 22.C · 22.L · 22.CR · 22.D.
+
+**M23 — NFRs, hardening, parity closure & deferred-optional — ✅ closed (2026-11-01).**
+
+- **Commit:** see `23.CI`. `agentpolicy/nfr.py` (engine p99 < 100 ms, Python 3.10+, macOS/Linux, local-first);
+  `faultinject.py` (a fault at every engine stage → a reasoned deny, never an abort); `sandbox.py`
+  (env stripping, trust levels, `--network none`, audited pack runs); `cost.py` + `backtest --max-cost`
+  (abort + report); `parity.py` (absorption ledger, `parity_gate` green == no silent drops); `claims.py`
+  (claims linter vs the computed matrix) + `compliance claims`; `deferred.py` (R13/R14/R31 explicitly waived
+  with reasons).
+- **Gate:** suite **1545 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 23.D0 · 23.1–23.7 · 23.T · 23.C · 23.L · 23.CR · 23.D.
+
+**⬜ M24 — Field tests.** Next (M25 tags `v0.1.0`).
 
 ## Porting map (predecessor → agentpolicy)
 

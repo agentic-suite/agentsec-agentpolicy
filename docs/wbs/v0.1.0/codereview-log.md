@@ -411,3 +411,53 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
     `$GITHUB_STEP_SUMMARY`; coverage window + limits are stated on every report. **Resolved.**
 - **Gates:** suite **1489 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
 - **Resolution:** all findings resolved; no open items.
+
+### M21 — Narrow-only layering & action-space coverage report (21.CR)
+
+- **Scope:** layered composition + the narrow-only invariant (`layering.py`, `cli/check.py --parent`), and the
+  coverage report (`coverage.py`, `cli/report.py coverage`).
+- **Findings & resolutions:**
+  - *A second rule-containment definition would have drifted from lint's* → `narrow_only_violations` reuses
+    `lint._broadens` (one definition). **Resolved.**
+  - *Layering had to be enforced at load, not at decide* → the invariant runs in `check --parent` and fails the
+    PR (exit 2) naming the widening rule; composition is deterministic. **Resolved.**
+  - *The dangerous quadrant had to be honest* → `gap_unexplained` counts uncovered+exercised verbs minus the
+    explicitly out-of-scope ones; the honesty contract is zero. **Resolved.**
+  - *`check._run` assumed the new `parent` field* → it reads `getattr(args, "parent", None)`, so the direct
+    handler-call tests are unaffected. **Resolved.**
+- **Gates:** suite **1545 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open items.
+
+### M22 — Self-attack pack & allow-justification (22.CR)
+
+- **Scope:** the `self-attack` pack + gate (`selfattack.py`, `cli/ci.py`, Makefile, `ci.yml`), and
+  allow-justification (`types.Decision.matched_rule`/`clause`, `decide.py`, `explain.py`, `approvals.py`).
+- **Findings & resolutions:**
+  - *A bespoke self-attack harness would not be dogfoodable* → the pack is a normal pack (same format/runner);
+    the gate only adds miss detection. **Resolved.**
+  - *A pack that denies everything would falsely pass* → a benign control fixture must remain allowed.
+    **Resolved.**
+  - *Allows were justification-less* → `types.Decision.clause` mirrors the Cedar `Explanation.clause`
+    (`matched_rule or reason_code`); a band decision's clause is its reason-code class, so no outcome is
+    justification-less, and the M6 audit entry now carries the permitting rule + version. **Resolved.**
+  - *Adding `matched_rule` changed the decision JSON shape* → the dependent shape test moved with the work
+    (additive field). **Resolved.**
+- **Gates:** suite **1545 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open items.
+
+### M23 — NFRs, hardening, parity closure & deferred-optional (23.CR)
+
+- **Scope:** `nfr.py`, `faultinject.py`, `sandbox.py`, `cost.py` (+ `backtest --max-cost`), `parity.py`,
+  `claims.py` (+ `compliance claims`), `deferred.py`.
+- **Findings & resolutions:**
+  - *The untrusted-pack sandbox had to strip secrets correctly* → the secret-marker comparison was
+    case-sensitive against an upper-cased key and let `AWS_SECRET_ACCESS_KEY` through; fixed to compare the
+    lower-cased key. **Resolved; covered by the sandbox tests.**
+  - *Fault injection must not mask real bugs* → `fault_hook` raises an `AgentPolicyError` subclass, so only
+    the fail-closed path converts it (an unexpected `TypeError` still surfaces). **Resolved.**
+  - *Deferred-optional must not be a silent drop* → `deferred_gate` fails any item with neither an
+    implementation nor a written waiver reason; R13/R14/R31 are waived with reasons. **Resolved.**
+  - *Claims could drift from the computed matrix* → `claims.lint_claims` rejects a claim on an unknown or
+    uncovered control; wired as `compliance claims`. **Resolved.**
+- **Gates:** suite **1545 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open items.
