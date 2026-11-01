@@ -1,7 +1,7 @@
 """M25 25.5 — versioning policy + release notes + compatibility matrix.
 
 The release must carry a **normative versioning policy** and release notes that
-include a **harness × enforcer compatibility matrix**. These tests lock both.
+include a **harness x enforcer compatibility matrix**. These tests lock both.
 """
 
 from __future__ import annotations
@@ -32,6 +32,6 @@ class TestReleaseNotesCompatibility:
     def test_notes_carry_a_compatibility_matrix(self) -> None:
         text = NOTES.read_text(encoding="utf-8").lower()
         assert "compatibility matrix" in text
-        # harness × enforcer axes must both be named
+        # harness x enforcer axes must both be named
         for token in ("claude code", "codex", "mcp", "agentgate"):
             assert token in text, f"compatibility matrix must name {token!r}"
