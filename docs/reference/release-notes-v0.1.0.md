@@ -118,8 +118,9 @@ python examples/demo-agent/demo_adversarial.py
 - **OWASP Agentic Top 10**: 5/10 risks covered in v0.1.0; remaining 5 (arg
   validation, rate limiting, output inspection depth, child delegation,
   tool hiding) target v0.2+.
-- **OpenSSF Silver / Sigstore / PyPI publish** are staged for this release
-  gate and not yet live.
+- **OpenSSF Silver** and **Sigstore signing** are staged for a later release
+  gate and are not yet live. **PyPI publish is live:** `pip install
+  agentsec-agentpolicy` → `https://pypi.org/project/agentsec-agentpolicy/0.1.0/`.
 - **Live replan** field sweep needs a local LLM endpoint (omlx); the
   scripted (CI-safe) path is the default.
 

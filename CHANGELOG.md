@@ -16,6 +16,11 @@ The first stable release: a local-first **Cedar** policy decision point for AI-a
 outcomes and full field-test evidence.
 
 ### Added
+- **OSS scaffold** — community files (README, CONTRIBUTING, LICENSE, SECURITY, CoC).
+- **M23 — SWE-bench integration** — `SWEBenchToolMapper` classifies raw coding-agent tool
+  calls, `SWEBenchGuard` enforces policy per call with a per-task decision trace,
+  `SWEBenchRunner` replays task fixtures, and `agentpolicy swebench` runs a 5-task benchmark
+  with violations flagged (#135, F-92).
 
 - **M0 — ported the predecessor policy engine.** The `agent-tooltrust` codebase (MIT) now lives here as the
   `agentpolicy` package and CLI (distribution `agentsec-agentpolicy`), renamed from the predecessor namespace:
@@ -51,6 +56,14 @@ outcomes and full field-test evidence.
   is reachable, matching `test_docker_console`.
 - `opentelemetry-api` bumped for `CVE-2026-114603`; the shipped runtime dependency closure scans clean
   ([security audit](docs/release/v0.1.0/SECURITY_AUDIT.md)).
+
+### Install
+
+```sh
+pip install agentsec-agentpolicy     # 0.1.0
+```
+
+Published to PyPI: <https://pypi.org/project/agentsec-agentpolicy/0.1.0/>.
 
 ## [0.2.0] - 2026-08-15
 
@@ -169,16 +182,6 @@ outcomes and full field-test evidence.
 - OWASP Agentic Top 10: 5/10 covered in v0.1.0; remaining 5 target v0.2+.
 - OpenSSF Silver/Sigstore and PyPI publication are staged for the release
   gate. Live-replan field sweep requires a local LLM endpoint (omlx).
-
-## [Unreleased]
-
-### Added
-- Initial project scaffold with OSS community files
-- M23: SWE-bench integration (`agentpolicy.integrations.swe_bench`) —
-  `SWEBenchToolMapper` classifies raw coding-agent tool calls,
-  `SWEBenchGuard` enforces policy per call with a per-task decision trace,
-  `SWEBenchRunner` replays task fixtures, and `agentpolicy swebench` runs a
-  5-task benchmark with violations flagged (#135, F-92)
 
 ## [0.2.0] - planned (on `rel-0.2.0`)
 
