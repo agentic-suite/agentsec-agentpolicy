@@ -530,13 +530,10 @@ CASES: list[dict[str, str]] = [
          'PreToolUse hook, covered at the agentgate/agentseatbelt lower layer" "PRD 19 Tier-1"\n'
          'fi\n'
          'ft_finalize\n')},
-    {"id": "FT-T1-CURSOR", "title": "Cursor permissions.json compiled by policyweave",
-     "layer": "host", "llm": "no", "requires": "python", "prd": "R2,PRD 19", "cuj": "2,16",
-     "class": "P/F|D", "suite": "s18-tier1",
-     "steps": _host(
-         _pytest("export-compile", "tests/test_m9_lint_export.py"),
-         'ft_declare "no Cursor host on the box (GUI IDE required); policyweave compile-out proven by the '
-         'export test, harness wire-up declared" "PRD 19 Tier-1"\n')},
+    # NOTE (2026-11-01): FT-T1-CURSOR and FT-T1-GEMINI were removed from the registry —
+    # untestable on this box (Cursor: GUI IDE, no headless surface; Gemini CLI: gemma
+    # local routing is classifier-only, main loop needs sunset Google OAuth). Neither is
+    # claimed as supported at v0.1.0 (plan §7.7, PRD 19).
     {"id": "FT-T1-CODEX", "title": "Codex CLI config/hook -> evaluate",
      "layer": "host", "llm": "yes", "requires": "python", "prd": "R28,PRD 19", "cuj": "2",
      "class": "P/F|D", "suite": "s18-tier1",
@@ -551,24 +548,6 @@ CASES: list[dict[str, str]] = [
          'else\n'
          '  ft_declare "Codex CLI or local oMLX endpoint absent; reachable via its config/sandbox surface" "PRD 19 Tier-1"\n'
          'fi\n'
-         'ft_finalize\n')},
-    {"id": "FT-T1-GEMINI", "title": "Gemini CLI config/hook (MCP-native via agentgate)",
-     "layer": "host", "llm": "no", "requires": "python", "prd": "R28,PRD 19", "cuj": "2,14",
-     "class": "P/F|D", "suite": "s18-tier1",
-     "steps": (
-         'if _ft_gemini_loop_local_ok; then\n'
-         '  ft_llm_up\n'
-         'else\n'
-         '  ft_declare "Gemini CLI headless loop CANNOT run box-local: the gemma router is a '
-         'CLASSIFIER ONLY (LiteRT-LM :9379 serves gemma3-1b for intent routing, not the main loop); '
-         'the main LLM goes to Google Code Assist OAuth, which is SUNSET for this CLI build '
-         '(IneligibleTierError -> migrate to Antigravity). Hosted OAuth would violate the no-hosted-models '
-         'pin. Parity + MCP/agentgate surface proven locally below" "PRD 19 Tier-1"\n'
-         'fi\n'
-         'ft_assert "t1-gemini-evaluate-parity" bash -c \'DEC=$("$FT_PY" "$REPO_ROOT/scripts/fieldtest/t1_evaluate.py" '
-         '--tool execute_shell --action delete --env production --data restricted --agent gemini-t1 '
-         '--policy "$REPO_ROOT/scripts/fieldtest/t1_policy.yaml"); '
-         'test "$(printf "%s" "$DEC" | "$FT_PY" -c "import json,sys;print(json.load(sys.stdin)[\\"decision\\"])")" = deny && echo PARITY-OK\'\n'
          'ft_finalize\n')},
 ]
 

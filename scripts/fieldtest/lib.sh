@@ -445,21 +445,10 @@ _ft_llm_reachable() {
     || curl -sf --max-time 5 "${FT_LLM_BASE_URL%/}/v1/models" >/dev/null 2>&1
 }
 
-# Gemini CLI: can its headless agent loop run box-local? Evidence so far says NO —
-# the gemma router (LiteRT-LM :9379) is a CLASSIFIER ONLY (routes intent prompts to
-# gemma3-1b); the main LLM still goes to Google Code Assist OAuth, which is sunset
-# for the installed CLI build (IneligibleTierError -> "migrate to Antigravity"), and
-# the hosted path would violate the no-hosted-models pin. Re-derive by probing: the
-# guard passes only if a headless gemini run completes locally within a short budget.
-_ft_gemini_loop_local_ok() {
-  command -v gemini >/dev/null 2>&1 || return 1
-  local out
-  out="$(mktemp)"
-  GEMINI_CLI_TRUST_WORKSPACE=true timeout 45 gemini -p "say ok" </dev/null >"$out" 2>&1 || { rm -f "$out"; return 1; }
-  grep -qiE "IneligibleTierError|critical error" "$out" && { rm -f "$out"; return 1; }
-  rm -f "$out"
-  return 0
-}
+# NOTE (2026-11-01): the Gemini CLI Tier-1 case (FT-T1-GEMINI) was removed — the
+# gemma router is classifier-only and the main loop needs sunset Google OAuth;
+# Cursor (GUI IDE) was removed likewise. Neither is claimed as supported at v0.1.0
+# (plan §7.7, PRD 19).
 
 ft_llm_up() {
   export FT_WITH_LLM=1

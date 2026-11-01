@@ -172,6 +172,8 @@ exclude = [
 target-version = "py311"
 src = ["src", "tests"]
 line-length = 100
+# field-test results carry third-party downloads (codex-home skills etc.) — never lint vendored material
+exclude = ["field-test", "tests/field/agents/vendor"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "S", "RUF"]

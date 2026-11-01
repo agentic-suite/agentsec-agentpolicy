@@ -120,7 +120,7 @@ The predecessor used Docker per case. agentpolicy is **local-first, in-process**
 | **L1 — Cedar five-outcome core** | `cedar.CedarEvaluator` + shaper + `ServerCore` | in-process | **acceptance-matrix fixtures** (`tests/fixtures/acceptance_matrix.yaml`) + **pack replays** (`pack test`) + `CedarEvaluator` cases |
 | **L2 — Delivery surfaces** | library (`api.evaluate`), CLI, MCP server, HTTP PDP (AuthZEN) | in-process / loopback server | surface-parity cases |
 | **L3 — Live frameworks** | the 10 framework adapters against vendored repos + OMLX | `scripts/download_field_agents.sh` + `run_field_agents.py` | live/self-test sweep |
-| **L3b — Tier-1 harnesses** | Claude Code / Cursor / Codex CLI / Gemini CLI via their hook/config surfaces | the harness on the box, or `agentpolicy export` → policyweave artifacts | §S18 |
+| **L3b — Tier-1 harnesses** | Claude Code / Codex CLI via their hook/config surfaces | the harness on the box | §S18 |
 | **Docker (optional)** | the HTTP PDP / MCP server container | `docker compose up` | `docker-test` (smoke + SSE) |
 
 **Driver note (load-bearing):** `agentpolicy field-test` (`FieldTestRunner`) evaluates through the **legacy
@@ -430,11 +430,17 @@ frameworks present, `t1` = a Tier-1 coding-agent harness on the box, `docker` = 
 | ID | Capability | PRD/ticket | CUJ | Env | Driver | Pass condition | Class |
 |---|---|---|---|---|---|---|---|
 | FT-T1-CLAUDE | Claude Code `PreToolUse` hook → `agentpolicy evaluate` | R28, PRD 19 | 2 | t1 | Claude Code hook | a denied call returns a structured, model-consumable rejection the agent replans around; an `ask` pauses the loop; every decision emits an audit entry | P/F\|D |
-| FT-T1-CURSOR | Cursor `permissions.json` compiled by policyweave from `agentpolicy export` | R2, PRD 19 | 2,16 | t1 | `export` → policyweave | the compiled artifact governs Cursor; drift between the Cedar source and the compiled format is flagged | P/F\|D |
 | FT-T1-CODEX | Codex CLI config/hook surface → `agentpolicy evaluate` / agentgate | R28, PRD 19 | 2 | t1 | Codex config + CLI | a governed call is decided pre-execution; a deny surfaces as a structured rejection | P/F\|D |
-| FT-T1-GEMINI | Gemini CLI config/hook surface (MCP-native via agentgate) | R28, PRD 19 | 2,14 | t1 | Gemini config + MCP | same decision as the in-process path for the same call | P/F\|D |
 
-**Tier-1 coverage rule (PRD 19):** **≥2 of the 4 must be exercised end-to-end** on the box (Class `P/F` once
+> **Scope note (2026-11-01):** `FT-T1-CURSOR` and `FT-T1-GEMINI` were **removed from the plan** — not claimed as
+> supported at v0.1.0. Cursor is a GUI IDE with no headless/evidence-capturing test surface on this box; the
+> Gemini CLI's local gemma routing is classifier-only while its main loop needs Google Code Assist OAuth,
+> which is sunset for this CLI build (`IneligibleTierError`), and the hosted path violates the no-hosted-models
+> pin. They are documented as **not supported** (see PRD 19), not declared-tested. `agentpolicy export`
+> (policyweave) itself remains covered by `FT-EXPORT`.
+
+**Tier-1 coverage rule (PRD 19):** **2 of 2** shipped Tier-1 harnesses (Claude Code, Codex CLI) must be
+exercised end-to-end on the box (Class `P/F` once
 exercised); the remainder may be **declared** with the lower-layer coverage named (agentseatbelt/agentgate) and
 the reachability documented — the release compatibility table states honest coverage, per PRD 19 and DD-30.
 GitHub Copilot (the 5th Tier-1) has a closed hook surface; it is covered at the confinement layer
@@ -528,13 +534,14 @@ the matrix and in `scenarios.yaml`.
   **structured, model-consumable rejection** the agent replans around (DD-11); every decision emits an audit
   entry. Artifacts: the harness transcript + audit trail. Fallback (no Claude Code on the box): **declare** with
   the reachability doc (agentgate/agentseatbelt lower-layer coverage) + the CI deterministic matrix as evidence.
-- **FT-T1-CURSOR — policyweave compile-out (flagship, CUJ-16).** Steps: `agentpolicy export` → policyweave →
-  `permissions.json`; run a governed + a denied call under Cursor. Assertions: the compiled artifact governs;
-  **drift between the Cedar source and the compiled format is flagged**; the same call yields the same decision
-  as the in-process path. Fallback: declare with the export artifact as evidence.
-- **FT-T1-CODEX / FT-T1-GEMINI.** Steps: wire the Codex/Gemini config or MCP surface (via agentgate) to
-  `agentpolicy evaluate`; run the same three-call triple. Assertions: same decision as the in-process path
+- **FT-T1-CODEX — Codex CLI sandbox surface.** Steps: wire the Codex config surface
+  (`config.toml` → oMLX provider) to `agentpolicy evaluate`/agentgate; run the governed-call triple under
+  `codex exec`. Assertions: same decision as the in-process path
   (parity); deny surfaces as a structured rejection. Fallback: declare with the lower-layer coverage named.
+- **Removed from scope (2026-11-01):** FT-T1-CURSOR (GUI IDE — no headless, evidence-capturing test surface on
+  this box; `agentpolicy export` compile-out remains covered by `FT-EXPORT`) and FT-T1-GEMINI (gemma local
+  routing is classifier-only; the CLI main loop needs sunset Google OAuth; hosted would violate the
+  no-hosted-models pin). Neither is claimed as supported at v0.1.0.
 
 ---
 
@@ -545,7 +552,7 @@ Every CUJ is proven end to end by ≥1 case; flagship journeys map to several. N
 | CUJ | Journey | Proving cases |
 |---|---|---|
 | CUJ-1 | Evaluate one action (five outcomes) | FT-DEC-ALLOW/DENY/ASK/RATE/REDACT/UNKNOWN, FT-DEC-CONTEXT |
-| CUJ-2 | Wire into a harness/enforcer | FT-SURFACE-PARITY, FT-ADAPTERS, FT-FWK-LG/PAI, FT-T1-CLAUDE/CURSOR/CODEX, FT-DOCKER-SMOKE |
+| CUJ-2 | Wire into a harness/enforcer | FT-SURFACE-PARITY, FT-ADAPTERS, FT-FWK-LG/PAI, FT-T1-CLAUDE/CODEX, FT-DOCKER-SMOKE |
 | CUJ-3 | Understand *why* | FT-EXPLAIN-CLAUSE, FT-EXPLAIN-ACTIONABLE |
 | CUJ-4 | Adopt in shadow mode | FT-SHADOW, FT-CALIBRATION, FT-CANARY, FT-REPLAN |
 | CUJ-5 | Extend with a rule pack | FT-PACK-LAUNCH, FT-PACK-VALIDATE |
@@ -557,9 +564,9 @@ Every CUJ is proven end to end by ≥1 case; flagship journeys map to several. N
 | CUJ-11 | Adversarial resilience | FT-NORM-OBFUSCATION, FT-DISPATCHER, FT-ADV-REPLAY/FLOOD, FT-DENYSTORM, FT-ARG-VALIDATE, FT-HTTP-GUARD |
 | CUJ-12 | Budget the blast radius | FT-BUDGET-EXHAUST, FT-BUDGET-STATE, FT-HALT |
 | CUJ-13 | Block an exfil chain | FT-EXFIL-SINK |
-| CUJ-14 | Ask the gate from anywhere | FT-AUTHZEN, FT-MCP-ASK, FT-SURFACE-PARITY, FT-T1-GEMINI |
+| CUJ-14 | Ask the gate from anywhere | FT-AUTHZEN, FT-MCP-ASK, FT-SURFACE-PARITY |
 | CUJ-15 | Redact a secret | FT-DEC-REDACT, FT-REDACT-RECEIPT, FT-ARG-SECRET |
-| CUJ-16 | Compile one policy everywhere | FT-EXPORT, FT-T1-CURSOR (policyweave compile-out) |
+| CUJ-16 | Compile one policy everywhere | FT-EXPORT (policyweave compile-out) |
 | CUJ-17 | Lint the policy | FT-LINT |
 | CUJ-18 | Rate-limit a runaway | FT-BUDGET-RETRY, FT-BUDGET-BURST |
 | CUJ-19 | Step-up on scope escalation | FT-STEPUP, FT-SCOPE |
@@ -594,9 +601,11 @@ Extend the existing harness — do **not** fork it.
 2. **Scenario matrix (`24.2`, #257).** Append the S1–S18 scenarios to `tests/field/scenarios.yaml` (and the
    L1/Tier-1 drivers for the CLI/server/harness cases); every outcome (allow/deny/ask/rate-limit/redact) +
    fail-closed + replan is exercised. Predecessor 30 scenarios are retained verbatim.
-3. **Framework + Tier-1 coverage (`24.3`, #258).** Prove **≥2 Tier-1 harnesses exercised end-to-end** through
-   their native hook/config surfaces (§S18) **and ≥3 framework adapters** in their native loops (§S16, PRD 19);
-   the roster is 10 frameworks × 10 agents; Copilot documented as lower-layer covered, never claimed.
+3. **Framework + Tier-1 coverage (`24.3`, #258).** Prove **both shipped Tier-1 harnesses (Claude Code, Codex CLI)
+   exercised end-to-end** through their native hook/config surfaces (§S18) **and ≥3 framework adapters** in
+   their native loops (§S16, PRD 19); the roster is 10 frameworks × 10 agents; Copilot documented as
+   lower-layer covered, never claimed. Cursor and Gemini CLI are **not claimed as supported** (untestable
+   surfaces on this box — see §7.7).
 4. **Adversarial + self-attack (`24.4`, #259).** Run the adversarial sub-matrix and `self-attack check` in the
    field run; every attempt blocks.
 5. **Report (`24.5`, #260).** Publish `docs/field-test/v0.1.0/FIELD_TEST_REPORT.md` — scenarios × frameworks ×
@@ -646,9 +655,10 @@ uv run agentpolicy field-test --replan scripted --report none
 uv run python scripts/run_field_agents.py langgraph  --plan B
 # … pydanticai crewai openai-agents autogen smolagents llamaindex adk swebench agentpolicy-mcp
 
-# L3b — Tier-1 harnesses (≥2 of 4 exercised end-to-end; rest declared with lower-layer coverage named)
-# Claude Code: PreToolUse hook → `agentpolicy evaluate`; Cursor: `agentpolicy export` → policyweave → permissions.json
-# Codex / Gemini CLI: config/hook or MCP surface via agentgate
+# L3b — Tier-1 harnesses (both shipped: Claude Code + Codex CLI exercised end-to-end)
+# Claude Code: PreToolUse hook → `agentpolicy evaluate`
+# Codex CLI: config surface (Responses API) → sandbox triple + parity
+# (Cursor and Gemini CLI are NOT supported/tested at v0.1.0 — GUI IDE / sunset-OAuth; see §7.7)
 
 # docker legs (optional)
 make docker-test        # smoke + SSE

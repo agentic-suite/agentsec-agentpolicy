@@ -1,3 +1,0 @@
-{"name":"export-compile","ok":true,"grounded":true,"cmd":"/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_m9_lint_export.py"}
-{"name":"declared","ok":true,"limitation":"no Cursor host on the box; policyweave compile-out proven by the export test, harness wire-up declared","release_gate_item":"PRD 19 Tier-1"}
-{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}

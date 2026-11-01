@@ -1056,17 +1056,6 @@
     "class": "P/F|D"
   },
   {
-    "id": "FT-T1-CURSOR",
-    "title": "Cursor permissions.json compiled by policyweave",
-    "suite": "s18-tier1",
-    "layer": "host",
-    "llm": "no",
-    "requires": "python",
-    "prd": "R2,PRD 19",
-    "cuj": "2,16",
-    "class": "P/F|D"
-  },
-  {
     "id": "FT-T1-CODEX",
     "title": "Codex CLI config/hook -> evaluate",
     "suite": "s18-tier1",
@@ -1075,17 +1064,6 @@
     "requires": "python",
     "prd": "R28,PRD 19",
     "cuj": "2",
-    "class": "P/F|D"
-  },
-  {
-    "id": "FT-T1-GEMINI",
-    "title": "Gemini CLI config/hook (MCP-native via agentgate)",
-    "suite": "s18-tier1",
-    "layer": "host",
-    "llm": "no",
-    "requires": "python",
-    "prd": "R28,PRD 19",
-    "cuj": "2,14",
     "class": "P/F|D"
   }
 ]
