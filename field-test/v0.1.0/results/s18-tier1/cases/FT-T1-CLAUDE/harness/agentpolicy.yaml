@@ -1,0 +1,21 @@
+version: 0.1.0-t1
+posture: balanced
+rules:
+  - decision: deny
+    tool: execute_shell
+    action: delete
+    environment: production
+    data_class: restricted
+    reason: destructive op on production restricted data
+  - decision: escalate
+    tool: execute_shell
+    action: write
+    environment: production
+    data_class: internal
+    reason: production write needs approval
+  - decision: allow
+    tool: execute_shell
+    action: read
+    environment: staging
+    data_class: internal
+    reason: benign staging read

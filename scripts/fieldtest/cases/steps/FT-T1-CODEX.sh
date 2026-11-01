@@ -1,2 +1,11 @@
-ft_declare "Codex CLI not installed on the box; reachable via its config/hook surface" "PRD 19 Tier-1"
+if command -v codex >/dev/null 2>&1 && _ft_llm_reachable; then
+  ft_llm_up
+  ft_cmd "t1-codex-config" bash -c 'CODEX_HOME="$FT_CASE_DIR/artifacts/codex-home" mkdir -p "$CODEX_HOME" && printf '"[model_providers.omlx]\nname = \"omlx\"\nbase_url = \"http://127.0.0.1:8000/v1\"\nwire_api = \"chat\"\n"\n[model]
+provider = \"omlx\"
+name = \"Qwen3-4B-Instruct-2507-4bit\"
+' > "$CODEX_HOME/config.toml" && echo CONFIG-OK'
+  ft_cmd "t1-codex-evaluate-parity" bash -c 'DEC=$("$FT_PY" "$REPO_ROOT/scripts/fieldtest/t1_evaluate.py" --tool execute_shell --action delete --env production --data restricted --agent codex-t1 --policy "$REPO_ROOT/scripts/fieldtest/t1_policy.yaml"); test "$(printf "%s" "$DEC" | "$FT_PY" -c "import json,sys;print(json.load(sys.stdin)[\"decision\"])")" = deny && echo PARITY-OK'
+else
+  ft_declare "Codex CLI or local oMLX endpoint absent; reachable via its config/hook surface" "PRD 19 Tier-1"
+fi
 ft_finalize

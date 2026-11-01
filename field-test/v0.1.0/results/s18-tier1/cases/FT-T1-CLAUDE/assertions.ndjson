@@ -1,2 +1,7 @@
-{"name":"declared","ok":true,"limitation":"Claude Code not installed on the box; reachable via the PreToolUse hook, covered at the agentgate/agentseatbelt lower layer until exercised on a harness host","release_gate_item":"PRD 19 Tier-1"}
+{"name":"llm-endpoint-reachable","ok":true}
+{"name":"t1-claude-triple","ok":true,"grounded":true,"cmd":"bash /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/t1_claude.sh /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/field-test/v0.1.0/results/s18-tier1/cases/FT-T1-CLAUDE"}
+{"name":"t1-claude-allow-executed","ok":true,"grounded":true,"cmd":"bash -c test -s \"$FT_CASE_DIR/artifacts/claude-call1.txt\" && echo EXECUTED"}
+{"name":"t1-claude-ask-paused","ok":true,"grounded":true,"cmd":"bash -c test ! -e \"$FT_CASE_DIR/harness/work/ft-t1-side-effect.txt\" && echo PAUSED"}
+{"name":"t1-claude-audit-trail","ok":true,"grounded":true,"cmd":"bash -c test \"$(wc -l < \"$FT_CASE_DIR/artifacts/audit.ndjson\")\" -ge 3 && echo AUDIT-OK"}
+{"name":"t1-claude-captured","ok":true,"grounded":true,"cmd":"capture: 6 request(s) + 6 response(s)"}
 {"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}

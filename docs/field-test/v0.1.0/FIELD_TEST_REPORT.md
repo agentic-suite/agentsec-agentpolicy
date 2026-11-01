@@ -8,9 +8,10 @@
 > **Status: IN PROGRESS (s16 interrupted mid-suite).** This is a **hand-maintained** journal, updated as the sweep runs — not a
 > generated scoreboard. Counts here are read from the committed `field-test/v0.1.0/results/` verdicts and written
 > by hand; nothing is auto-overwritten.
-> **Current:** **85 ✅ PASS · 2 ❌ FAIL · 4 ◆ declared · 8 ▫ not run** (91/99 verdicts on disk). The deterministic
+> **Current:** **86 ✅ PASS · 2 ❌ FAIL · 3 ◆ declared · 8 ▫ not run** (91/99 verdicts on disk). The deterministic
 > matrix ran green (**2,988/2,988 cells, 36 scenarios × 83 agents**); suites `s0`–`s15` + `s17` are complete and
-> deep-verified; **`s16-frameworks` is mid-run** (3 of 11 cases done; the run was interrupted — see the journal).
+> deep-verified; **`FT-T1-CLAUDE` now runs LIVE** (Claude Code ↔ local oMLX, no hosted model — Anthropic-format
+> endpoint, no Anthropic key); **`s16-frameworks` is mid-run** (3 of 11 done; interrupted — see the journal).
 > **Structure:** follows the format of `agentdrill`/`agentwatch` v0.2.0 `FIELD_TEST_REPORT.md` (a journal, not a
 > scoreboard), pointed at [FIELD_TEST_PLAN.md](FIELD_TEST_PLAN.md) §6 (matrix), §8 (CUJ map), §12 (release gate),
 > §16 (R-map). This report states **honestly** what was tested, what passed, and what was **not** run.
@@ -19,24 +20,27 @@
 
 ## BLUF + Release Gate Verdict
 
-> **85 PASS · 2 FAIL · 4 declared · 8 not run (91/99 verdicts).** The harness, the Docker setup, the deep-verification
+> **86 PASS · 2 FAIL · 3 declared · 8 not run (91/99 verdicts).** The harness, the Docker setup, the deep-verification
 > gate, and the case matrix are **ready and exercised** (§What Was Tested). **`s0`–`s15` + `s17` are complete:
-> 85 cases PASS, every one deep-verified grounded, leak scan clean.** `s16-frameworks` is mid-run (interrupted):
-> `FT-FWK-LG` ✅ PASS with **17/17 LLM request/response pairs captured**; `FT-FWK-CREW`/`FT-FWK-PAI` ❌ FAIL
-> (live-model tool-call flakiness — every row that emitted a tool call decided correctly; see the journal); 8 cases
-> not yet run this sweep. The **OMLX model choice is benchmarked and applied** (§OMLX LLM Benchmark). No case is
+> 85 deterministic cases PASS, every one deep-verified grounded, leak scan clean.** **`FT-T1-CLAUDE` runs LIVE
+> and PASSes** — the real Claude Code agent loop driven by local oMLX (Anthropic `/v1/messages` format, no
+> hosted model, no Anthropic key), gated by a PreToolUse hook → `agentpolicy evaluate`, with 6 LLM
+> request/response pairs captured and an audit trail of all three decisions. `s16-frameworks` is mid-run
+> (interrupted): `FT-FWK-LG` ✅ PASS (**17/17 pairs**); `FT-FWK-CREW`/`FT-FWK-PAI` ❌ FAIL (live-model tool-call
+> flakiness — every row that emitted a tool call decided correctly; see the journal); 8 cases not yet run this
+> sweep. The **OMLX model choice is benchmarked and applied** (§OMLX LLM Benchmark). No case is
 > deleted, skipped, or optimistically marked — a case without a verdict reads **`not run`**, and a PASS without a
 > re-derived assertion is not counted as grounded. An LLM-involved case that does **not** log its request/response
-> pairs is now an automatic **FAIL** (deep-verification rule, §Gates).
+> pairs is an automatic **FAIL** (deep-verification rule, §Gates).
 
 ### Run status (s16 mid-run; 91/99 verdicts on disk)
 
 | | Count |
 |---|---|
-| PASS (raw verdict) | 85 |
-| — of which grounded (asserting check re-derived, not exit-0) | 85 (0 over-claimed) |
+| PASS (raw verdict) | 86 |
+| — of which grounded (asserting check re-derived, not exit-0) | 86 (0 over-claimed) |
 | FAIL | **2** (`FT-FWK-CREW`, `FT-FWK-PAI` — live-model tool-call flakiness; §Small-Group Run Journal) |
-| declared (P/F\|D, environment cannot provide — named) | 4 (all s18 Tier-1) |
+| declared (P/F\|D, environment cannot provide — named) | 3 (Cursor: GUI host absent; Codex + Gemini: not yet re-run through their new conditional steps) |
 | not run | 8 (all s16 — the interrupted suite) |
 | N/A (retired) | 0 |
 
@@ -52,7 +56,7 @@
 | 6 | p99 < 100 ms + fail-closed on every path | ✅ | FT-NFR-LATENCY + FT-FAILCLOSED PASS (grounded, s17) |
 | 7 | CI rejects a golden deny→allow flip | ✅ | FT-GOLDEN-FLIP PASS (grounded) |
 | 8 | Adversarial sub-matrix: zero crafted allows | ✅ | FT-ADV-* 8/8 PASS (grounded, s10) — 0 crafted allows |
-| 9 | Compatibility table published | ◑ | §S18 Tier-1 declared (4, each names lower-layer coverage); §S16 live frameworks mid-run (LG live ✅) |
+| 9 | Compatibility table published | ◑ | §S18: **Claude Code exercised LIVE (PASS)**; Cursor/Codex/Gemini declared with named limitations; §S16 live frameworks mid-run |
 | 10 | Security baseline + coverage matrix | ✅ | FT-COMPLIANCE-MATRIX PASS (grounded) |
 | 11 | Non-security engineer completes CUJ-8 in an afternoon | ▫ pending | user test |
 
@@ -141,6 +145,40 @@ Run one suite at a time (`run-suite.sh <suite>`, exit 0 each); each run's own de
 - **Not working (yet):** CREW/PAI tool-call flakiness (retry on next re-run); the 8 interrupted s16 cases.
 - **Captured evidence:** `field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-*/` — verdicts + 59 captured
   LLM pairs total (17 LG + 28 CREW + 14 PAI), all sanitized.
+
+### Group 20 — `FT-T1-CLAUDE` (Tier-1, LIVE Claude Code ↔ local oMLX) — **✅ PASS, deep-verified** (2026-11-01)
+The first Tier-1 case to run **live**: the real Claude Code agent loop (`claude -p`, v2.1.187), driven by the
+**box-local oMLX model** — no hosted model, **no Anthropic key** (oMLX natively serves the Anthropic
+`/v1/messages` format; `ANTHROPIC_BASE_URL` points the CLI at it).
+- **Run:** `run-case.sh FT-T1-CLAUDE` → **pass**, 7/7 assertions, `llm_captured: true`, exit 0.
+- **The wiring:** PreToolUse hook (`t1_claude.sh`) → `t1_evaluate.py` (a thin wrapper over the **shipped**
+  `load_policy` + `Engine.evaluate` — no fork of the decision path) → a deterministic policy
+  (staging read = allow, prod write = escalate, prod destructive = deny).
+- **The three-call triple, proven in the live loop:**
+  1. **allow → the command EXECUTED** (`cat notes.txt` ran; the transcript shows the real output);
+  2. **ask → the loop PAUSED**, side-effect file **NOT created** (the escalation surfaced as a structured
+     decision the agent asked about, not a crash);
+  3. **deny → structured rejection, agent replanned** (`rm -rf ft-t1-target` blocked with the policy reason).
+- **Audit trail:** every decision emitted an entry — `allow_low_risk` / `escalate_prod_write` /
+  `deny_critical_op`, each tied to its policy rule, in `artifacts/audit.ndjson`.
+- **LLM evidence:** **6 request + 6 response pairs** captured via `t1_proxy.py` (a stdlib logging proxy
+  between the CLI and oMLX — the CLI is a separate node process, so the in-process httpx hook cannot see
+  its traffic; without the proxy the case would correctly **fail** `ft_assert_llm_capture`). Sanitized, all-2xx.
+- **Findings / what it took (three real harness bugs found and fixed on the way):**
+  1. **cwd `.claude/settings.json` silently does not load** without trusted-directory state — the first
+     run's "blocks" came from Claude Code's *own* sandbox policy, not agentpolicy (0 audit entries exposed
+     it). Fix: pass `--settings` explicitly. *Lesson: a hook that never fires looks exactly like a hook
+     that allowed the call — assert on the audit trail, not on the block.*
+  2. **`ft_cmd` routes through the agentpolicy CLI** — wrong tool for raw shell; the step needed `ft_assert`.
+  3. **Policy decisions are `escalate`, not `ask`** — the hook maps agentpolicy `escalate` → Claude Code `ask`.
+- **What I fixed:** `t1_claude.sh` (harness), `t1_evaluate.py` (hook entrypoint), `t1_proxy.py` (capture
+  proxy), the `FT-T1-CLAUDE` registry entry (`llm: yes`, conditional live/declare steps), regenerated spec+step.
+- **Working:** Claude Code ↔ oMLX end-to-end — the flagship Tier-1 journey (CUJ-2/R28) is proven live.
+- **Not working / open:** Codex + Gemini steps re-drafted but **not yet proven or run** (still `declared`
+  from their prior runs); Cursor stays declared (GUI host absent); the 8 interrupted s16 cases.
+- **Captured evidence:** `field-test/v0.1.0/results/s18-tier1/cases/FT-T1-CLAUDE/` — verdict, assertions,
+  `artifacts/claude-call{1,2,3}.txt` (live transcripts), `artifacts/audit.ndjson` (3 decisions),
+  `artifacts/llm/` (6 pairs), `harness/` (policy + hook + settings, fully reproducible).
 
 ---
 
@@ -298,7 +336,7 @@ silent skip).
 | FT-NFR-PORT | s17-nfr | P/F | ✅ PASS | ✓ grounded |
 | FT-PARITY | s17-nfr | P/F | ✅ PASS | ✓ grounded |
 | FT-SANDBOX | s17-nfr | P/F | ✅ PASS | ✓ grounded |
-| FT-T1-CLAUDE | s18-tier1 | P/F\|D | ◆ declared | Claude Code not installed on the box; reachable via the PreToolUse hook |
+| FT-T1-CLAUDE | s18-tier1 | P/F\|D | ✅ PASS | ✓ grounded — LIVE Claude Code ↔ oMLX triple (allow/ask/deny) + 6 LLM pairs + audit trail |
 | FT-T1-CODEX | s18-tier1 | P/F\|D | ◆ declared | Codex CLI not installed on the box; reachable via its config/hook surface |
 | FT-T1-CURSOR | s18-tier1 | P/F\|D | ◆ declared | no Cursor host; policyweave compile-out proven by the export test |
 | FT-T1-GEMINI | s18-tier1 | P/F\|D | ◆ declared | Gemini CLI not installed on the box; reachable via its config/MCP surface |
@@ -349,7 +387,7 @@ silent skip).
 | FT-MCP-ASK | s9-surfaces | P/F\|D | ✅ PASS | ✓ grounded |
 | FT-SURFACE-PARITY | s9-surfaces | P/F | ✅ PASS | ✓ grounded |
 
-**Totals:** 85 ✅ PASS (all grounded, 0 over-claimed) · 2 ❌ FAIL · 4 ◆ declared · 8 ▫ not run.
+**Totals:** 86 ✅ PASS (all grounded, 0 over-claimed) · 2 ❌ FAIL · 3 ◆ declared · 8 ▫ not run.
 
 ---
 
@@ -375,8 +413,8 @@ silent skip).
 | s15-backtest | 2 | 2 | 0 | 0 | 0 |
 | s16-frameworks | 11 | 1 | 2 | 0 | 8 |
 | s17-nfr | 8 | 8 | 0 | 0 | 0 |
-| s18-tier1 | 4 | 0 | 0 | 4 | 0 |
-| **Total** | **99** | **85** | **2** | **4** | **8** |
+| s18-tier1 | 4 | 1 | 0 | 3 | 0 |
+| **Total** | **99** | **86** | **2** | **3** | **8** |
 
 ---
 
@@ -519,14 +557,58 @@ journal you're reading is the audit trail of exactly that: Groups 1–11 (s0–s
 1. Finish `s16-frameworks`: `FT-FWK-OAI` (interrupted mid-case) + `FT-FWK-ADK/AG2/LI/SMOL/SWE/MCP`,
    `FT-REPLAN` — 8 cases, not run this sweep.
 2. Retry `FT-FWK-CREW` / `FT-FWK-PAI` (expected to flip green like LG did); consider a per-row retry budget.
-3. Tier-1 harnesses need a harness host (s18 is declared, not done).
-4. Release gate: 9/11 green; item 9 (compatibility table) waits on s16 finishing; item 11 is a user test.
+3. Prove + run the new Codex/Gemini live steps (drafted, not yet exercised); Cursor needs a GUI host.
+4. Release gate: 9/11 green; item 9 (compatibility table) waits on s16 + s16-related work; item 11 is a user test.
+
+### 11. How FT-T1-CLAUDE was made to work locally — the full wiring story (for the write-ups)
+**Goal:** run the *real* Claude Code agent loop against the **box-local oMLX model** — no hosted LLM, no
+Anthropic key — with every tool call gated by `agentpolicy evaluate` and every decision captured as evidence.
+What it took, in the order the problems appeared:
+
+1. **The unlock: oMLX natively speaks Anthropic's `/v1/messages` format.** First probe returned `200` with a
+   real `msg_*` body (`content[]`, `stop_reason`, usage) — so Claude Code could point straight at it via
+   `ANTHROPIC_BASE_URL=http://127.0.0.1:8000`, `ANTHROPIC_AUTH_TOKEN=local`, `ANTHROPIC_MODEL=Qwen3-4B…`.
+   No translation proxy needed for the protocol, no key for the auth. *Verify the transport before wiring
+   anything on top of it.*
+2. **A silent non-firing hook looks exactly like a working policy (the dangerous one).** The first "run"
+   produced plausible block messages — but `audit.ndjson` had **0 entries**: Claude Code had never fired our
+   PreToolUse hook, and the blocks came from **Claude's own sandbox policy**, not agentpolicy. Root cause:
+   a cwd `.claude/settings.json` does not load without trusted-directory state. Fix: `--settings <file>`
+   passed explicitly. *Lesson: never validate a hook by its block messages — **assert on the audit trail.**
+   A hook that never fires is indistinguishable from an allow, until you count decisions.*
+3. **`ft_cmd` vs `ft_assert`.** The step ran `ft_cmd "…" bash …` — but `ft_cmd` routes through the
+   agentpolicy CLI, so `bash` was rejected as a subcommand. The whole first registered run "failed" on a
+   plumbing mismatch. Fix: raw shell assertions go through `ft_assert`.
+4. **The decision vocabulary: `escalate`, not `ask`.** The policy's rule decision for "needs a human" is
+   `escalate` (rule decisions are `allow | audit | escalate | deny`); Claude Code's permission vocabulary
+   calls it `ask`. The hook maps `escalate → ask` at the boundary. Earlier the policy itself failed schema
+   validation with `decision: ask` — the fail-closed parser caught it with a line:column pointer (I-1's
+   guard doing its job on our own config).
+5. **Separate-process traffic can't be hooked in-process.** The earlier httpx capture hook (built for the
+   Python framework runners) cannot see Claude Code's traffic — it's a node process. Fix: **`t1_proxy.py`**,
+   a stdlib `ThreadingHTTPServer` logging proxy between the CLI and oMLX that writes every
+   `/messages|/completions` pair to `artifacts/llm/call-NNNN-{request,response}.json`, sanitized. Without it,
+   `ft_assert_llm_capture` and the deep-verification LLM gate correctly **fail** the case — the evidence bar
+   was set first, the harness caught up to it.
+6. **Prove the pieces standalone before composing them.** The hook was tested with
+   `printf '{"tool_input":{"command":"cat …"}}' | hook.sh` (all three decisions verified) *before* the live
+   loop was trusted; the policy was proven through `agentpolicy evaluate` before the hook existed; the proxy
+   was proven with curl before claude ran through it. Every composition failure thereafter was in exactly one
+   new layer.
+7. **The final shape (all reusable, all committed with the run):** `t1_evaluate.py` (hook entrypoint over the
+   shipped loader+engine — no fork), `t1_claude.sh` (policy+hook+triple runner, evidence into the case dir),
+   `t1_proxy.py` (capture proxy), and the registry's conditional step: CLI+oMLX present → live triple;
+   absent → honest `declare`. **Result: FT-T1-CLAUDE `pass`, `llm_captured: true`, 6 pairs, 3-decision audit
+   trail, exit 0 — the flagship Tier-1 journey proven on a box with no cloud and no key.**
+
+*Article angle: "you can field-test a Tier-1 agent harness on a laptop — here's the exact wiring, and the
+three bugs that made the first run look green when it wasn't."*
 
 ---
 
 ## Coverage, Gaps, and Declared Limitations
 
-Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so far: **85 PASS · 2 FAIL · 4 declared ·
+Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so far: **86 PASS · 2 FAIL · 3 declared ·
 8 not run** (91/99 verdicts).
 
 - **Coverage so far:** the deterministic matrix ran green (2,988 cells) and **85 cases pass, all 85 grounded**
@@ -534,12 +616,16 @@ Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so fa
   case in them has a verdict and it is PASS (s18: declared).
 - **Failing (2):** `FT-FWK-CREW` (10/14 rows) and `FT-FWK-PAI` (9/14 rows) — live-model tool-call flakiness
   (**not** a policy defect; see §Root Cause Analysis). Stated as FAIL, never hidden.
+- **Declared (3):** FT-T1-CURSOR (GUI IDE host absent; policyweave compile-out proven by the export test),
+  FT-T1-CODEX / FT-T1-GEMINI (CLIs installed on the box but their new conditional live steps are drafted,
+  not yet proven — re-run pending; Codex needs a local chat-completions provider, Gemini's backend is
+  Google-hosted only). Each names its limitation; none is a silent skip.
+- **Failing (2):** `FT-FWK-CREW` (10/14 rows) / `FT-FWK-PAI` (9/14 rows) — live-model tool-call flakiness,
+  **not** policy defects (§Root Cause Analysis). Stated as FAIL, never hidden.
 - **Not run (8):** the interrupted `s16-frameworks` remainder — `FT-FWK-OAI` (cut off mid-case) and
   `FT-FWK-ADK/AG2/LI/SMOL/SWE/MCP` + `FT-REPLAN` (never started this sweep).
-- **Declared (4):** FT-T1-CLAUDE/CURSOR/CODEX/GEMINI (Tier-1 harnesses absent → lower-layer coverage named). Each
-  names its limitation; none is a silent skip.
-- **Gaps:** the s16 remainder needs the live sweep to finish (vendor repos are present, oMLX is up); the Tier-1
-  harnesses need a harness host.
+- **Gaps:** the s16 remainder needs the live sweep to finish (vendor repos are present, oMLX is up); Cursor
+  needs a GUI host; Codex/Gemini need their live steps proven and re-run.
 - **Not tested (honest):** everything not listed as PASS/FAIL/declared above — stated as `not run`, never omitted.
 
 ---
