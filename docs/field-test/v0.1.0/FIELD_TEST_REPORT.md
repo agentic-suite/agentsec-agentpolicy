@@ -8,7 +8,7 @@
 > **Status: IN PROGRESS (s16 interrupted mid-suite).** This is a **hand-maintained** journal, updated as the sweep runs — not a
 > generated scoreboard. Counts here are read from the committed `field-test/v0.1.0/results/` verdicts and written
 > by hand; nothing is auto-overwritten.
-> **Current:** **94 ✅ PASS · 3 ❌ FAIL · 0 ◆ declared · 0 ▫ not run** (97/97 verdicts on disk). The deterministic
+> **Current:** **95 ✅ PASS · 2 ❌ FAIL · 0 ◆ declared · 0 ▫ not run** (97/97 verdicts on disk). The deterministic
 > matrix ran green (**2,988/2,988 cells, 36 scenarios × 83 agents**); suites `s0`–`s15` + `s17` are complete and
 > deep-verified; **`FT-T1-CLAUDE` and `FT-T1-CODEX` run LIVE** (no hosted models, no vendor keys).
 > **Cursor and Gemini CLI are no longer claimed as supported** (removed from the plan/PRD as v0.1.0 Tier-1
@@ -22,7 +22,7 @@
 
 ## BLUF + Release Gate Verdict
 
-> **94 PASS · 3 FAIL · 0 declared · 0 not run (97/97 verdicts).** The harness, the Docker setup, the deep-verification
+> **95 PASS · 2 FAIL · 0 declared · 0 not run (97/97 verdicts).** The harness, the Docker setup, the deep-verification
 > gate, and the case matrix are **ready and exercised** (§What Was Tested). **`s0`–`s15` + `s17` are complete:
 > 85 deterministic cases PASS, every one deep-verified grounded, leak scan clean.** **Both shipped Tier-1 harnesses
 > run LIVE and PASS:** `FT-T1-CLAUDE` (Claude Code ↔ local oMLX over the Anthropic `/v1/messages` format, PreToolUse
@@ -42,9 +42,9 @@
 
 | | Count |
 |---|---|
-| PASS (raw verdict) | 94 |
-| — of which grounded (asserting check re-derived, not exit-0) | 94 (0 over-claimed) |
-| FAIL | **3** (`FT-FWK-CREW`, `FT-FWK-PAI`, `FT-FWK-SMOL` — small-model tool-call failures; §Small-Group Run Journal) |
+| PASS (raw verdict) | 95 |
+| — of which grounded (asserting check re-derived, not exit-0) | 95 (0 over-claimed) |
+| FAIL | **2** (`FT-FWK-CREW`, `FT-FWK-PAI` — live-model tool-call flakiness, retries pending; §Small-Group Run Journal) |
 | declared (P/F\|D, environment cannot provide — named) | 0 (the Tier-1 scope now ships only what is field-tested) |
 | not run | 0 (all 97 cases have verdicts) |
 | Removed from scope (not claimed as supported) | 2 (FT-T1-CURSOR, FT-T1-GEMINI — §Field Notes 13) |
@@ -518,7 +518,7 @@ see the note below). Current verdicts below; the rest await the sweep.
 | FT-FWK-MCP | s16-frameworks | P/F | ✅ PASS | ✓ grounded — MCP server surface (fastmcp 4.1.4 env) |
 | FT-FWK-OAI | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — LIVE openai-agents ↔ oMLX (Responses API): 12/12 rows, 34 LLM pairs |
 | FT-FWK-PAI | s16-frameworks | P/F\|D | ❌ FAIL | live framework run failed — see §Small-Group Run Journal |
-| FT-FWK-SMOL | s16-frameworks | P/F\|D | ❌ FAIL | sm-01 tool-call hallucination (deterministic; 8B retry pending) — see Group 27 |
+| FT-FWK-SMOL | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — LIVE smolagents ↔ oMLX (pinned 4-bit): 14/14 rows, 29 LLM pairs — after the per-row tool-binding fix (Group 29) |
 | FT-FWK-SWE | s16-frameworks | P/F | ✅ PASS | ✓ grounded — swe-bench runner + read-only guard |
 | FT-REPLAN | s16-frameworks | P/F | ✅ PASS | ✓ grounded — replan gate |
 | FT-COST | s17-nfr | P/F | ✅ PASS | ✓ grounded |
@@ -583,7 +583,7 @@ see the note below). Current verdicts below; the rest await the sweep.
 | FT-MCP-ASK | s9-surfaces | P/F\|D | ✅ PASS | ✓ grounded |
 | FT-SURFACE-PARITY | s9-surfaces | P/F | ✅ PASS | ✓ grounded |
 
-**Totals:** 94 ✅ PASS (all grounded, 0 over-claimed) · 3 ❌ FAIL · 0 ◆ declared · 0 ▫ not run.
+**Totals:** 95 ✅ PASS (all grounded, 0 over-claimed) · 2 ❌ FAIL · 0 ◆ declared · 0 ▫ not run.
 
 ---
 
@@ -607,10 +607,10 @@ see the note below). Current verdicts below; the rest await the sweep.
 | s13-multiagent | 3 | 3 | 0 | 0 | 0 |
 | s14-draft | 2 | 2 | 0 | 0 | 0 |
 | s15-backtest | 2 | 2 | 0 | 0 | 0 |
-| s16-frameworks | 11 | 8 | 3 | 0 | 0 |
+| s16-frameworks | 11 | 9 | 2 | 0 | 0 |
 | s17-nfr | 8 | 8 | 0 | 0 | 0 |
 | s18-tier1 | 2 | 2 | 0 | 0 | 0 |
-| **Total** | **97** | **94** | **3** | **0** | **0** |
+| **Total** | **97** | **95** | **2** | **0** | **0** |
 
 ---
 
@@ -855,14 +855,14 @@ a green check you can't reproduce — the vocabulary is the product (§1)."*
 Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so far: **90 PASS · 2 FAIL · 0 declared ·
 4 not run** (93/97 verdicts).
 
-- **Coverage so far:** the deterministic matrix ran green (2,988 cells) and **94 cases pass, all 94 grounded**
+- **Coverage so far:** the deterministic matrix ran green (2,988 cells) and **95 cases pass, all 95 grounded**
   (0 over-claimed); the harness + Docker + gates are exercised. **`s0`–`s15` and `s17` are complete** — every
   case in them has a verdict and it is PASS. **s18 Tier-1: Claude Code + Codex CLI run LIVE and PASS** (box-local
   model, no vendor keys) — the shipped Tier-1 scope is exactly the field-tested set.
-- **Failing (3):** `FT-FWK-CREW` (10/14 rows) and `FT-FWK-PAI` (9/14 rows) — live-model tool-call flakiness —
-  plus `FT-FWK-SMOL` (10/14 rows) — deterministic `sm-01` tool-call **hallucination** on the 4-bit pinned
-  model (**not** policy defects; every row that emitted a call decided correctly — see §Root Cause
-  Analysis + Groups 19/23–27). Stated as FAIL, never hidden; retries pending.
+- **Failing (2):** `FT-FWK-CREW` (10/14 rows) and `FT-FWK-PAI` (9/14 rows) — live-model tool-call flakiness
+  (**not** policy defects; every row that emitted a call decided correctly — see §Root Cause
+  Analysis + Groups 19/23–27). `FT-FWK-SMOL` **resolved**: it was a runner tool-binding bug (Group 29),
+  now PASS on the pinned model. Stated as FAIL, never hidden; CREW/PAI retries pending.
 - **Removed from scope (2026-11-01, 2 — not claimed as supported):**
   - **`FT-T1-CURSOR`** — Cursor **cannot run on this box**, for a structural reason, not a wiring gap: Cursor
     is a **GUI IDE (VS Code fork)** — its agent loop and its permission surface live inside a desktop Electron
@@ -883,8 +883,8 @@ Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so fa
     preserved here and in §Small-Group Run Journal Group 22.
 - **Not run (0):** **every case in the registry now has a verdict** (97/97). The sweep is complete except
   for the 3 failing retries (below).
-- **Gaps:** the only open work is the 3 FAIL retries (`FT-FWK-CREW`, `FT-FWK-PAI`, `FT-FWK-SMOL` —
-  small-model tool-call failures; the SMOL 8B retry was interrupted and is pending). Tier-1 is closed:
+- **Gaps:** the only open work is the 2 FAIL retries (`FT-FWK-CREW`, `FT-FWK-PAI` —
+  live-model tool-call flakiness). Tier-1 is closed:
   the shipped scope (Claude Code, Codex CLI) is fully field-tested live.
 - **Not tested (honest):** everything not listed as PASS/FAIL/declared above — stated as `not run`, never omitted.
 
@@ -900,7 +900,7 @@ Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so fa
 | Decision latency | p99 < 100 ms | ✅ pass, grounded (s17) | FT-NFR-LATENCY |
 | Fail-closed coverage | 0 silent allows | ✅ pass, grounded (s17) | FT-FAILCLOSED |
 | Adversarial sub-matrix | 0 crafted allows | ✅ 8/8 grounded | FT-ADV-*, s10 |
-| Field-case pass rate | 100% after fixes | ◑ 94/97 with verdicts are PASS, 3 FAIL (small-model tool-calls, CREW/PAI/SMOL retries pending); 0 not run | this report |
+| Field-case pass rate | 100% after fixes | ◑ 95/97 with verdicts are PASS, 2 FAIL (CREW/PAI retries pending); 0 not run | this report |
 | Declared / not-tested completeness | 100% with reasons | ✅ every declared names its limitation | §Coverage |
 | Leak gate | 0 unmasked secrets | ✅ clean | `scan_results.py` |
 | LLM evidence capture | every live call logged | ✅ 59/59 pairs (17 LG + 28 CREW + 14 PAI), balanced, sanitized, all-2xx; not-logged ⇒ FAIL gate | `artifacts/llm/`, `check_grounding.py` |
