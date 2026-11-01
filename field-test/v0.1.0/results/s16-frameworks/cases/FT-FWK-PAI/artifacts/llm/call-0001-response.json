@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "<tool_call>\n{\"name\": \"scn_decision-deny-01\", \"arguments\": {}}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793561447,
+    "id": "chatcmpl-46c1159a",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 20,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 1.07,
+      "generation_tokens_per_second": 18.67,
+      "input_tokens": 406,
+      "output_tokens": 20,
+      "prompt_eval_duration": 0.61,
+      "prompt_tokens": 406,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 245.12,
+      "time_to_first_token": 0.61,
+      "total_time": 1.68,
+      "total_tokens": 426
+    }
+  },
+  "status_code": 200
+}

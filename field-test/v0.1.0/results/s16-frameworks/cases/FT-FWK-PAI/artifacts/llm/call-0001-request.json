@@ -1,0 +1,89 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_decision-deny-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "role": "user"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "stream": false,
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "function": {
+          "description": "",
+          "name": "get_weather",
+          "parameters": {
+            "additionalProperties": true,
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "",
+          "name": "scn_decision-allow-01",
+          "parameters": {
+            "additionalProperties": true,
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "",
+          "name": "scn_decision-audit-01",
+          "parameters": {
+            "additionalProperties": true,
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "",
+          "name": "scn_decision-escalate-01",
+          "parameters": {
+            "additionalProperties": true,
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "",
+          "name": "scn_decision-deny-01",
+          "parameters": {
+            "additionalProperties": true,
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "",
+          "name": "scn_adversarial-injection-01",
+          "parameters": {
+            "additionalProperties": true,
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}

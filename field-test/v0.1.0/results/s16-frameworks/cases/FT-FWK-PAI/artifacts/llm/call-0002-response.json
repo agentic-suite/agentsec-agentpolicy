@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "<tool_call>\n{\"name\": \"scn_adversarial-injection-01\", \"arguments\": {}}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793561448,
+    "id": "chatcmpl-4f267419",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 22,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 1.16,
+      "generation_tokens_per_second": 19.01,
+      "input_tokens": 424,
+      "output_tokens": 22,
+      "prompt_eval_duration": 0.89,
+      "prompt_tokens": 424,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 188.29,
+      "time_to_first_token": 0.89,
+      "total_time": 2.05,
+      "total_tokens": 446
+    }
+  },
+  "status_code": 200
+}

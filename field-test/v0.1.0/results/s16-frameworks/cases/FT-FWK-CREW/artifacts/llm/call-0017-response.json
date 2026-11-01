@@ -1,0 +1,47 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"valid input\"}",
+                "name": "scn_adversary_nonstring_08"
+              },
+              "id": "call_fc423646",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793561490,
+    "id": "chatcmpl-5e023e84",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 28,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.8,
+      "generation_tokens_per_second": 34.93,
+      "input_tokens": 483,
+      "output_tokens": 28,
+      "prompt_eval_duration": 0.38,
+      "prompt_tokens": 483,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 594.33,
+      "time_to_first_token": 0.38,
+      "total_time": 1.18,
+      "total_tokens": 511
+    }
+  },
+  "status_code": 200
+}

@@ -23,7 +23,7 @@
       "llm_responded": true,
       "response": "The input text \"staging environment with internal data class\" has been processed and returned as requested.",
       "error": null,
-      "elapsed_s": 1.77,
+      "elapsed_s": 1.68,
       "decision": "allow",
       "reason_code": "allow_low_risk",
       "expected": "allow",

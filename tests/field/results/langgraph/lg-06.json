@@ -23,7 +23,7 @@
       "llm_responded": true,
       "response": "The call to `scn_decision-audit-02` with the input \"staging environment with data_class internal\" has been successfully processed.",
       "error": null,
-      "elapsed_s": 2.04,
+      "elapsed_s": 2.0,
       "decision": "allow",
       "reason_code": "allow_low_risk",
       "expected": "allow",

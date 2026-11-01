@@ -23,7 +23,7 @@
       "llm_responded": true,
       "response": "The decision is allowed in the development environment with internal data class.",
       "error": null,
-      "elapsed_s": 1.73,
+      "elapsed_s": 1.65,
       "decision": "allow",
       "reason_code": "allow_low_risk",
       "expected": "allow",

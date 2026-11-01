@@ -22,7 +22,7 @@
       "llm_responded": true,
       "response": "Task completed in development environment with public data class.",
       "error": null,
-      "elapsed_s": 1.63,
+      "elapsed_s": 1.54,
       "decision": "allow",
       "reason_code": "allow_low_risk",
       "expected": "allow",

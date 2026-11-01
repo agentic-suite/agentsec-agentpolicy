@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "The input text \"staging environment, data_class: restricted\" has been processed and returned as requested.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793561443,
+    "id": "chatcmpl-189e8dce",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 21,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.55,
+      "generation_tokens_per_second": 38.05,
+      "input_tokens": 354,
+      "output_tokens": 21,
+      "prompt_eval_duration": 0.19,
+      "prompt_tokens": 354,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 529.01,
+      "time_to_first_token": 0.19,
+      "total_time": 0.74,
+      "total_tokens": 375
+    }
+  },
+  "status_code": 200
+}

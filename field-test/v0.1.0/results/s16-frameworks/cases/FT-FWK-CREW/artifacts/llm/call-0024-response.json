@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "The operation to grant access in the production environment on restricted data is denied due to policy restrictions. A read-only alternative or moving to a lower-risk environment is recommended.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793561503,
+    "id": "chatcmpl-cffcd263",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 33,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.82,
+      "generation_tokens_per_second": 40.2,
+      "input_tokens": 461,
+      "output_tokens": 33,
+      "prompt_eval_duration": 0.26,
+      "prompt_tokens": 461,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 802.56,
+      "time_to_first_token": 0.26,
+      "total_time": 1.08,
+      "total_tokens": 494
+    }
+  },
+  "status_code": 200
+}

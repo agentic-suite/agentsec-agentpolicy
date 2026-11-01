@@ -23,7 +23,7 @@
       "llm_responded": true,
       "response": null,
       "error": null,
-      "elapsed_s": 1.1,
+      "elapsed_s": 0.94,
       "decision": "allow",
       "reason_code": "allow_low_risk",
       "expected": "allow",

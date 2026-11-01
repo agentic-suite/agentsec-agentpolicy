@@ -3,11 +3,11 @@
   "status": "fail",
   "class": "P/F|D",
   "declared": false,
-  "grounded": false,
-  "assertions_total": 2,
-  "assertions_grounded": 0,
-  "llm_captured": false,
+  "grounded": true,
+  "assertions_total": 3,
+  "assertions_grounded": 1,
+  "llm_captured": true,
   "run_id": "s16-frameworks",
-  "assertions": [{"name":"llm-endpoint-reachable","ok":true},{"name":"matrix-pydanticai","ok":false,"grounded":true,"cmd":"/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/run_field_agents.py pydanticai --plan B"},{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}
+  "assertions": [{"name":"llm-endpoint-reachable","ok":true},{"name":"matrix-pydanticai","ok":false,"grounded":true,"cmd":"/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/run_field_agents.py pydanticai --plan B --llm-out /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-PAI/artifacts/llm"},{"name":"pydanticai-captured","ok":true,"grounded":true,"cmd":"capture: 14 request(s) + 14 response(s)"},{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}
 ]
 }

@@ -24,7 +24,7 @@
       "llm_responded": true,
       "response": "The staging environment with internal data class has been approved.",
       "error": null,
-      "elapsed_s": 1.68,
+      "elapsed_s": 1.55,
       "decision": "allow",
       "reason_code": "allow_low_risk",
       "expected": "allow",

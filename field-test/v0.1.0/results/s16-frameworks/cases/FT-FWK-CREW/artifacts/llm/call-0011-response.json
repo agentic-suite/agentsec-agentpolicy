@@ -1,0 +1,47 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"Current Task: In environment 'development' with data_class 'public', call ONLY the tool `scn_adversarial-blank-tool-07` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.\"}",
+                "name": "scn_adversarial_blank_tool_07"
+              },
+              "id": "call_760f3cbc",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793561479,
+    "id": "chatcmpl-66ffd0a0",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 91,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 2.29,
+      "generation_tokens_per_second": 39.72,
+      "input_tokens": 349,
+      "output_tokens": 91,
+      "prompt_eval_duration": 0.25,
+      "prompt_tokens": 349,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 373.52,
+      "time_to_first_token": 0.25,
+      "total_time": 2.54,
+      "total_tokens": 440
+    }
+  },
+  "status_code": 200
+}

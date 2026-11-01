@@ -1,0 +1,92 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "In environment 'development' with data_class 'internal', call ONLY the tool `scn_decision-allow-03` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "role": "user"
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"text\": \"decision allowed in development environment with internal data class\"}",
+              "name": "scn_decision-allow-03"
+            },
+            "id": "call_171ccd6c",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "decision allowed in development environment with internal data class",
+        "role": "tool",
+        "tool_call_id": "call_171ccd6c"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "stream": false,
+    "temperature": 0.0,
+    "tools": [
+      {
+        "function": {
+          "description": "Add two integers.",
+          "name": "add",
+          "parameters": {
+            "properties": {
+              "a": {
+                "type": "integer"
+              },
+              "b": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "a",
+              "b"
+            ],
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Get current weather for a city.",
+          "name": "get_weather",
+          "parameters": {
+            "properties": {
+              "city": {
+                "default": "San Francisco",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_decision-allow-03",
+          "parameters": {
+            "properties": {
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "type": "object"
+          }
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}

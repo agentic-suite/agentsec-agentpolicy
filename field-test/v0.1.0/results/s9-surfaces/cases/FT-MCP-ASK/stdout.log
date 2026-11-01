@@ -6,46 +6,43 @@
 #2 transferring dockerfile: 1.18kB done
 #2 DONE 0.0s
 
-#3 [internal] load metadata for docker.io/library/python:3.13-slim
-#3 ...
+#3 [auth] library/python:pull token for registry-1.docker.io
+#3 DONE 0.0s
 
-#4 [auth] library/python:pull token for registry-1.docker.io
-#4 DONE 0.0s
-
-#3 [internal] load metadata for docker.io/library/python:3.13-slim
-#3 DONE 0.7s
+#4 [internal] load metadata for docker.io/library/python:3.13-slim
+#4 DONE 0.6s
 
 #5 [internal] load .dockerignore
 #5 transferring context: 161B done
 #5 DONE 0.0s
 
 #6 [1/9] FROM docker.io/library/python:3.13-slim@sha256:2d44738ebf4ce5f63b9d9ea871e9c7cfdc0426f7b0c97cac915fd88ded1d86bb
-#6 resolve docker.io/library/python:3.13-slim@sha256:2d44738ebf4ce5f63b9d9ea871e9c7cfdc0426f7b0c97cac915fd88ded1d86bb done
+#6 resolve docker.io/library/python:3.13-slim@sha256:2d44738ebf4ce5f63b9d9ea871e9c7cfdc0426f7b0c97cac915fd88ded1d86bb 0.0s done
 #6 DONE 0.0s
 
 #7 [internal] load build context
 #7 transferring context: 32.16kB 0.0s done
 #7 DONE 0.0s
 
-#8 [6/9] COPY src /work/src
+#8 [5/9] COPY pyproject.toml README.md /work/
 #8 CACHED
 
-#9 [3/9] RUN pip install --no-cache-dir uv
+#9 [8/9] COPY packs /work/packs
 #9 CACHED
 
-#10 [5/9] COPY pyproject.toml README.md /work/
+#10 [3/9] RUN pip install --no-cache-dir uv
 #10 CACHED
 
-#11 [2/9] RUN apt-get update     && apt-get install -y --no-install-recommends git curl procps ca-certificates     && rm -rf /var/lib/apt/lists/*
+#11 [7/9] RUN uv pip install --system --no-cache-dir ".[dev]"
 #11 CACHED
 
-#12 [8/9] COPY packs /work/packs
+#12 [6/9] COPY src /work/src
 #12 CACHED
 
-#13 [7/9] RUN uv pip install --system --no-cache-dir ".[dev]"
+#13 [4/9] WORKDIR /work
 #13 CACHED
 
-#14 [4/9] WORKDIR /work
+#14 [2/9] RUN apt-get update     && apt-get install -y --no-install-recommends git curl procps ca-certificates     && rm -rf /var/lib/apt/lists/*
 #14 CACHED
 
 #15 [9/9] RUN mkdir -p /data/agentpolicy/.agentpolicy
@@ -55,8 +52,8 @@
 #16 exporting layers done
 #16 exporting manifest sha256:7119ebcb65b1f42e604fbc46d9318b7e1ff64c63b2326b6ba9723fdddbd99104 done
 #16 exporting config sha256:f0f92e1af58c50f91fd04fbe4eab1d209d03132f2dfa543fd7d3b369a0dac958 done
-#16 exporting attestation manifest sha256:a8abe8dc8feed48b732bbb70ea4eeb06f7350b315f68ffc7969b1c922d7268af done
-#16 exporting manifest list sha256:81a7f304a0e3a0764b8c1e92e3ab867ba82fb2c6257922bf6a5925b231799e8b done
+#16 exporting attestation manifest sha256:9a745a0be97a929ab21cd6b54e3b1b59ac81ac4902423079731ec7a164de49a6 done
+#16 exporting manifest list sha256:45d563d1e1112feda7f36e597119e80fd01a037d7b1341cf2a43f1687847b10f done
 #16 naming to docker.io/library/agentpolicy-fieldtest:local done
 #16 unpacking to docker.io/library/agentpolicy-fieldtest:local done
 #16 DONE 0.0s

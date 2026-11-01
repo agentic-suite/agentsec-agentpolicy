@@ -4,9 +4,12 @@
 A surface pass ("the command ran") is not enough. For every case verdict under
 ``field-test/<FT_VERSION>/results/`` this gate re-checks, from the evidence on
 disk, that a PASS rests on **>=1 grounded assertion** (not an import/existence/
-json.tool/cannot-fail/bare-driver shape) and that an LLM-required case captured
-its request/response pairs. It prints a table + a grounding census and exits
-non-zero when any PASS fails the deep check.
+json.tool/cannot-fail/bare-driver shape) and that an LLM-involved case (registry
+``llm: yes`` **or** a step that drives a model) logged its request/response
+pairs. **An LLM request or response that is not logged — not found in deep
+verification — is a FAIL**: the case verdict is flipped to ``fail`` on disk and
+the gate exits non-zero. The gate also exits non-zero when any PASS fails the
+deep check.
 
 Usage::
 
@@ -21,6 +24,7 @@ import os
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
 REPO = Path(__file__).resolve().parents[2]
 RESULTS_ROOT = Path(
@@ -28,6 +32,14 @@ RESULTS_ROOT = Path(
     or (REPO / "field-test" / os.environ.get("FT_VERSION", "v0.1.0") / "results")
 )
 REGISTRY = Path(__file__).resolve().parent / "cases" / "registry.json"
+STEP_DIR = Path(__file__).resolve().parent / "cases" / "steps"
+
+#: A case is LLM-involved when the registry says so OR its step drives a model.
+#: (Bare "replan" pytest ids must NOT match — only real model-driving shapes.)
+_LLM_STEP_RE = re.compile(
+    r"run_field_agents|--llm-out|llm_capture|chat/completions|omlx_bench"
+    r"|AGENTPOLICY_FIELD_LLM_DIR"
+)
 
 _WEAK_RES = [
     (re.compile(r"^\s*(:|true)\s*$"), "bare-true"),
@@ -59,8 +71,8 @@ def _weak_reasons(cmd: str) -> list[str]:
     return sorted(set(out))
 
 
-def _load_verdicts(results: Path) -> dict[str, dict]:
-    out: dict[str, dict] = {}
+def _load_verdicts(results: Path) -> dict[str, dict[str, Any]]:
+    out: dict[str, dict[str, Any]] = {}
     for vp in sorted(results.glob("*/cases/*/verdict.json")):
         try:
             v = json.loads(vp.read_text(encoding="utf-8"))
@@ -83,6 +95,32 @@ def _scan_secrets(llm_dir: Path) -> bool:
     return False
 
 
+def _llm_involved(cid: str, registry_flag: bool) -> bool:
+    """LLM-involved = registry ``llm: yes`` OR a step that drives a model."""
+    if registry_flag:
+        return True
+    step = STEP_DIR / f"{cid}.sh"
+    try:
+        text = step.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return False
+    return bool(_LLM_STEP_RE.search(text))
+
+
+def _flip_verdict(case_dir: str, cid: str, reason: str) -> None:
+    """A PASS without its LLM evidence is a FAIL — persist it on disk."""
+    vp = Path(case_dir) / "verdict.json"
+    try:
+        v = json.loads(vp.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return
+    v["status"] = "fail"
+    v["grounded"] = False
+    v["llm_captured"] = False
+    v["deep_verification_reason"] = reason
+    vp.write_text(json.dumps(v, indent=2) + "\n", encoding="utf-8")
+
+
 def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
     strict = "--strict" in args
@@ -96,7 +134,10 @@ def main(argv: list[str] | None = None) -> int:
     verdicts = _load_verdicts(results)
 
     rows: list[tuple[str, str, str, str]] = []
-    census = {"grounded": 0, "over-claimed": 0, "unverified": 0, "pass": 0, "fail": 0}
+    census = {
+        "grounded": 0, "over-claimed": 0, "unverified": 0,
+        "pass": 0, "fail": 0, "llm_fail": 0,
+    }
 
     for case in registry:
         cid = case["id"]
@@ -112,9 +153,8 @@ def main(argv: list[str] | None = None) -> int:
             census["fail"] += 1
             rows.append((cid, "FAIL", "—", "case failed"))
             continue
-        census["pass"] += 1
 
-        assertions: list[dict] = []
+        assertions: list[dict[str, Any]] = []
         ap = Path(v.get("_case_dir", "")) / "assertions.ndjson"
         if ap.exists():
             for line in ap.read_text(encoding="utf-8").splitlines():
@@ -131,25 +171,44 @@ def main(argv: list[str] | None = None) -> int:
 
         llm_required = str(case.get("llm", "no")).lower() in ("yes", "true", "1")
         llm_dir = Path(v.get("_case_dir", "")) / "artifacts" / "llm"
-        llm_pairs = len(list(llm_dir.glob("*-request.json"))) if llm_dir.exists() else 0
+        llm_req = len(list(llm_dir.glob("*-request.json"))) if llm_dir.exists() else 0
+        llm_resp = len(list(llm_dir.glob("*-response.json"))) if llm_dir.exists() else 0
         llm_clean = not _scan_secrets(llm_dir)
+        llm_involved = _llm_involved(cid, llm_required)
 
         problems: list[str] = []
+        llm_fail_reasons: list[str] = []
         if grounded < 1:
             problems.append("no grounded assertion")
         if int(v.get("assertions_total", 0) or 0) < 1:
             problems.append("verdict records no assertions")
         if bool(v.get("grounded")) and grounded < 1:
             problems.append("verdict claims grounded but re-derivation found none")
-        if llm_required and llm_pairs < 1:
-            problems.append("no LLM capture")
-        if llm_required and not llm_clean:
-            problems.append("unmasked secret in LLM capture")
+        if llm_involved and (llm_req < 1 or llm_resp < 1):
+            llm_fail_reasons.append(
+                f"LLM request/response not logged (requests={llm_req}, responses={llm_resp})"
+            )
+        elif llm_involved and llm_req != llm_resp:
+            llm_fail_reasons.append(
+                f"unbalanced LLM capture (requests={llm_req} != responses={llm_resp})"
+            )
+        if llm_involved and not llm_clean:
+            llm_fail_reasons.append("unmasked secret in LLM capture")
+        problems.extend(llm_fail_reasons)
 
         if not problems:
+            census["pass"] += 1
             census["grounded"] += 1
             rows.append((cid, "PASS", "grounded", f"{grounded} grounded check(s)"))
+        elif llm_fail_reasons:
+            # Not logged => not found in deep verification => FAIL (persisted).
+            reason = "; ".join(llm_fail_reasons)
+            _flip_verdict(str(v.get("_case_dir", "")), cid, reason)
+            census["fail"] += 1
+            census["llm_fail"] += 1
+            rows.append((cid, "FAIL", "llm", reason))
         else:
+            census["pass"] += 1
             census["over-claimed"] += 1
             rows.append((cid, "PASS", "OVER-CLAIMED", "; ".join(problems)))
 
@@ -161,9 +220,17 @@ def main(argv: list[str] | None = None) -> int:
     print(
         f"census: {census['pass']} PASS ({census['grounded']} grounded, "
         f"{census['over-claimed']} over-claimed) · {census['fail']} FAIL"
+        f" ({census['llm_fail']} LLM-not-logged)"
     )
 
-    bad = census["over-claimed"]
+    bad = census["over-claimed"] + census["llm_fail"]
+    if census["llm_fail"]:
+        print(
+            f"\ndeep-verification FAILED: {census['llm_fail']} case(s) drove an LLM "
+            "but did not log the request/response — verdict flipped to FAIL on disk.",
+            file=sys.stderr,
+        )
+        return 1
     if bad:
         print(
             f"\ndeep-verification FAILED: {bad} PASS(es) are not deeply verified.",
