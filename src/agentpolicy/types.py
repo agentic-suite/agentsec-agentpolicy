@@ -135,6 +135,8 @@ class Decision:
     obligations: tuple[str, ...] = field(default_factory=tuple)
     counterfactual: float | None = None
     freeze_id: str | None = None
+    break_glass_id: str | None = None
+    dual_control_id: str | None = None
 
     def __post_init__(self) -> None:
         if self.decision not in _VALID_DECISIONS:

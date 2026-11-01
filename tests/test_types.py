@@ -196,6 +196,8 @@ class TestDecision:
             "obligations",
             "counterfactual",
             "freeze_id",
+            "break_glass_id",
+            "dual_control_id",
         }
 
     def test_decision_to_dict_matches_asdict(self):

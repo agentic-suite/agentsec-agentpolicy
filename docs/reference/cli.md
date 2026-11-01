@@ -95,6 +95,21 @@ agentpolicy report [--type compliance|summary] [--period 2026-Q3|all] [--format 
 `calibrate report`, `baseline check`, `escalation` (review/approve), `swebench`, `test` (golden fixtures),
 `serve` (MCP server), `field-test` (release-gate harness).
 
+### Governance (M15–M20)
+
+```sh
+agentpolicy freeze declare --env production --until 2026-11-01T00:00:00+00:00 --reason "release"
+agentpolicy breakglass elevate --agent incident-bot --env production --reason "SEV-1" --ttl 900
+agentpolicy draft "deny deploy in production" --out candidate/   # advisory; never auto-applied
+```
+
+`freeze` (M15), `breakglass` (M18 — time-boxed, auto-reverting elevation; widens scope ceilings only), and
+`draft` (M19 — NL → candidate Cedar rule for human review).
+
+```sh
+agentpolicy backtest --history last-week.jsonl --candidate agentpolicy.yaml --ci   # M20 advisory diff
+```
+
 ## In-process
 
 ```python

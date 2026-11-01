@@ -18,12 +18,15 @@ from agentpolicy.cli import (
     analytics,
     ask,
     audit,
+    backtest,
     baseline,
+    breakglass,
     calibrate,
     check,
     ci,
     diff,
     doctor,
+    draft,
     escalation,
     evaluate,
     explain,
@@ -74,6 +77,9 @@ def _build_parser() -> argparse.ArgumentParser:
     lint.add_parser(subparsers)
     export.add_parser(subparsers)
     freeze.add_parser(subparsers)
+    breakglass.add_parser(subparsers)
+    draft.add_parser(subparsers)
+    backtest.add_parser(subparsers)
     ci.add_parser(subparsers)
     serve_cli.add_parser(subparsers)
     escalation.add_parser(subparsers)

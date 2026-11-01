@@ -39,6 +39,14 @@ DENY_ASK_UNKNOWN = "deny_ask_unknown"
 DENY_ACTION_IDENTITY_MISMATCH = "deny_action_identity_mismatch"
 #: ask — a write by an agent in enrollment probation (M16).
 AGENT_PROBATION = "agent_probation"
+#: ask — the irreversible class needs a quorum of distinct approvers (M18).
+DUAL_CONTROL_REQUIRED = "dual_control_required"
+#: allow — a dual-control quorum was reached (M18).
+ALLOW_DUAL_CONTROL_APPROVED = "allow_dual_control_approved"
+#: deny — a dual-control ask is not yet released (quorum unmet) (M18).
+DENY_DUAL_CONTROL_PENDING = "deny_dual_control_pending"
+#: deny — the dual-control id is unknown (M18).
+DENY_DUAL_CONTROL_UNKNOWN = "deny_dual_control_unknown"
 #: rate-limit — the session budget is exhausted.
 BUDGET_EXHAUSTED = "budget_exhausted"
 #: rate-limit — a burst/op-count limit was hit (M12).
@@ -110,6 +118,22 @@ REASON_CODES: dict[str, ReasonCode] = {
             "deny",
         ),
         ReasonCode(AGENT_PROBATION, "A write by an agent in enrollment probation.", True, "ask"),
+        ReasonCode(
+            DUAL_CONTROL_REQUIRED,
+            "The irreversible class requires a quorum of distinct approvers.",
+            True,
+            "ask",
+        ),
+        ReasonCode(
+            ALLOW_DUAL_CONTROL_APPROVED, "A dual-control quorum was reached.", False, "allow"
+        ),
+        ReasonCode(
+            DENY_DUAL_CONTROL_PENDING,
+            "A dual-control ask is not yet released (quorum unmet).",
+            True,
+            "deny",
+        ),
+        ReasonCode(DENY_DUAL_CONTROL_UNKNOWN, "The dual-control id is unknown.", True, "deny"),
         ReasonCode(BUDGET_EXHAUSTED, "The session budget is exhausted.", True, "rate-limit"),
         ReasonCode(RATE_LIMITED, "A burst/op-count limit was hit.", False, "rate-limit"),
         ReasonCode(
@@ -159,6 +183,7 @@ def alertable_codes() -> frozenset[str]:
 __all__ = [
     "AGENT_PROBATION",
     "ALLOW_ASK_APPROVED",
+    "ALLOW_DUAL_CONTROL_APPROVED",
     "ALLOW_LOW_RISK",
     "AUDIT_SINK_ERROR",
     "BUDGET_EXHAUSTED",
@@ -168,6 +193,9 @@ __all__ = [
     "DENY_ASK_DENIED",
     "DENY_ASK_PENDING",
     "DENY_ASK_UNKNOWN",
+    "DENY_DUAL_CONTROL_PENDING",
+    "DENY_DUAL_CONTROL_UNKNOWN",
+    "DUAL_CONTROL_REQUIRED",
     "ENGINE_UNAVAILABLE",
     "EVALUATION_TIMEOUT",
     "HUMAN_GATE_REQUIRED",

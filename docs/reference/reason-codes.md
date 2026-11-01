@@ -16,6 +16,11 @@ re-used for a different situation. **Alertable** codes are the ones a SIEM shoul
 | `budget_exhausted` | rate-limit | **yes** | The session budget is exhausted. |
 | `rate_limited` | rate-limit | no | A burst/op-count limit was hit. |
 | `secret_detected` | redact | **yes** | Sensitive content was scrubbed from the result. |
+| `agent_probation` | ask | **yes** | A write by an agent in enrollment probation. |
+| `dual_control_required` | ask | **yes** | The irreversible class requires a quorum of distinct approvers. |
+| `allow_dual_control_approved` | allow | no | A dual-control quorum was reached. |
+| `deny_dual_control_pending` | deny | **yes** | A dual-control ask is not yet released (quorum unmet). |
+| `deny_dual_control_unknown` | deny | **yes** | The dual-control id is unknown. |
 | `unknown_action` | deny | **yes** | The action could not be canonicalized. |
 | `engine_unavailable` | deny | **yes** | The PDP could not evaluate the action. |
 | `policy_unavailable` | deny | **yes** | The policy is missing or malformed. |

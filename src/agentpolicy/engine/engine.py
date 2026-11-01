@@ -9,8 +9,11 @@ from dataclasses import replace
 from typing import Any
 
 from agentpolicy.audit.logger import AuditLogger
+from agentpolicy.breakglass import BreakGlassLedger
 from agentpolicy.canary import CanaryConfig
+from agentpolicy.cedar.gates import is_human_gate
 from agentpolicy.data_class import derive_data_class
+from agentpolicy.dualcontrol import DualControlGate
 from agentpolicy.engine.argument_policy import check_arguments
 from agentpolicy.engine.decide import decide
 from agentpolicy.engine.delegation import DelegationManager, DelegationResult
@@ -41,6 +44,7 @@ from agentpolicy.errors import (
 )
 from agentpolicy.freeze import FREEZE_GATED_ACTIONS, FreezeLedger
 from agentpolicy.policy.models import Policy
+from agentpolicy.reason_codes import HUMAN_GATE_REQUIRED
 from agentpolicy.taxonomy import KNOWN_TOOLS
 from agentpolicy.types import Decision, NormalizedCall
 
@@ -69,6 +73,8 @@ class Engine:
         canary_percent: int = 0,
         freeze_ledger: FreezeLedger | None = None,
         enrollment: EnrollmentLedger | None = None,
+        break_glass_ledger: BreakGlassLedger | None = None,
+        dual_control_gate: DualControlGate | None = None,
     ):
         #: The declarative policy in force for every evaluation. Immutable for
         #: the Engine's lifetime; swap engines to change policy.
@@ -115,6 +121,14 @@ class Engine:
         #: Enrollment ledger (M16 16.1). A first-seen unknown agent is in
         #: probation: reads proceed, gated writes escalate for classification.
         self._enrollment = enrollment
+        #: Break-glass ledger (M18 18.1). An active, declared elevation widens
+        #: the agent's scope ceilings (never the human gate) and stamps
+        #: `break_glass_id` on every decision.
+        self._break_glass = break_glass_ledger
+        #: Dual-control gate (M18 18.3). An escalated call in the irreversible /
+        #: mandatory human-gate class needs a quorum of distinct approvers; the
+        #: decision carries the `dual_control_id`.
+        self._dual_control = dual_control_gate
 
     @property
     def enrollment_ledger(self) -> EnrollmentLedger | None:
@@ -125,6 +139,16 @@ class Engine:
     def freeze_ledger(self) -> FreezeLedger | None:
         """The freeze-window ledger (or ``None`` when no freeze is configured)."""
         return self._freeze
+
+    @property
+    def break_glass_ledger(self) -> BreakGlassLedger | None:
+        """The break-glass ledger (or ``None`` when no elevation is configured)."""
+        return self._break_glass
+
+    @property
+    def dual_control_gate(self) -> DualControlGate | None:
+        """The dual-control gate (or ``None`` when quorum approval is not configured)."""
+        return self._dual_control
 
     @property
     def canary_percent(self) -> int:
@@ -309,6 +333,14 @@ class Engine:
             context=context,
             resource_tag=resource_tag,
         )
+        # 0. Break-glass elevation (M18 18.1). A declared, active window widens
+        #    the agent's *scope ceilings* (never the human gate); every decision
+        #    below is stamped with the governing `break_glass_id`.
+        elevated = (
+            self._break_glass.active_window(call.agent_id, call.environment)
+            if self._break_glass is not None
+            else None
+        )
         # 0a. Enrollment probation (M16 16.1). A first-seen unknown agent is
         #     observed into probation; a gated write escalates for classification
         #     (reads proceed), never silently allowed.
@@ -358,17 +390,23 @@ class Engine:
                     f"{call.environment!r} (allowed: {profile.environments!r})"
                 )
         if scope_violation is not None:
-            decision = deny(
-                DENY_OUT_OF_SCOPE,
-                scope_violation,
-                policy_version=self._policy.version,
-            )
-            return self._finalize(decision, call)
+            if elevated is not None:
+                # A break-glass window widens the scope ceiling; the call
+                # proceeds to normal evaluation (the human gate is enforced
+                # later and is never bypassed).
+                scope_violation = None
+            else:
+                decision = deny(
+                    DENY_OUT_OF_SCOPE,
+                    scope_violation,
+                    policy_version=self._policy.version,
+                )
+                return self._finalize(decision, call)
         # 1a2. Delegation-scope proof (M17 17.2). A delegated child may only act
         #      within the intersection of its chain's scopes; an out-of-scope
         #      action is denied naming the chain link.
         effective = self._delegations.effective_environments(agent_id, self._policy)
-        if effective and call.environment not in effective:
+        if effective and call.environment not in effective and elevated is None:
             chain = self._delegations.delegation_chain(agent_id)
             return self._finalize(
                 deny(
@@ -420,6 +458,25 @@ class Engine:
                         ),
                     )
                 decision = replace(decision, freeze_id=freeze.freeze_id)
+        # 3a2. Break-glass composition guard (M18 18.4). A window widens scope
+        #      ceilings only — it never lowers the mandatory human gate. A
+        #      human-gate-class call inside a window is escalated (never a plain
+        #      allow), so dual-control still applies inside the window. The
+        #      stamp itself is applied in `_finalize` (every decision).
+        if elevated is not None and is_human_gate(call) and decision.decision in (
+            "allow", "audit", "allow_with_obligation"
+        ):
+            decision = replace(
+                decision,
+                decision="escalate",
+                criticality="high",
+                reason_code=HUMAN_GATE_REQUIRED,
+                explanation=(
+                    f"{call.tool} ({call.action}) in {call.environment} is in the "
+                    f"mandatory human-gate class; break-glass {elevated.break_glass_id} "
+                    "widens scope only and does not bypass the gate"
+                ),
+            )
         # 3b. Escalation registry (M3 #84, F-09). When the verdict escalates,
         #     create a pending approval record bound to the call's action
         #     identity, and pin the decision's escalation_id to the registered
@@ -427,6 +484,16 @@ class Engine:
         if decision.decision == "escalate" or verdict.decision == "escalate":
             escalation = self._escalation_manager.create(call, reason=decision.explanation)
             decision = replace(decision, escalation_id=escalation.escalation_id)
+            # 3b2. Dual-control (M18 18.3). An escalated call in the mandatory
+            #      human-gate class needs a quorum of distinct approvers; stamp
+            #      the quorum record id so the approval workflow is quorum-gated.
+            #      This fires independently of any break-glass window, so a
+            #      window never bypasses the quorum (18.4 composition guard).
+            if self._dual_control is not None and is_human_gate(call):
+                dc_record = self._dual_control.request(
+                    call, escalation_id=escalation.escalation_id
+                )
+                decision = replace(decision, dual_control_id=dc_record.dual_control_id)
         # 4b. Permit-with-obligation (M1 #147, DD-20). When the verdict carries
         #     obligations, the gatekeeper executes them — not the agent — and
         #     a runner failure is fail-closed (deny, never allow-without-
@@ -488,6 +555,12 @@ class Engine:
         #     logger swallows its own failures, so this never raises.
         if self._audit_logger is not None:
             self._audit_logger.log(decision, call, dry_run=shadow)
+        # 5c. Break-glass provenance (M18 18.1). Every decision made while a
+        #     window elevates the agent carries the governing `break_glass_id`.
+        if self._break_glass is not None and decision.break_glass_id is None:
+            window = self._break_glass.active_window(call.agent_id, call.environment)
+            if window is not None:
+                decision = replace(decision, break_glass_id=window.break_glass_id)
         # 6. Shadow / dry-run mode: return ``allow`` but keep the real verdict
         #    in the audit trail (callers can inspect ``decision.dry_run`` and
         #    the original decision details).
