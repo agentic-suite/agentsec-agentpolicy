@@ -100,10 +100,14 @@ class TestCompliance:
 
     def test_matrix_covers_controls(self) -> None:
         matrix = compliance.coverage_matrix(PACKS)
-        assert set(matrix["frameworks"]) == {"OWASP-ASI", "OWASP-LLM", "ATLAS"}
+        assert set(matrix["frameworks"]) == {
+            "OWASP-ASI", "OWASP-LLM", "ATLAS", "NIST-AI-RMF", "ISO-42001", "EU-AI-Act"
+        }
         for bucket in matrix["frameworks"].values():
             assert bucket["total"] == len(bucket["controls"])
             assert 0 <= bucket["covered"] <= bucket["total"]
+        # gaps is always present and names uncovered controls (possibly empty)
+        assert isinstance(matrix["gaps"], list)
 
     def test_export_shape(self) -> None:
         artifact = compliance.export_matrix()

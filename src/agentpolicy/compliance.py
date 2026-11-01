@@ -41,7 +41,7 @@ class Control:
         }
 
 
-#: The curated control set (a representative OWASP ASI/LLM + ATLAS mapping).
+#: The curated control set (OWASP ASI/LLM + ATLAS + NIST AI RMF + ISO/IEC 42001 + EU AI Act).
 CONTROLS: tuple[Control, ...] = (
     Control("OWASP-ASI", "ASI01", "Agent goal hijack", ("shell", "http", "mcp")),
     Control("OWASP-ASI", "ASI02", "Tool misuse", ("db", "shell", "cloud", "git")),
@@ -55,6 +55,21 @@ CONTROLS: tuple[Control, ...] = (
     Control("ATLAS", "AML.T0051", "LLM prompt injection", ("http", "secrets")),
     Control("ATLAS", "AML.T0054", "LLM jailbreak", ("shell", "mcp")),
     Control("ATLAS", "AML.T0012", "Exfiltration via tool", ("secrets", "http", "db")),
+    # NIST AI RMF — the four functions, mapped to the enforcement domains that exist.
+    Control("NIST-AI-RMF", "GOVERN 1.1", "Policies/accountability defined", ("git", "approval")),
+    Control("NIST-AI-RMF", "MAP 1.5", "Impacts characterized", ("db", "http")),
+    Control("NIST-AI-RMF", "MEASURE 2.7", "Security & resilience evaluated", ("secrets", "shell")),
+    Control("NIST-AI-RMF", "MANAGE 2.4", "Residual risk managed", ("cloud",)),
+    # ISO/IEC 42001 — AI management-system controls.
+    Control("ISO-42001", "A.6.2.6", "AI system security", ("secrets", "shell")),
+    Control("ISO-42001", "A.7.4", "Data management", ("db",)),
+    Control("ISO-42001", "A.9.2", "Monitoring & logging", ("http", "notify")),
+    Control("ISO-42001", "A.10.3", "Third-party & supply chain", ("mcp", "git")),
+    # EU AI Act — high-risk obligations (record-keeping, oversight, robustness).
+    Control("EU-AI-Act", "Art.9", "Risk management system", ("cloud", "db")),
+    Control("EU-AI-Act", "Art.12", "Record-keeping / logging", ("git", "notify")),
+    Control("EU-AI-Act", "Art.14", "Human oversight", ("approval",)),
+    Control("EU-AI-Act", "Art.15", "Accuracy, robustness, cybersecurity", ("secrets", "shell")),
 )
 
 
@@ -80,9 +95,15 @@ def shipped_domains(packs_dir: str | Path | None = None) -> set[str]:
 
 
 def coverage_matrix(packs_dir: str | Path | None = None) -> dict[str, Any]:
-    """Compute the standards coverage matrix from the shipped packs."""
+    """Compute the standards coverage matrix from the shipped packs.
+
+    Returns the covered policy domains, per-framework control coverage, and an
+    **explicit ``gaps`` list** — every control whose domains are not covered by
+    the shipped packs, named (never hidden).
+    """
     covered_domains = shipped_domains(packs_dir)
     frameworks: dict[str, dict[str, Any]] = {}
+    gaps: list[dict[str, Any]] = []
     for control in CONTROLS:
         covered = bool(covered_domains & set(control.domains))
         bucket = frameworks.setdefault(
@@ -91,7 +112,13 @@ def coverage_matrix(packs_dir: str | Path | None = None) -> dict[str, Any]:
         bucket["controls"].append(control.to_dict(covered=covered))
         bucket["total"] += 1
         bucket["covered"] += int(covered)
-    return {"covered_domains": sorted(covered_domains), "frameworks": frameworks}
+        if not covered:
+            gaps.append(control.to_dict(covered=False))
+    return {
+        "covered_domains": sorted(covered_domains),
+        "frameworks": frameworks,
+        "gaps": gaps,
+    }
 
 
 def export_matrix(
