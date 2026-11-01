@@ -33,7 +33,9 @@ Example:
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
+import os
 import re
 import sys
 import threading
@@ -59,6 +61,90 @@ RESULTS_ROOT = Path("tests/field/results")
 SCENARIOS_PATH = Path("tests/field/scenarios.yaml")
 
 RESPONSE_CAP = 280
+
+#: LLM request/response capture (must). When set (via --llm-out or the
+#: AGENTPOLICY_FIELD_LLM_DIR env), every LLM call the frameworks make through
+#: httpx is recorded to this directory as ``<name>-request.json`` /
+#: ``<name>-response.json`` (sanitized), so the field-test results carry the
+#: evidence, not just the decision.
+_LLM_CAPTURE_DIR: Path | None = None
+
+
+def install_llm_capture(out_dir: str | Path) -> None:
+    """Record every LLM request/response (httpx) to *out_dir* (sanitized)."""
+    global _LLM_CAPTURE_DIR
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    _LLM_CAPTURE_DIR = out
+    try:
+        import httpx
+    except Exception:  # httpx is required by the framework clients; if absent, skip
+        print(f"[llm-capture] httpx unavailable; not capturing to {out}", file=sys.stderr)
+        return
+
+    import itertools
+    import threading
+
+    counter = itertools.count(1)
+    lock = threading.Lock()
+    secret = re.compile(r"sk-[A-Za-z0-9]{16,}|Bearer\s+[A-Za-z0-9._-]{20,}", re.IGNORECASE)
+
+    def _san(obj: Any) -> Any:
+        if isinstance(obj, str):
+            return secret.sub("[REDACTED]", obj)
+        if isinstance(obj, dict):
+            return {
+                k: ("[REDACTED]" if k.lower() in ("authorization", "api_key") else _san(v))
+                for k, v in obj.items()
+            }
+        if isinstance(obj, list):
+            return [_san(v) for v in obj]
+        return obj
+
+    def _is_llm(url: object) -> bool:
+        text = str(url)
+        return any(p in text for p in ("/chat/completions", "/completions", "/embeddings"))
+
+    def _write(request: Any, response: Any) -> None:
+        if not _is_llm(getattr(request, "url", "")):
+            return
+        with lock:
+            name = f"call-{next(counter):04d}"
+        try:
+            req_body = json.loads(getattr(request, "content", b"").decode() or "{}")
+        except Exception:
+            raw = getattr(request, "content", b"").decode("utf-8", "replace")[:4000]
+            req_body = {"_raw": raw}
+        (out / f"{name}-request.json").write_text(
+            json.dumps(_san({"method": request.method, "url": str(request.url), "body": req_body}),
+                       indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        try:
+            resp_body = json.loads(getattr(response, "text", "") or "")
+        except Exception:
+            resp_body = getattr(response, "text", "")[:4000]
+        payload = {"status_code": getattr(response, "status_code", 0), "body": resp_body}
+        (out / f"{name}-response.json").write_text(
+            json.dumps(_san(payload), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    _orig_send = httpx.Client.send
+
+    def _send(self: Any, request: Any, *a: Any, **k: Any) -> Any:
+        resp = _orig_send(self, request, *a, **k)
+        with contextlib.suppress(Exception):
+            _write(request, resp)
+        return resp
+
+    _orig_asend = httpx.AsyncClient.send
+
+    async def _asend(self: Any, request: Any, *a: Any, **k: Any) -> Any:
+        resp = await _orig_asend(self, request, *a, **k)
+        with contextlib.suppress(Exception):
+            _write(request, resp)
+        return resp
+
+    httpx.Client.send = _send  # type: ignore[method-assign]
+    httpx.AsyncClient.send = _asend  # type: ignore[method-assign]
+    print(f"[llm-capture] recording every LLM request/response to {out}")
 
 
 class RecordingEngine:
@@ -975,7 +1061,18 @@ def main() -> int:
         "--list", action="store_true",
         help="Print the planned (agent -> scenarios) assignment and exit.",
     )
+    parser.add_argument(
+        "--llm-out", default=None,
+        help="Record every LLM request/response (httpx) to this directory "
+             "(default: $AGENTPOLICY_FIELD_LLM_DIR, or none).",
+    )
     args = parser.parse_args()
+
+    # LLM request/response capture (must): record every framework LLM call so the
+    # field-test results carry the evidence. Prefer --llm-out, then the env var.
+    llm_out = args.llm_out or os.environ.get("AGENTPOLICY_FIELD_LLM_DIR")
+    if llm_out:
+        install_llm_capture(llm_out)
 
     roster = registry.load_roster()
     scenarios = _load_field_scenarios()

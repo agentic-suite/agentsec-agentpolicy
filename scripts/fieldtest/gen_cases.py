@@ -68,12 +68,15 @@ def _docker(*cmds: tuple[str, str]) -> str:
 
 
 def _live_framework(name: str, slug: str) -> str:
-    # A live framework case: run the adapter when the vendored repo + oMLX exist;
+    # A live framework case: run the adapter when the vendored repo + oMLX exist,
+    # recording every LLM request/response into the case artifacts (must);
     # otherwise `declared` with the CI deterministic matrix as evidence.
     return (
         "if [[ -d \"$REPO_ROOT/tests/field/agents/vendor\" ]] && _ft_llm_reachable; then\n"
         f'  ft_llm_up\n'
-        f'  ft_assert "matrix-{slug}" {RUN_AGENT} {slug} --plan B\n'
+        '  export AGENTPOLICY_FIELD_LLM_DIR="$FT_LLM_DIR"\n'
+        f'  ft_assert "matrix-{slug}" {RUN_AGENT} {slug} --plan B --llm-out "$FT_LLM_DIR"\n'
+        f'  ft_assert_llm_capture "{slug}-captured"\n'
         "else\n"
         f'  ft_declare "no vendored framework repo / oMLX endpoint on the box; '
         f'covered by the CI deterministic matrix + agent-build smoke" "PRD 19 Tier-2"\n'
