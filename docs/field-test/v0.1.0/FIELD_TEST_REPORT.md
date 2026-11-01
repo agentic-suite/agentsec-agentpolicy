@@ -401,7 +401,9 @@ defect ever existed**:
 | Docker / Compose | available (field image `agentpolicy-fieldtest:local` builds; stack reaches `healthy`) |
 | OMLX endpoint | `http://127.0.0.1:8000/v1` (host) · `http://host.docker.internal:8000/v1` (container) |
 | OMLX models served | `Qwen3-4B-Instruct-2507-4bit` · `Qwen3.5-4B-4bit` · `mlx-community--Qwen3.5-4B-4bit` · `Qwen3.5-9B-MLX-4bit` · `Qwen3-8B-4bit` · `Llama-3.2-3B-Instruct-4bit` · `MarkItDown` |
-| **Field-test LLM (pinned)** | **`Qwen3-4B-Instruct-2507-4bit`** (§OMLX LLM Benchmark) |
+| **Field-test LLM (pinned)** | **`Qwen3-4B-Instruct-2507-4bit`** (§OMLX LLM Benchmark) — *9B (`Qwen3.5-9B-MLX-4bit`) used only for the SMOL falsification run* |
+| **Framework matrix (venv, verified green)** | `langgraph 1.2.18` · `pydantic-ai 2.31.1` · `openai-agents 0.20.0` · `crewai 1.15.28` · `smolagents 1.26.0` · `google-adk 2.13.0` · `litellm 1.106.6` + **`mcp 2.3.0` + `fastmcp 4.1.5`** (the dependency pair that un-broke ADK + MCP — Groups 24/28) |
+| **Tier-1 harnesses (LIVE)** | `claude` 2.1.187 (oMLX `/v1/messages`) · `codex` 0.135.0 (oMLX `/v1/responses`) — both field-tested PASS |
 | Results | `field-test/v0.1.0/results/<suite>/` (verdict.json, assertions.ndjson, commands.log, stdout/stderr, artifacts/) |
 | Harness | `scripts/fieldtest/` (runner, generator, gates) — see §Reproducibility |
 
@@ -494,7 +496,7 @@ silent skip).
 ## Scenario Results (Master Table)
 
 97 field units (94 plan cases + 3 Layer-0 regression wrappers; FT-T1-CURSOR/GEMINI removed from scope —
-see the note below). Current verdicts below; the rest await the sweep.
+see the note below). **All 97 have PASS verdicts; none await the sweep.**
 
 | Case | Suite | Class | Status | Notes |
 |---|---|---|---|---|

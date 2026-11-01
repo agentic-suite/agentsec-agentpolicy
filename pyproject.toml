@@ -59,8 +59,8 @@ postgres = [
     "asyncpg>=0.29",
 ]
 mcp = [
-    "fastmcp>=3.4",
-    "mcp>=1.28",
+    "fastmcp>=4.1",
+    "mcp>=2.3",
 ]
 langgraph = [
     "langgraph>=1.2.11",
@@ -94,8 +94,8 @@ litellm = [
 ]
 #: All framework adapters + MCP, for the full-fidelity install.
 all = [
-    "fastmcp>=3.4",
-    "mcp>=1.28",
+    "fastmcp>=4.1",
+    "mcp>=2.3",
     "langgraph>=1.2.11",
     "langchain-core>=1.5.4",
     "pydantic-ai>=2.28.0",
@@ -128,8 +128,8 @@ dev = [
     "mypy>=1.10",
     "types-PyYAML>=6.0",
     "asyncpg>=0.29",
-    "fastmcp>=3.4",
-    "mcp>=1.28",
+    "fastmcp>=4.1",
+    "mcp>=2.3",
     "langgraph>=1.2.11",
     "langchain-core>=1.5.4",
     "langchain-openai>=1.4.3",
