@@ -12,8 +12,8 @@
 > matrix ran green (**2,988/2,988 cells, 36 scenarios × 83 agents**); suites `s0`–`s15` + `s17` are complete and
 > deep-verified; **`FT-T1-CLAUDE` and `FT-T1-CODEX` run LIVE** (no hosted models, no vendor keys).
 > **Cursor and Gemini CLI are no longer claimed as supported** (removed from the plan/PRD as v0.1.0 Tier-1
-> targets — untestable surfaces on this box; §Field Notes 13); **`s16-frameworks` is mid-run**
-> (LG ✅ · OAI ✅ · CREW/PAI ❌ flaky · 7 not yet run this sweep; see the journal).
+> targets — untestable surfaces on this box; §Field Notes 13); **all 11 `s16-frameworks` cases PASS LIVE**
+> (6 harness defects found & fixed along the way — Groups 23–30).
 > **Structure:** follows the format of `agentdrill`/`agentwatch` v0.2.0 `FIELD_TEST_REPORT.md` (a journal, not a
 > scoreboard), pointed at [FIELD_TEST_PLAN.md](FIELD_TEST_PLAN.md) §6 (matrix), §8 (CUJ map), §12 (release gate),
 > §16 (R-map). This report states **honestly** what was tested, what passed, and what was **not** run.
