@@ -8,7 +8,7 @@
 > **Status: IN PROGRESS (s16 interrupted mid-suite).** This is a **hand-maintained** journal, updated as the sweep runs — not a
 > generated scoreboard. Counts here are read from the committed `field-test/v0.1.0/results/` verdicts and written
 > by hand; nothing is auto-overwritten.
-> **Current:** **90 ✅ PASS · 2 ❌ FAIL · 0 ◆ declared · 5 ▫ not run** (92/97 verdicts on disk). The deterministic
+> **Current:** **91 ✅ PASS · 2 ❌ FAIL · 0 ◆ declared · 4 ▫ not run** (93/97 verdicts on disk). The deterministic
 > matrix ran green (**2,988/2,988 cells, 36 scenarios × 83 agents**); suites `s0`–`s15` + `s17` are complete and
 > deep-verified; **`FT-T1-CLAUDE` and `FT-T1-CODEX` run LIVE** (no hosted models, no vendor keys).
 > **Cursor and Gemini CLI are no longer claimed as supported** (removed from the plan/PRD as v0.1.0 Tier-1
@@ -22,7 +22,7 @@
 
 ## BLUF + Release Gate Verdict
 
-> **90 PASS · 2 FAIL · 0 declared · 5 not run (92/97 verdicts).** The harness, the Docker setup, the deep-verification
+> **91 PASS · 2 FAIL · 0 declared · 4 not run (93/97 verdicts).** The harness, the Docker setup, the deep-verification
 > gate, and the case matrix are **ready and exercised** (§What Was Tested). **`s0`–`s15` + `s17` are complete:
 > 85 deterministic cases PASS, every one deep-verified grounded, leak scan clean.** **Both shipped Tier-1 harnesses
 > run LIVE and PASS:** `FT-T1-CLAUDE` (Claude Code ↔ local oMLX over the Anthropic `/v1/messages` format, PreToolUse
@@ -38,15 +38,15 @@
 > LLM-involved case that does **not** log its request/response pairs is an automatic **FAIL** (deep-verification
 > rule, §Gates).
 
-### Run status (s16 mid-run; 92/97 verdicts on disk)
+### Run status (s16 mid-run; 93/97 verdicts on disk)
 
 | | Count |
 |---|---|
-| PASS (raw verdict) | 90 |
-| — of which grounded (asserting check re-derived, not exit-0) | 90 (0 over-claimed) |
+| PASS (raw verdict) | 91 |
+| — of which grounded (asserting check re-derived, not exit-0) | 91 (0 over-claimed) |
 | FAIL | **2** (`FT-FWK-CREW`, `FT-FWK-PAI` — live-model tool-call flakiness; §Small-Group Run Journal) |
 | declared (P/F\|D, environment cannot provide — named) | 0 (the Tier-1 scope now ships only what is field-tested) |
-| not run | 5 (all s16 — the interrupted suite) |
+| not run | 4 (all s16 — the interrupted suite) |
 | Removed from scope (not claimed as supported) | 2 (FT-T1-CURSOR, FT-T1-GEMINI — §Field Notes 13) |
 | N/A (retired) | 0 |
 
@@ -294,6 +294,23 @@ Tried to bring Gemini local ("do gemini gemma setup and bring from claude"). Wha
 - **Captured evidence:** `field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-AG2/` — verdict, assertions,
   `artifacts/llm/` (23 pairs), `ag-*.json` per-agent run records.
 
+### Group 26 — `FT-FWK-LI` (live LLM) — **✅ PASS after a streaming-capture fix** (2026-11-01)
+- **Symptom:** `llamaindex-captured` FAIL with **24 requests + 0 responses** — every request file present,
+  every response file missing, while the adapter's 12/12 scenario rows passed. A *partial* capture: worse
+  than none, because it looks almost-right.
+- **Root cause:** llamaindex's `ReActAgent` **streams** its completions — at `send()`-time the response body
+  is not yet available, so `response.text` raises `ResponseNotRead`, the hook's `contextlib.suppress`
+  swallows it, and the response half of every pair is never written.
+- **Fix:** the capture hook now also wraps httpx's **body-consuming methods** (`read`, `iter_bytes`,
+  `iter_lines`, `aread`, `aiter_bytes`, `aiter_lines`) — a streamed response is tagged at `send()` and its
+  response file is written when the stream is consumed (sync + async). Non-streaming paths unchanged.
+- **Result:** `FT-FWK-LI` → **PASS**: 12/12 rows, **24 request + 24 response pairs** (balanced, sanitized),
+  leak scan clean, exit 0.
+- **Learning:** *"requests captured, responses missing" is its own failure class — a capture hook must
+  cover the client's streaming mode too, and only the pair-balance assertion catches it.*
+- **Captured evidence:** `field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-LI/` — verdict, assertions,
+  `artifacts/llm/` (24 pairs), `li-*.json` per-agent run records.
+
 ---
 
 ## Environment
@@ -436,7 +453,7 @@ see the note below). Current verdicts below; the rest await the sweep.
 | FT-FWK-AG2 | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — LIVE autogen ↔ oMLX: 12/12 rows, 23 LLM pairs |
 | FT-FWK-CREW | s16-frameworks | P/F\|D | ❌ FAIL | live framework run failed — see §Small-Group Run Journal |
 | FT-FWK-LG | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — live LangGraph 10/10 rows, 17/17 LLM pairs captured |
-| FT-FWK-LI | s16-frameworks | P/F\|D | ▫ not run |  |
+| FT-FWK-LI | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — LIVE llamaindex ↔ oMLX: 12/12 rows, 24 LLM pairs (stream-capture fix) |
 | FT-FWK-MCP | s16-frameworks | P/F | ▫ not run |  |
 | FT-FWK-OAI | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — LIVE openai-agents ↔ oMLX (Responses API): 12/12 rows, 34 LLM pairs |
 | FT-FWK-PAI | s16-frameworks | P/F\|D | ❌ FAIL | live framework run failed — see §Small-Group Run Journal |
@@ -505,7 +522,7 @@ see the note below). Current verdicts below; the rest await the sweep.
 | FT-MCP-ASK | s9-surfaces | P/F\|D | ✅ PASS | ✓ grounded |
 | FT-SURFACE-PARITY | s9-surfaces | P/F | ✅ PASS | ✓ grounded |
 
-**Totals:** 90 ✅ PASS (all grounded, 0 over-claimed) · 2 ❌ FAIL · 0 ◆ declared · 5 ▫ not run.
+**Totals:** 91 ✅ PASS (all grounded, 0 over-claimed) · 2 ❌ FAIL · 0 ◆ declared · 4 ▫ not run.
 
 ---
 
@@ -529,10 +546,10 @@ see the note below). Current verdicts below; the rest await the sweep.
 | s13-multiagent | 3 | 3 | 0 | 0 | 0 |
 | s14-draft | 2 | 2 | 0 | 0 | 0 |
 | s15-backtest | 2 | 2 | 0 | 0 | 0 |
-| s16-frameworks | 11 | 4 | 2 | 0 | 5 |
+| s16-frameworks | 11 | 5 | 2 | 0 | 4 |
 | s17-nfr | 8 | 8 | 0 | 0 | 0 |
 | s18-tier1 | 2 | 2 | 0 | 0 | 0 |
-| **Total** | **97** | **90** | **2** | **0** | **5** |
+| **Total** | **97** | **91** | **2** | **0** | **4** |
 
 ---
 
@@ -775,9 +792,9 @@ a green check you can't reproduce — the vocabulary is the product (§1)."*
 ## Coverage, Gaps, and Declared Limitations
 
 Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so far: **90 PASS · 2 FAIL · 0 declared ·
-5 not run** (92/97 verdicts).
+4 not run** (93/97 verdicts).
 
-- **Coverage so far:** the deterministic matrix ran green (2,988 cells) and **87 cases pass, all 87 grounded**
+- **Coverage so far:** the deterministic matrix ran green (2,988 cells) and **91 cases pass, all 91 grounded**
   (0 over-claimed); the harness + Docker + gates are exercised. **`s0`–`s15` and `s17` are complete** — every
   case in them has a verdict and it is PASS. **s18 Tier-1: Claude Code + Codex CLI run LIVE and PASS** (box-local
   model, no vendor keys) — the shipped Tier-1 scope is exactly the field-tested set.

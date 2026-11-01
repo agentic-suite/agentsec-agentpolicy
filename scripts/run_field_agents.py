@@ -109,25 +109,107 @@ def install_llm_capture(out_dir: str | Path) -> None:
         )
 
     def _write(request: Any, response: Any) -> None:
+        """Record one request (always) + its response (immediately, or deferred
+        to the body-consuming hooks when the response is streamed)."""
         if not _is_llm(getattr(request, "url", "")):
             return
         with lock:
-            name = f"call-{next(counter):04d}"
+            n = next(counter)
         try:
             req_body = json.loads(getattr(request, "content", b"").decode() or "{}")
         except Exception:
             raw = getattr(request, "content", b"").decode("utf-8", "replace")[:4000]
             req_body = {"_raw": raw}
-        (out / f"{name}-request.json").write_text(
+        (out / f"call-{n:04d}-request.json").write_text(
             json.dumps(_san({"method": request.method, "url": str(request.url), "body": req_body}),
                        indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        try:
+            getattr(response, "text")  # noqa: B009 — probe read; raises ResponseNotRead while streaming
+        except Exception:
+            # Streamed (e.g. llamaindex ReActAgent): the body arrives later via
+            # read/iter_* — tag the response and let those hooks write it.
+            response._ft_capture_n = n  # type: ignore[attr-defined]
+            return
         try:
             resp_body = json.loads(getattr(response, "text", "") or "")
         except Exception:
             resp_body = getattr(response, "text", "")[:4000]
         payload = {"status_code": getattr(response, "status_code", 0), "body": resp_body}
-        (out / f"{name}-response.json").write_text(
+        (out / f"call-{n:04d}-response.json").write_text(
             json.dumps(_san(payload), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    def _capture_streamed(response: Any) -> None:
+        """A streamed body was consumed — write its response file now."""
+        n = getattr(response, "_ft_capture_n", None)
+        if n is None or not _is_llm(getattr(getattr(response, "request", None), "url", "")):
+            return
+        with contextlib.suppress(Exception):
+            try:
+                resp_body = json.loads(getattr(response, "text", "") or "")
+            except Exception:
+                resp_body = {"_raw": getattr(response, "text", "")[:4000]}
+            payload = {"status_code": getattr(response, "status_code", 0), "body": resp_body}
+            (out / f"call-{n:04d}-response.json").write_text(
+                json.dumps(_san(payload), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            response._ft_capture_n = None  # type: ignore[attr-defined]
+
+    # Streaming responses only expose their body when consumed: hook the
+    # consumers (sync + async) so those pairs are captured too.
+    def _wrap_body_method(orig: Any, kind: str) -> Any:
+        if kind == "async-iter":
+            async def _hook_async_iter(self: Any, *a: Any, **k: Any) -> Any:
+                agen = orig(self, *a, **k)
+                chunks: list[bytes] = []
+                try:
+                    async for b in agen:
+                        chunks.append(b)
+                        yield b
+                finally:
+                    with contextlib.suppress(Exception):
+                        self._content = b"".join(chunks)  # type: ignore[attr-defined]
+                        _capture_streamed(self)
+            return _hook_async_iter
+        if kind == "sync-iter":
+            def _hook_sync_iter(self: Any, *a: Any, **k: Any) -> Any:
+                it = orig(self, *a, **k)
+                def _gen() -> Any:
+                    chunks: list[bytes] = []
+                    try:
+                        for b in it:
+                            chunks.append(b)
+                            yield b
+                    finally:
+                        with contextlib.suppress(Exception):
+                            self._content = b"".join(chunks)  # type: ignore[attr-defined]
+                            _capture_streamed(self)
+                return _gen()
+            return _hook_sync_iter
+        if kind == "async-read":
+            async def _hook_async_read(self: Any, *a: Any, **k: Any) -> Any:
+                resp = await orig(self, *a, **k)
+                with contextlib.suppress(Exception):
+                    _capture_streamed(self)
+                return resp
+            return _hook_async_read
+        def _hook_sync_read(self: Any, *a: Any, **k: Any) -> Any:
+            resp = orig(self, *a, **k)
+            with contextlib.suppress(Exception):
+                _capture_streamed(self)
+            return resp
+        return _hook_sync_read
+
+    httpx.Response.read = _wrap_body_method(  # type: ignore[method-assign]
+        httpx.Response.read, "sync-read")
+    httpx.Response.iter_bytes = _wrap_body_method(  # type: ignore[method-assign]
+        httpx.Response.iter_bytes, "sync-iter")
+    httpx.Response.iter_lines = _wrap_body_method(  # type: ignore[method-assign]
+        httpx.Response.iter_lines, "sync-iter")
+    httpx.Response.aread = _wrap_body_method(  # type: ignore[method-assign]
+        httpx.Response.aread, "async-read")
+    httpx.Response.aiter_bytes = _wrap_body_method(  # type: ignore[method-assign]
+        httpx.Response.aiter_bytes, "async-iter")
+    httpx.Response.aiter_lines = _wrap_body_method(  # type: ignore[method-assign]
+        httpx.Response.aiter_lines, "async-iter")
 
     _orig_send = httpx.Client.send
 
