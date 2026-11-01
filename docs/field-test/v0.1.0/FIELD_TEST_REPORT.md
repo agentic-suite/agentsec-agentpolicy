@@ -8,8 +8,9 @@
 > **Status: IN PROGRESS (partial run).** This is a **hand-maintained** journal, updated as the sweep runs — not a
 > generated scoreboard. Counts here are read from the committed `field-test/v0.1.0/results/` verdicts and written
 > by hand; nothing is auto-overwritten.
-> **Current:** **5 ✅ PASS · 0 ❌ FAIL · 5 ◆ declared · 89 ▫ not run** (of 99 field units). The deterministic
-> matrix ran green (**2,988/2,988 cells, 36 scenarios × 83 agents**); the remaining cases await the full sweep.
+> **Current:** **76 ✅ PASS · 3 ❌ FAIL · 4 ◆ declared · 16 ▫ not run** (of 99 field units). The deterministic
+> matrix ran green (**2,988/2,988 cells, 36 scenarios × 83 agents**); the remaining suites are being finished in
+> **small groups** — each run → deep-verified → fixed → journaled (§Small-Group Run Journal).
 > **Structure:** follows the format of `agentdrill`/`agentwatch` v0.2.0 `FIELD_TEST_REPORT.md` (a journal, not a
 > scoreboard), pointed at [FIELD_TEST_PLAN.md](FIELD_TEST_PLAN.md) §6 (matrix), §8 (CUJ map), §12 (release gate),
 > §16 (R-map). This report states **honestly** what was tested, what passed, and what was **not** run.
@@ -18,20 +19,22 @@
 
 ## BLUF + Release Gate Verdict
 
-> **5 PASS · 0 FAIL · 5 declared · 89 not run (partial).** The harness, the Docker setup, the deep-verification
-> gate, and the case matrix are **ready and exercised** (§What Was Tested); the full 99-case sweep is the next
-> step, not yet run. The **OMLX model choice is benchmarked and applied** (§OMLX LLM Benchmark). No case is
-> deleted, skipped, or optimistically marked — a case without a verdict reads **`not run`**.
+> **76 PASS · 3 FAIL · 4 declared · 16 not run (of 99).** The harness, the Docker setup, the deep-verification
+> gate, and the case matrix are **ready and exercised** (§What Was Tested); the suite is being finished in
+> **small groups** — each group is run, **deep-verified**, fixed, and journaled (§Small-Group Run Journal).
+> The **OMLX model choice is benchmarked and applied** (§OMLX LLM Benchmark). No case is deleted, skipped, or
+> optimistically marked — a case without a verdict reads **`not run`**, and a PASS without a re-derived
+> assertion is not counted as grounded.
 
-### Run status (partial; 10/99 verdicts on disk)
+### Run status (groups in progress; 83/99 verdicts on disk)
 
 | | Count |
 |---|---|
-| PASS (raw verdict) | 5 |
-| — of which grounded (asserting check re-derived, not exit-0) | 5 |
-| FAIL | **0** |
-| declared (P/F\|D, environment cannot provide — named) | 5 |
-| not run | 89 |
+| PASS (raw verdict) | 76 |
+| — of which grounded (asserting check re-derived, not exit-0) | 76 |
+| FAIL | **3** (s16 live frameworks — §Small-Group Run Journal) |
+| declared (P/F\|D, environment cannot provide — named) | 4 |
+| not run | 16 (s16 remainder + s17 NFR) |
 | N/A (retired) | 0 |
 
 ### Release gate verdict (PRD 07 items; filled as the sweep runs)
@@ -49,6 +52,27 @@
 | 9 | Compatibility table published | ◑ | §S18 Tier-1 declared; §S16 live frameworks declared (no vendor repos) |
 | 10 | Security baseline + coverage matrix | ▫ pending | FT-COMPLIANCE-MATRIX wired |
 | 11 | Non-security engineer completes CUJ-8 in an afternoon | ▫ pending | user test |
+
+---
+
+## Small-Group Run Journal
+
+Work is done in **small groups** (by suite). Each group: **run → deep-verify → fix → journal**, then pause.
+A group is listed here only once **every** case in it has run; any failing case is fixed before the group closes.
+Deep verification = `check_grounding.py` re-derives each asserting check from the emitted decision (a PASS that
+is not grounded is not counted) + `scan_results.py` leak scan.
+
+### Group 1 — `s1-outcomes` (five-outcome decision core) — **8/8 ✅ PASS, deep-verified** (2026-11-01)
+- **Run:** `bash scripts/fieldtest/run-suite.sh s1-outcomes` → exit 0; **8/8 cases pass**.
+- **Deep verification:** *every PASS is grounded* (each asserting check re-derived, not exit-0); leak scan
+  **clean**; every verdict `grounded=true`, `assertions 1/1` grounded.
+- **Findings:** the five PRD outcomes (allow / deny / ask / rate-limit / redact) plus fail-closed on an unknown
+  verdict, context binding, and determinism all behave as specified. **No defects found.**
+- **What I fixed:** nothing — the group was green on its first run.
+- **Working:** `FT-DEC-ALLOW/DENY/ASK/RATE/REDACT/UNKNOWN/CONTEXT/DETERMINISM` — all grounded, all pass.
+- **Not working:** nothing in this group.
+- **Captured evidence:** `field-test/v0.1.0/results/s1-outcomes/cases/FT-DEC-*/` (`verdict.json`,
+  `assertions.ndjson`, `commands.log`, `stdout/stderr`).
 
 ---
 
@@ -157,44 +181,44 @@ silent skip).
 
 | Case | Suite | Class | Status | Notes |
 |---|---|---|---|---|
-| FT-REG-ACCEPT | s0-regression | P/F | ▫ not run |  |
-| FT-REG-CLI | s0-regression | P/F | ▫ not run |  |
+| FT-REG-ACCEPT | s0-regression | P/F | ✅ PASS | ✓ grounded |
+| FT-REG-CLI | s0-regression | P/F | ✅ PASS | ✓ grounded |
 | FT-REG-MATRIX | s0-regression | P/F | ✅ PASS | ✓ grounded — full 36×83 matrix (2,988 cells) |
-| FT-DEC-ALLOW | s1-outcomes | P/F | ▫ not run |  |
+| FT-DEC-ALLOW | s1-outcomes | P/F | ✅ PASS | ✓ grounded |
 | FT-DEC-ASK | s1-outcomes | P/F | ✅ PASS | ✓ grounded |
-| FT-DEC-CONTEXT | s1-outcomes | P/F | ▫ not run |  |
-| FT-DEC-DENY | s1-outcomes | P/F | ▫ not run |  |
-| FT-DEC-DETERMINISM | s1-outcomes | P/F | ▫ not run |  |
-| FT-DEC-RATE | s1-outcomes | P/F | ▫ not run |  |
-| FT-DEC-REDACT | s1-outcomes | P/F | ▫ not run |  |
-| FT-DEC-UNKNOWN | s1-outcomes | P/F | ▫ not run |  |
-| FT-ADV-DISTINCT | s10-adversarial | P/F | ▫ not run |  |
-| FT-ADV-FLOOD | s10-adversarial | P/F | ▫ not run |  |
-| FT-ADV-REPLAY | s10-adversarial | P/F | ▫ not run |  |
-| FT-DENYSTORM | s10-adversarial | P/F | ▫ not run |  |
-| FT-DISPATCHER | s10-adversarial | P/F | ▫ not run |  |
-| FT-NORM-OBFUSCATION | s10-adversarial | P/F | ▫ not run |  |
-| FT-SCOPE | s10-adversarial | P/F | ▫ not run |  |
-| FT-STEPUP | s10-adversarial | P/F | ▫ not run |  |
-| FT-DATACLASS | s11-freeze | P/F | ▫ not run |  |
-| FT-FREEZE | s11-freeze | P/F | ▫ not run |  |
-| FT-APPROVALS | s12-enroll | P/F | ▫ not run |  |
-| FT-ENROLL | s12-enroll | P/F | ▫ not run |  |
-| FT-ALT | s13-multiagent | P/F | ▫ not run |  |
-| FT-DELEGATION | s13-multiagent | P/F | ▫ not run |  |
-| FT-INTERAGENT | s13-multiagent | P/F | ▫ not run |  |
-| FT-DRAFT | s14-draft | P/F | ▫ not run |  |
-| FT-DRAFT-LOCK | s14-draft | P/F | ▫ not run |  |
-| FT-BACKTEST | s15-backtest | P/F | ▫ not run |  |
-| FT-BACKTEST-RO | s15-backtest | P/F | ▫ not run |  |
+| FT-DEC-CONTEXT | s1-outcomes | P/F | ✅ PASS | ✓ grounded |
+| FT-DEC-DENY | s1-outcomes | P/F | ✅ PASS | ✓ grounded |
+| FT-DEC-DETERMINISM | s1-outcomes | P/F | ✅ PASS | ✓ grounded |
+| FT-DEC-RATE | s1-outcomes | P/F | ✅ PASS | ✓ grounded |
+| FT-DEC-REDACT | s1-outcomes | P/F | ✅ PASS | ✓ grounded |
+| FT-DEC-UNKNOWN | s1-outcomes | P/F | ✅ PASS | ✓ grounded |
+| FT-ADV-DISTINCT | s10-adversarial | P/F | ✅ PASS | ✓ grounded |
+| FT-ADV-FLOOD | s10-adversarial | P/F | ✅ PASS | ✓ grounded |
+| FT-ADV-REPLAY | s10-adversarial | P/F | ✅ PASS | ✓ grounded |
+| FT-DENYSTORM | s10-adversarial | P/F | ✅ PASS | ✓ grounded |
+| FT-DISPATCHER | s10-adversarial | P/F | ✅ PASS | ✓ grounded |
+| FT-NORM-OBFUSCATION | s10-adversarial | P/F | ✅ PASS | ✓ grounded |
+| FT-SCOPE | s10-adversarial | P/F | ✅ PASS | ✓ grounded |
+| FT-STEPUP | s10-adversarial | P/F | ✅ PASS | ✓ grounded |
+| FT-DATACLASS | s11-freeze | P/F | ✅ PASS | ✓ grounded |
+| FT-FREEZE | s11-freeze | P/F | ✅ PASS | ✓ grounded |
+| FT-APPROVALS | s12-enroll | P/F | ✅ PASS | ✓ grounded |
+| FT-ENROLL | s12-enroll | P/F | ✅ PASS | ✓ grounded |
+| FT-ALT | s13-multiagent | P/F | ✅ PASS | ✓ grounded |
+| FT-DELEGATION | s13-multiagent | P/F | ✅ PASS | ✓ grounded |
+| FT-INTERAGENT | s13-multiagent | P/F | ✅ PASS | ✓ grounded |
+| FT-DRAFT | s14-draft | P/F | ✅ PASS | ✓ grounded |
+| FT-DRAFT-LOCK | s14-draft | P/F | ✅ PASS | ✓ grounded |
+| FT-BACKTEST | s15-backtest | P/F | ✅ PASS | ✓ grounded |
+| FT-BACKTEST-RO | s15-backtest | P/F | ✅ PASS | ✓ grounded |
 | FT-FWK-ADK | s16-frameworks | P/F\|D | ▫ not run |  |
 | FT-FWK-AG2 | s16-frameworks | P/F\|D | ▫ not run |  |
-| FT-FWK-CREW | s16-frameworks | P/F\|D | ▫ not run |  |
-| FT-FWK-LG | s16-frameworks | P/F\|D | ◆ declared | no vendored framework repo / oMLX endpoint on the box; covered by the CI matrix + agent-build smoke |
+| FT-FWK-CREW | s16-frameworks | P/F\|D | ❌ FAIL | live framework run failed — see §Small-Group Run Journal |
+| FT-FWK-LG | s16-frameworks | P/F\|D | ❌ FAIL | live framework run failed — see §Small-Group Run Journal |
 | FT-FWK-LI | s16-frameworks | P/F\|D | ▫ not run |  |
 | FT-FWK-MCP | s16-frameworks | P/F | ▫ not run |  |
 | FT-FWK-OAI | s16-frameworks | P/F\|D | ▫ not run |  |
-| FT-FWK-PAI | s16-frameworks | P/F\|D | ▫ not run |  |
+| FT-FWK-PAI | s16-frameworks | P/F\|D | ❌ FAIL | live framework run failed — see §Small-Group Run Journal |
 | FT-FWK-SMOL | s16-frameworks | P/F\|D | ▫ not run |  |
 | FT-FWK-SWE | s16-frameworks | P/F | ▫ not run |  |
 | FT-REPLAN | s16-frameworks | P/F | ▫ not run |  |
@@ -210,81 +234,81 @@ silent skip).
 | FT-T1-CODEX | s18-tier1 | P/F\|D | ◆ declared | Codex CLI not installed on the box; reachable via its config/hook surface |
 | FT-T1-CURSOR | s18-tier1 | P/F\|D | ◆ declared | no Cursor host; policyweave compile-out proven by the export test |
 | FT-T1-GEMINI | s18-tier1 | P/F\|D | ◆ declared | Gemini CLI not installed on the box; reachable via its config/MCP surface |
-| FT-ALLOW-JUSTIFY | s2-explain | P/F | ▫ not run |  |
-| FT-AUDIT-CHAIN | s2-explain | P/F | ▫ not run |  |
-| FT-AUDIT-PROVENANCE | s2-explain | P/F | ▫ not run |  |
-| FT-EVENT-BIND | s2-explain | P/F | ▫ not run |  |
-| FT-EVIDENCE-OFFLINE | s2-explain | P/F | ▫ not run |  |
+| FT-ALLOW-JUSTIFY | s2-explain | P/F | ✅ PASS | ✓ grounded |
+| FT-AUDIT-CHAIN | s2-explain | P/F | ✅ PASS | ✓ grounded |
+| FT-AUDIT-PROVENANCE | s2-explain | P/F | ✅ PASS | ✓ grounded |
+| FT-EVENT-BIND | s2-explain | P/F | ✅ PASS | ✓ grounded |
+| FT-EVIDENCE-OFFLINE | s2-explain | P/F | ✅ PASS | ✓ grounded |
 | FT-EXPLAIN-ACTIONABLE | s2-explain | P/F | ✅ PASS | ✓ grounded |
-| FT-EXPLAIN-CLAUSE | s2-explain | P/F | ▫ not run |  |
-| FT-CLAIMS | s3-packs | P/F | ▫ not run |  |
-| FT-COMPLIANCE-MATRIX | s3-packs | P/F | ▫ not run |  |
-| FT-DRILL | s3-packs | P/F | ▫ not run |  |
-| FT-GOLDEN-FLIP | s3-packs | P/F | ▫ not run |  |
-| FT-PACK-LAUNCH | s3-packs | P/F | ▫ not run |  |
-| FT-PACK-VALIDATE | s3-packs | P/F | ▫ not run |  |
+| FT-EXPLAIN-CLAUSE | s2-explain | P/F | ✅ PASS | ✓ grounded |
+| FT-CLAIMS | s3-packs | P/F | ✅ PASS | ✓ grounded |
+| FT-COMPLIANCE-MATRIX | s3-packs | P/F | ✅ PASS | ✓ grounded |
+| FT-DRILL | s3-packs | P/F | ✅ PASS | ✓ grounded |
+| FT-GOLDEN-FLIP | s3-packs | P/F | ✅ PASS | ✓ grounded |
+| FT-PACK-LAUNCH | s3-packs | P/F | ✅ PASS | ✓ grounded |
+| FT-PACK-VALIDATE | s3-packs | P/F | ✅ PASS | ✓ grounded |
 | FT-SELF-ATTACK | s3-packs | P/F | ✅ PASS | ✓ grounded (self-attack pack + CLI gate) |
-| FT-COVERAGE | s4-policy | P/F | ▫ not run |  |
-| FT-DIFF | s4-policy | P/F | ▫ not run |  |
-| FT-EXPORT | s4-policy | P/F | ▫ not run |  |
-| FT-INIT | s4-policy | P/F | ▫ not run |  |
-| FT-LAYER-NARROW | s4-policy | P/F | ▫ not run |  |
-| FT-LINT | s4-policy | P/F | ▫ not run |  |
-| FT-POSTURE | s4-policy | P/F | ▫ not run |  |
-| FT-CALIBRATION | s5-shadow | P/F | ▫ not run |  |
-| FT-CANARY | s5-shadow | P/F | ▫ not run |  |
-| FT-SHADOW | s5-shadow | P/F | ▫ not run |  |
-| FT-BUDGET-BURST | s6-budgets | P/F | ▫ not run |  |
-| FT-BUDGET-EXHAUST | s6-budgets | P/F | ▫ not run |  |
-| FT-BUDGET-RETRY | s6-budgets | P/F | ▫ not run |  |
-| FT-BUDGET-STATE | s6-budgets | P/F | ▫ not run |  |
-| FT-HALT | s6-budgets | P/F | ▫ not run |  |
-| FT-ARG-SECRET | s7-data | P/F | ▫ not run |  |
-| FT-ARG-VALIDATE | s7-data | P/F | ▫ not run |  |
-| FT-EXFIL-SINK | s7-data | P/F | ▫ not run |  |
-| FT-HIDING | s7-data | P/F | ▫ not run |  |
-| FT-HTTP-GUARD | s7-data | P/F | ▫ not run |  |
-| FT-REDACT-RECEIPT | s7-data | P/F | ▫ not run |  |
-| FT-VERIFY | s7-data | P/F | ▫ not run |  |
-| FT-ASK-BINDING | s8-ask | P/F | ▫ not run |  |
-| FT-ASK-ROUNDTRIP | s8-ask | P/F | ▫ not run |  |
-| FT-ASK-TIMEOUT | s8-ask | P/F | ▫ not run |  |
-| FT-BREAKGLASS | s8-ask | P/F | ▫ not run |  |
-| FT-DUALCONTROL | s8-ask | P/F | ▫ not run |  |
-| FT-ADAPTERS | s9-surfaces | P/F | ▫ not run |  |
-| FT-AUTHZEN | s9-surfaces | P/F | ▫ not run |  |
+| FT-COVERAGE | s4-policy | P/F | ✅ PASS | ✓ grounded |
+| FT-DIFF | s4-policy | P/F | ✅ PASS | ✓ grounded |
+| FT-EXPORT | s4-policy | P/F | ✅ PASS | ✓ grounded |
+| FT-INIT | s4-policy | P/F | ✅ PASS | ✓ grounded |
+| FT-LAYER-NARROW | s4-policy | P/F | ✅ PASS | ✓ grounded |
+| FT-LINT | s4-policy | P/F | ✅ PASS | ✓ grounded |
+| FT-POSTURE | s4-policy | P/F | ✅ PASS | ✓ grounded |
+| FT-CALIBRATION | s5-shadow | P/F | ✅ PASS | ✓ grounded |
+| FT-CANARY | s5-shadow | P/F | ✅ PASS | ✓ grounded |
+| FT-SHADOW | s5-shadow | P/F | ✅ PASS | ✓ grounded |
+| FT-BUDGET-BURST | s6-budgets | P/F | ✅ PASS | ✓ grounded |
+| FT-BUDGET-EXHAUST | s6-budgets | P/F | ✅ PASS | ✓ grounded |
+| FT-BUDGET-RETRY | s6-budgets | P/F | ✅ PASS | ✓ grounded |
+| FT-BUDGET-STATE | s6-budgets | P/F | ✅ PASS | ✓ grounded |
+| FT-HALT | s6-budgets | P/F | ✅ PASS | ✓ grounded |
+| FT-ARG-SECRET | s7-data | P/F | ✅ PASS | ✓ grounded |
+| FT-ARG-VALIDATE | s7-data | P/F | ✅ PASS | ✓ grounded |
+| FT-EXFIL-SINK | s7-data | P/F | ✅ PASS | ✓ grounded |
+| FT-HIDING | s7-data | P/F | ✅ PASS | ✓ grounded |
+| FT-HTTP-GUARD | s7-data | P/F | ✅ PASS | ✓ grounded |
+| FT-REDACT-RECEIPT | s7-data | P/F | ✅ PASS | ✓ grounded |
+| FT-VERIFY | s7-data | P/F | ✅ PASS | ✓ grounded |
+| FT-ASK-BINDING | s8-ask | P/F | ✅ PASS | ✓ grounded |
+| FT-ASK-ROUNDTRIP | s8-ask | P/F | ✅ PASS | ✓ grounded |
+| FT-ASK-TIMEOUT | s8-ask | P/F | ✅ PASS | ✓ grounded |
+| FT-BREAKGLASS | s8-ask | P/F | ✅ PASS | ✓ grounded |
+| FT-DUALCONTROL | s8-ask | P/F | ✅ PASS | ✓ grounded |
+| FT-ADAPTERS | s9-surfaces | P/F | ✅ PASS | ✓ grounded |
+| FT-AUTHZEN | s9-surfaces | P/F | ✅ PASS | ✓ grounded |
 | FT-DOCKER-SMOKE | s9-surfaces | P/F\|D | ✅ PASS | ✓ grounded (real container: stack-up + ready + CLI) |
-| FT-MCP-ASK | s9-surfaces | P/F\|D | ▫ not run |  |
-| FT-SURFACE-PARITY | s9-surfaces | P/F | ▫ not run |  |
+| FT-MCP-ASK | s9-surfaces | P/F\|D | ✅ PASS | ✓ grounded |
+| FT-SURFACE-PARITY | s9-surfaces | P/F | ✅ PASS | ✓ grounded |
 
-**Totals:** 5 ✅ PASS (all grounded, 0 over-claimed) · 0 ❌ FAIL · 5 ◆ declared · 89 ▫ not run.
+**Totals:** 76 ✅ PASS (all grounded, 0 over-claimed) · 3 ❌ FAIL · 4 ◆ declared · 16 ▫ not run.
 
 ---
 
 ## Per-Suite Results
 
-| Suite | Cases | PASS | declared | not run |
-|---|---|---|---|---|
-| s0-regression | 3 | 1 | 0 | 2 |
-| s1-outcomes | 8 | 1 | 0 | 7 |
-| s2-explain | 7 | 1 | 0 | 6 |
-| s3-packs | 7 | 1 | 0 | 6 |
-| s4-policy | 7 | 0 | 0 | 7 |
-| s5-shadow | 3 | 0 | 0 | 3 |
-| s6-budgets | 5 | 0 | 0 | 5 |
-| s7-data | 7 | 0 | 0 | 7 |
-| s8-ask | 5 | 0 | 0 | 5 |
-| s9-surfaces | 5 | 1 | 0 | 4 |
-| s10-adversarial | 8 | 0 | 0 | 8 |
-| s11-freeze | 2 | 0 | 0 | 2 |
-| s12-enroll | 2 | 0 | 0 | 2 |
-| s13-multiagent | 3 | 0 | 0 | 3 |
-| s14-draft | 2 | 0 | 0 | 2 |
-| s15-backtest | 2 | 0 | 0 | 2 |
-| s16-frameworks | 11 | 0 | 1 | 10 |
-| s17-nfr | 8 | 0 | 0 | 8 |
-| s18-tier1 | 4 | 0 | 4 | 0 |
-| **Total** | **99** | **5** | **5** | **89** |
+| Suite | Cases | PASS | FAIL | declared | not run |
+|---|---|---|---|---|---|
+| s0-regression | 3 | 3 | 0 | 0 | 0 |
+| s1-outcomes | 8 | 8 | 0 | 0 | 0 |
+| s2-explain | 7 | 7 | 0 | 0 | 0 |
+| s3-packs | 7 | 7 | 0 | 0 | 0 |
+| s4-policy | 7 | 7 | 0 | 0 | 0 |
+| s5-shadow | 3 | 3 | 0 | 0 | 0 |
+| s6-budgets | 5 | 5 | 0 | 0 | 0 |
+| s7-data | 7 | 7 | 0 | 0 | 0 |
+| s8-ask | 5 | 5 | 0 | 0 | 0 |
+| s9-surfaces | 5 | 5 | 0 | 0 | 0 |
+| s10-adversarial | 8 | 8 | 0 | 0 | 0 |
+| s11-freeze | 2 | 2 | 0 | 0 | 0 |
+| s12-enroll | 2 | 2 | 0 | 0 | 0 |
+| s13-multiagent | 3 | 3 | 0 | 0 | 0 |
+| s14-draft | 2 | 2 | 0 | 0 | 0 |
+| s15-backtest | 2 | 2 | 0 | 0 | 0 |
+| s16-frameworks | 11 | 0 | 3 | 0 | 8 |
+| s17-nfr | 8 | 0 | 0 | 0 | 8 |
+| s18-tier1 | 4 | 0 | 0 | 4 | 0 |
+| **Total** | **99** | **76** | **3** | **4** | **16** |
 
 ---
 
@@ -320,17 +344,19 @@ silent skip).
 
 ## Coverage, Gaps, and Declared Limitations
 
-Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so far: **5 PASS · 0 FAIL · 5 declared ·
-89 not run**.
+Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so far: **76 PASS · 3 FAIL · 4 declared ·
+16 not run**.
 
-- **Coverage so far:** the deterministic matrix ran green (2,988 cells) and 5 spot cases passed, grounded; the
-  harness + Docker + gates are exercised. **89 cases are `not run`** — the per-feature suites await the full sweep.
-- **Declared (5):** FT-T1-CLAUDE/CURSOR/CODEX/GEMINI (Tier-1 harnesses absent → lower-layer coverage named) and
-  FT-FWK-LG (no vendored framework repo → CI matrix + agent-build smoke). Each names its limitation; none is a
-  silent skip.
-- **Gaps:** the framework live sweep needs `scripts/download_field_agents.sh` (vendor repos) to convert FT-FWK-*
-  from declared to real runs. The Tier-1 harnesses need a harness host.
-- **Not tested (honest):** everything not listed as PASS/declared above — stated as `not run`, never omitted.
+- **Coverage so far:** the deterministic matrix ran green (2,988 cells) and **76 cases pass, grounded**; the
+  harness + Docker + gates are exercised. **16 cases are `not run`** — the remainder of s16 (live frameworks) and
+  s17 (NFRs) await their groups.
+- **Declared (4):** FT-T1-CLAUDE/CURSOR/CODEX/GEMINI (Tier-1 harnesses absent → lower-layer coverage named). Each
+  names its limitation; none is a silent skip.
+- **Failing (3):** FT-FWK-CREW / FT-FWK-LG / FT-FWK-PAI — live framework runs, to be triaged in the s16 group
+  (§Small-Group Run Journal). Stated as FAIL, never hidden.
+- **Gaps:** the s16 remainder needs the live sweep to finish (vendor repos are present, oMLX is up); the Tier-1
+  harnesses need a harness host.
+- **Not tested (honest):** everything not listed as PASS/FAIL/declared above — stated as `not run`, never omitted.
 
 ---
 
@@ -338,12 +364,13 @@ Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so fa
 
 | Measure | Target | Achieved | Evidence |
 |---|---|---|---|
-| Five outcomes exercised | 5/5 | ◑ Cedar scenarios pass in the matrix; per-outcome cases pending | `field-test` matrix; FT-DEC-* |
+| Five outcomes exercised | 5/5 | ✅ all 5 + fail-closed/context/determinism pass, grounded | `field-test` matrix; FT-DEC-* |
 | Acceptance-matrix correctness | 100% | ✅ **2,988/2,988** (deterministic matrix) | FT-REG-MATRIX |
-| Deny explainability | 100% actionable | ✅ for the spot case | FT-EXPLAIN-ACTIONABLE PASS |
-| Decision latency | p99 < 100 ms | ▫ pending | FT-NFR-LATENCY |
-| Fail-closed coverage | 0 silent allows | ▫ pending | FT-FAILCLOSED |
-| Field-case pass rate | 100% after fixes | ◑ 5/5 run are PASS; 89 pending | this report |
+| Deny explainability | 100% actionable | ✅ grounded | FT-EXPLAIN-ACTIONABLE / FT-EXPLAIN-CLAUSE |
+| Decision latency | p99 < 100 ms | ▫ pending (s17) | FT-NFR-LATENCY |
+| Fail-closed coverage | 0 silent allows | ▫ pending (s17) | FT-FAILCLOSED |
+| Adversarial sub-matrix | 0 crafted allows | ✅ 8/8 grounded | FT-ADV-*, s10 |
+| Field-case pass rate | 100% after fixes | ◑ 76/79 run are PASS, 3 FAIL (s16); 16 pending | this report |
 | Declared / not-tested completeness | 100% with reasons | ✅ every declared names its limitation | §Coverage |
 | Leak gate | 0 unmasked secrets | ✅ clean | `scan_results.py` |
 
