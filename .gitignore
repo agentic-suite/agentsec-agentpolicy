@@ -19,3 +19,4 @@ htmlcov/
 
 # OS/editor
 .DS_Store
+**/codex-home/.tmp/

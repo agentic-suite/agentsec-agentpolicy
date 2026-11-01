@@ -20,6 +20,12 @@ CLI="${FT_CLI:-codex}"
 MODEL="${FT_MODEL:-Qwen3-4B-Instruct-2507-4bit}"
 
 mkdir -p "$CASE_DIR/artifacts/llm" "$CASE_DIR/codex-home/work"
+# Codex scratch (plugin clones etc.) must never land in the committed results:
+# keep its tmp/cache in a throwaway dir outside the case tree.
+CODEX_TMP="$(mktemp -d -t ft-codex-tmp)"
+trap 'rm -rf "$CODEX_TMP"' EXIT
+export CODEX_TMPDIR="$CODEX_TMP" XDG_CACHE_HOME="$CODEX_TMP/cache"
+mkdir -p "$XDG_CACHE_HOME"
 W="$CASE_DIR/codex-home/work"
 echo "hello-ft" > "$W/notes.txt"
 
