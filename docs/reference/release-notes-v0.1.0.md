@@ -1,8 +1,8 @@
 # AgentPolicy v0.1.0 Release Notes
 
-**Released:** 2026-08-13
+**Released:** 2026-11-01
 **Package:** `agentsec-agentpolicy` · **Version:** 0.1.0
-**License:** MIT
+**License:** Apache-2.0
 
 AgentPolicy is a deterministic policy decision point for tool-using AI
 agents. It scores every tool invocation across five risk dimensions and returns
@@ -122,6 +122,36 @@ python examples/demo-agent/demo_adversarial.py
   gate and not yet live.
 - **Live replan** field sweep needs a local LLM endpoint (omlx); the
   scripted (CI-safe) path is the default.
+
+---
+
+## Compatibility matrix (harness × enforcer)
+
+How agentpolicy is reached, per harness, and where the decision is enforced. A
+cell is marked supported **only** when it is field-tested (M24) or shipped and
+verified; an untested surface is named *not supported*, never claimed.
+
+| Harness | Reached via | Enforcer | v0.1.0 |
+|---|---|---|---|
+| **Claude Code** | `PreToolUse` hook → `agentpolicy evaluate` | in-process hook | ✅ field-tested LIVE (M24) |
+| **Codex CLI** | `config.toml` provider + sandbox | in-process / sandbox | ✅ field-tested LIVE (M24) |
+| **MCP clients** | MCP server surface / **agentgate** proxy | agentgate (MCP) | ✅ (MCP self-test) |
+| **LangGraph** | library adapter (tool node) | in-process adapter | ✅ field-tested LIVE |
+| **PydanticAI** | library adapter (`@guard`) | in-process adapter | ✅ field-tested LIVE |
+| **OpenAI Agents SDK** | library adapter (guardrail) | in-process adapter | ✅ field-tested LIVE |
+| **CrewAI** | library adapter (tool wrapper) | in-process adapter | ✅ field-tested LIVE |
+| **AutoGen** | library adapter | in-process adapter | ✅ field-tested LIVE |
+| **smolagents** | library adapter | in-process adapter | ✅ field-tested LIVE |
+| **LlamaIndex** | library adapter | in-process adapter | ✅ field-tested LIVE |
+| **Google ADK** | library adapter (LiteLlm) | in-process adapter | ✅ field-tested LIVE |
+| **GitHub Copilot** (agent mode) | enterprise/process layer | **agentseatbelt** (confinement) | documented lower-layer (not field-tested) |
+| **Cursor** | — | — | ❌ **not supported** (GUI IDE; no headless surface) |
+| **Gemini CLI** | — | — | ❌ **not supported** (classifier-only local routing; sunset OAuth) |
+
+**Enforcers:** `agentgate` (MCP proxy) and `agentseatbelt`/`agentkernel`
+(confinement) are harness-agnostic decision callers; the in-process adapters are
+per-framework. Every supported row is described in
+[PRD 19](../prd/19-harness-compatibility.md).
 
 ---
 
