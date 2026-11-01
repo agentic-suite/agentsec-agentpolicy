@@ -8,6 +8,7 @@ set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export FT_VERSION="${FT_VERSION:-v0.1.0}"
+export FT_RUN_ID="${FT_RUN_ID:-all}"
 export STACK_KEEP=0
 export FT_SHARED_STACK=1
 # shellcheck source=lib.sh
@@ -28,7 +29,7 @@ echo "==> field-test run: ${#suites[@]} suite(s); STACK_KEEP=$STACK_KEEP"
 
 # Verify the verifier FIRST: if the grounding gate cannot catch a shallow pass,
 # the whole run's green is worthless.
-if ! python3 "$HERE/verify_harness.py"; then
+if ! "$FT_PY" "$HERE/verify_harness.py"; then
   echo "!! verify-harness FAILED — the grounding gate is too weak; aborting." >&2
   exit 1
 fi
@@ -47,14 +48,14 @@ done
 # (re-derived from disk), and the evidence leak-free. Part of the run.
 echo
 echo "==> end-of-run deep verification"
-if ! python3 "$HERE/check_grounding.py" "$RESULTS_ROOT" --strict > "$RESULTS_ROOT/.grounding.log" 2>&1; then
+if ! "$FT_PY" "$HERE/check_grounding.py" "$RESULTS_ROOT" --strict > "$RESULTS_ROOT/.grounding.log" 2>&1; then
   tail -6 "$RESULTS_ROOT/.grounding.log"
   echo "!! end-of-run deep-verification FAILED" >&2
   rc=1
 else
   tail -2 "$RESULTS_ROOT/.grounding.log"
 fi
-if ! python3 "$HERE/scan_results.py" "$RESULTS_ROOT" --quiet; then
+if ! "$FT_PY" "$HERE/scan_results.py" "$RESULTS_ROOT" --quiet; then
   echo "!! leak scan FAILED" >&2
   rc=1
 else

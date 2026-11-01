@@ -66,20 +66,20 @@ done
 
 echo
 echo "==> Aggregating results into $FT_RUN_DIR"
-python3 "$HERE/collect-results.py" "$FT_RUN_DIR" --expect "${ids[@]}" || true
+"$FT_PY" "$HERE/collect-results.py" "$FT_RUN_DIR" --expect "${ids[@]}" || true
 
 # Deep verification is part of the run, not a separate step: every PASS must be
 # grounded (re-derived from disk) and the committed evidence must be leak-free.
 echo
 echo "==> deep verification (grounding re-derivation + leak scan)"
-if ! python3 "$HERE/check_grounding.py" "$RESULTS_ROOT" > "$FT_RUN_DIR/.grounding.log" 2>&1; then
+if ! "$FT_PY" "$HERE/check_grounding.py" "$RESULTS_ROOT" > "$FT_RUN_DIR/.grounding.log" 2>&1; then
   tail -5 "$FT_RUN_DIR/.grounding.log"
   echo "!! deep-verification FAILED (a PASS is not grounded)" >&2
   rc=1
 else
   tail -2 "$FT_RUN_DIR/.grounding.log"
 fi
-if ! python3 "$HERE/scan_results.py" "$RESULTS_ROOT" --quiet; then
+if ! "$FT_PY" "$HERE/scan_results.py" "$RESULTS_ROOT" --quiet; then
   echo "!! leak scan FAILED (unmasked secret in results)" >&2
   rc=1
 else
