@@ -61,7 +61,7 @@
 | 6 | p99 < 100 ms + fail-closed on every path | ✅ | FT-NFR-LATENCY + FT-FAILCLOSED PASS (grounded, s17) |
 | 7 | CI rejects a golden deny→allow flip | ✅ | FT-GOLDEN-FLIP PASS (grounded) |
 | 8 | Adversarial sub-matrix: zero crafted allows | ✅ | FT-ADV-* 8/8 PASS (grounded, s10) — 0 crafted allows |
-| 9 | Compatibility table published | ◑ | §S18: **Claude Code + Codex CLI exercised LIVE (both PASS)** — the shipped Tier-1 scope; Cursor + Gemini CLI **not claimed as supported** (§Field Notes 13); §S16 live frameworks mid-run |
+| 9 | Compatibility table published | ✅ | §S18: **Claude Code + Codex CLI exercised LIVE (both PASS)** — the shipped Tier-1 scope; Cursor + Gemini CLI **not claimed as supported** (§Field Notes 13); §S16: **all 11 frameworks PASS live** |
 | 10 | Security baseline + coverage matrix | ✅ | FT-COMPLIANCE-MATRIX PASS (grounded) |
 | 11 | Non-security engineer completes CUJ-8 in an afternoon | ▫ pending | user test |
 
@@ -149,7 +149,7 @@ Run one suite at a time (`run-suite.sh <suite>`, exit 0 each); each run's own de
     passed 10/10 on re-run — CREW/PAI are expected to flip green on a re-run with retry.
 - **What I fixed:** the report only (this entry). **No code touched in the verify-only pass.**
 - **Working:** `FT-FWK-LG` end-to-end incl. LLM capture; the new not-logged⇒FAIL gate.
-- **Not working (yet):** CREW/PAI tool-call flakiness (retry on next re-run); the 8 interrupted s16 cases.
+- **Not working (then):** CREW/PAI tool-call flakiness + the 8 not-yet-run s16 cases — *(all later resolved: Groups 23-30, sweep 97/97 PASS).*
 - **Captured evidence:** `field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-*/` — verdicts + 59 captured
   LLM pairs total (17 LG + 28 CREW + 14 PAI), all sanitized.
 
@@ -182,7 +182,7 @@ The first Tier-1 case to run **live**: the real Claude Code agent loop (`claude 
   proxy), the `FT-T1-CLAUDE` registry entry (`llm: yes`, conditional live/declare steps), regenerated spec+step.
 - **Working:** Claude Code ↔ oMLX end-to-end — the flagship Tier-1 journey (CUJ-2/R28) is proven live.
 - **Not working / open:** Codex + Gemini steps re-drafted but **not yet proven or run** (still `declared`
-  from their prior runs); Cursor stays declared (GUI host absent); the 8 interrupted s16 cases.
+  from their prior runs); Cursor stays declared (GUI host absent). *(All 8 s16 cases later completed — Groups 23-30.)
 - **Captured evidence:** `field-test/v0.1.0/results/s18-tier1/cases/FT-T1-CLAUDE/` — verdict, assertions,
   `artifacts/claude-call{1,2,3}.txt` (live transcripts), `artifacts/audit.ndjson` (3 decisions),
   `artifacts/llm/` (6 pairs), `harness/` (policy + hook + settings, fully reproducible).
@@ -214,7 +214,7 @@ the **box-local oMLX model** — no hosted LLM, **no OpenAI key**.
   (`llm: yes`, conditional live/declare), regenerated spec+step.
 - **Working:** Codex CLI ↔ oMLX end-to-end — the second flagship Tier-1 journey (CUJ-2/R28) proven live.
 - **Not working / open:** Gemini's local path (`gemini gemma setup` — LiteRT-LM + Gemma download — was
-  interrupted, stays declared); Cursor stays declared (GUI IDE, §Coverage); the 8 interrupted s16 cases.
+  interrupted, stays declared); Cursor stays declared (GUI IDE, §Coverage). *(All 8 s16 cases later completed — Groups 23-30.)
 - **Captured evidence:** `field-test/v0.1.0/results/s18-tier1/cases/FT-T1-CODEX/` — verdict, assertions,
   `artifacts/codex-call{1,2}.txt` (live transcripts), `artifacts/audit.ndjson` (3 parity decisions),
   `artifacts/llm/` (4 pairs), `codex-home/config.toml` (the oMLX provider wiring, reproducible).
@@ -767,13 +767,15 @@ journal you're reading is the audit trail of exactly that: Groups 1–11 (s0–s
 - **Async teardown noise**: pydanticai leaves `RuntimeError: Event loop is closed` in stderr on exit —
   harmless cleanup-order artifact, worth documenting so it isn't miscounted as a failure.
 
-### 10. Honest remaining work (as of this entry)
-1. Finish `s16-frameworks`: `FT-FWK-OAI` (interrupted mid-case) + `FT-FWK-ADK/AG2/LI/SMOL/SWE/MCP`,
-   `FT-REPLAN` — 8 cases, not run this sweep.
-2. Retry `FT-FWK-CREW` / `FT-FWK-PAI` (expected to flip green like LG did); consider a per-row retry budget.
-3. Gemini: complete `gemini gemma setup` (LiteRT-LM + Gemma download — interrupted) → re-run FT-T1-GEMINI
-   through its hooks surface; Cursor: **stays declared** (GUI IDE — no headless surface; §Coverage).
-4. Release gate: 9/11 green; item 9 (compatibility table) waits on s16 finishing; item 11 is a user test.
+### 10. Honest remaining work (RESOLVED — the sweep is complete)
+*(Written mid-sweep; kept for the record. All items closed — see Groups 23–30.)*
+1. ~~Finish `s16-frameworks`~~ — **done**: all 8 remaining cases ran (OAI/ADK/AG2/LI/SMOL/SWE/MCP/REPLAN).
+2. ~~Retry CREW/PAI~~ — **done**: both fixed by the per-row tool-binding runner fix (Group 29), PASS on the
+   pinned model; no retry budget needed.
+3. ~~Gemini gemma setup~~ — **investigated to a close** (Group 22): install works, the CLI loop cannot run
+   box-local (classifier-only gemma + sunset OAuth); case removed from scope with reason. Cursor likewise.
+4. ~~Release gate item 9~~ — closed by the Tier-1 LIVE passes (Claude Code, Codex CLI) + scope honesty.
+   **Final state: 97/97 PASS, 0 FAIL, 0 declared, 0 not run.** Remaining: M24 gates (24.T/C/L/CR/D), then M25.
 
 ### 11. How FT-T1-CLAUDE was made to work locally — the full wiring story (for the write-ups)
 **Goal:** run the *real* Claude Code agent loop against the **box-local oMLX model** — no hosted LLM, no
