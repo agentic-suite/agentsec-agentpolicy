@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 from agentpolicy.canonical import canonicalize
+from agentpolicy.cost import CostExceeded, CostGovernor
 from agentpolicy.engine.engine import Engine
 from agentpolicy.policy.models import Policy, default_policy
 from agentpolicy.types import NormalizedCall
@@ -100,6 +101,8 @@ class BacktestReport:
     emits_events: bool = False
     excluded_from_golden_gate: bool = True
     coverage_note: str = ""
+    aborted: bool = False
+    abort_reason: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         """JSON-friendly representation."""
@@ -116,6 +119,8 @@ class BacktestReport:
             "window_start": self.window_start,
             "window_end": self.window_end,
             "coverage_note": self.coverage_note,
+            "aborted": self.aborted,
+            "abort_reason": self.abort_reason,
         }
 
     def summary(self) -> str:
@@ -187,6 +192,7 @@ def backtest(
     *,
     baseline: Policy | None = None,
     emit: Callable[..., None] | None = None,
+    max_cost: float | None = None,
 ) -> BacktestReport:
     """Replay *events* against the baseline and candidate policies.
 
@@ -196,11 +202,14 @@ def backtest(
         baseline: The policy currently in force (defaults to the balanced preset).
         emit: A fleet-event emitter hook. **The backtest never calls it** — it is
             accepted so a caller can prove the backtest emits no fleet events.
+        max_cost: An optional cost ceiling (M23 ``23.4``). Each replayed event
+            costs 1.0; the replay **aborts and reports** when the ceiling is hit.
 
     Returns:
         A :class:`BacktestReport` (watermarked ``backtest``, advisory).
     """
     del emit  # the backtest emits no fleet events (read-only)
+    governor = CostGovernor(max_cost)
     baseline_engine = Engine(baseline if baseline is not None else default_policy("balanced"))
     candidate_engine = Engine(candidate)
     ordered = sorted(events, key=lambda e: str(e.get("event_id", "")))
@@ -209,7 +218,15 @@ def backtest(
     allowed: list[Flip] = []
     unchanged = 0
     stamps: list[str] = []
+    aborted = False
+    abort_reason = ""
     for event in ordered:
+        try:
+            governor.charge(1.0)
+        except CostExceeded as exc:
+            aborted = True
+            abort_reason = str(exc)
+            break
         pair = _replay_pair(event, baseline_engine, candidate_engine)
         if pair is None:
             continue
@@ -241,6 +258,7 @@ def backtest(
         total=total, unchanged=unchanged, newly_denied=tuple(denied),
         newly_asked=tuple(asked), newly_allowed=tuple(allowed),
         window_start=window_start, window_end=window_end, coverage_note=note,
+        aborted=aborted, abort_reason=abort_reason,
     )
 
 

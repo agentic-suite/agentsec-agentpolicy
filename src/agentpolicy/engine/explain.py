@@ -182,4 +182,5 @@ def explain(
         policy_version=policy.version,
         obligations=verdict.obligations,
         counterfactual=cf,
+        matched_rule=verdict.matched_rule,
     )

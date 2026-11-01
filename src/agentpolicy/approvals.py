@@ -48,6 +48,7 @@ class ApprovalAnalytics:
     mean_latency_seconds: float | None
     shadow_delta: float | None
     rubber_stamp_gates: tuple[str, ...] = ()
+    always_allowed_patterns: tuple[str, ...] = ()
     by_gate: dict[str, dict[str, int]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -62,6 +63,7 @@ class ApprovalAnalytics:
             "mean_latency_seconds": self.mean_latency_seconds,
             "shadow_delta": self.shadow_delta,
             "rubber_stamp_gates": list(self.rubber_stamp_gates),
+            "always_allowed_patterns": list(self.always_allowed_patterns),
             "by_gate": {k: dict(v) for k, v in self.by_gate.items()},
         }
 
@@ -88,16 +90,22 @@ def analyze_approvals(
     audit_entries: tuple[Any, ...] | list[Any] = (),
     rubber_stamp_threshold: float = 0.99,
     min_approvals: int = 3,
+    allow_threshold: float = 0.99,
+    min_allows: int = 3,
 ) -> ApprovalAnalytics:
     """Compute the approval report from the gate records.
 
     Args:
         escalations: ``Escalation`` records (M3 gate).
         asks: ``Ask`` records (M7 gate).
-        audit_entries: Audit entries (for the shadow→enforce delta).
+        audit_entries: Audit entries (for the shadow→enforce delta and the
+            M22 allow-side patterns).
         rubber_stamp_threshold: A gate at or above this approval rate (with at
             least ``min_approvals``) is a rubber-stamp candidate.
         min_approvals: Minimum approvals before a gate can be flagged.
+        allow_threshold: An allow clause at or above this allow rate (with at
+            least ``min_allows``) is an always-allowed pattern (M22).
+        min_allows: Minimum decisions before an allow pattern can be flagged.
 
     Returns:
         An :class:`ApprovalAnalytics`.
@@ -142,6 +150,24 @@ def analyze_approvals(
         ):
             rubber_stamp.append(gate)
 
+    # M22 allow-side counterpart: a permitting clause that is allowed ~always.
+    allow_counts: dict[str, dict[str, int]] = {}
+    for entry in audit_entries:
+        key = str(getattr(entry, "matched_rule", None) or getattr(entry, "reason_code", ""))
+        bucket = allow_counts.setdefault(key, {"allowed": 0, "decided": 0})
+        decision = getattr(entry, "decision", "")
+        if decision in ("allow", "audit", "allow_with_obligation", "redact"):
+            bucket["allowed"] += 1
+            bucket["decided"] += 1
+        elif decision in ("deny", "escalate"):
+            bucket["decided"] += 1
+    always_allowed = [
+        key
+        for key, counts in sorted(allow_counts.items())
+        if counts["decided"] >= min_allows
+        and counts["allowed"] / counts["decided"] >= allow_threshold
+    ]
+
     return ApprovalAnalytics(
         total=len(records),
         approved=approved,
@@ -152,6 +178,7 @@ def analyze_approvals(
         mean_latency_seconds=mean_latency,
         shadow_delta=_shadow_delta(tuple(audit_entries)),
         rubber_stamp_gates=tuple(rubber_stamp),
+        always_allowed_patterns=tuple(always_allowed),
         by_gate=by_gate,
     )
 

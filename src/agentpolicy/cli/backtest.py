@@ -25,7 +25,10 @@ def add_parser(subparsers: Any) -> None:
     parser.add_argument("--history", required=True, help="JSONL window of agentwatch events")
     parser.add_argument("--candidate", required=True, help="the candidate policy file")
     parser.add_argument("--baseline", default=None, help="the baseline policy (default: balanced)")
-    parser.add_argument("--ci", action="store_true", help="attach the diff to $GITHUB_STEP_SUMMARY")
+    parser.add_argument("--ci", action="store_true", help="attach the diff to the PR summary")
+    parser.add_argument(
+        "--max-cost", type=float, default=None, help="abort the replay over this ceiling"
+    )
     parser.add_argument("--json", action="store_true")
     parser.set_defaults(func=_backtest)
 
@@ -37,11 +40,13 @@ def _backtest(args: argparse.Namespace) -> int:
     except Exception as exc:
         raise CliError(f"cannot load policy: {exc}") from exc
     events = load_history(args.history)
-    report = backtest(events, candidate, baseline=baseline)
+    report = backtest(events, candidate, baseline=baseline, max_cost=args.max_cost)
     if args.json:
         print(json.dumps(report.to_dict(), indent=2, sort_keys=True))
     else:
         print(report.summary())
+        if report.aborted:
+            print(f"aborted: {report.abort_reason}")
     if args.ci:
         summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
         if summary_path:

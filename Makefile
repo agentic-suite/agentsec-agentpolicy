@@ -1,5 +1,6 @@
 .PHONY: setup test cov lint typecheck fmt \
-        docker-build docker-up docker-down docker-test docker-smoke docker-sse
+        docker-build docker-up docker-down docker-test docker-smoke docker-sse \
+        self-attack
 
 # --- developer setup & quality gates (WBS M1) -------------------------------
 
@@ -41,3 +42,8 @@ docker-sse:
 	uv run pytest tests/test_sse_integration.py -v
 
 docker-test: docker-smoke docker-sse
+
+# --- release cadence (M22) --------------------------------------------------
+
+self-attack:  ## self-attack pack gate — a miss blocks the release
+	agentpolicy self-attack check --pack packs/self-attack

@@ -1,0 +1,16 @@
+name: self-attack
+version: 0.1.0
+description: >-
+  Attacks agentpolicy's own decision surface — policy tamper, normalization
+  bypass, ask replay, budget splitting, audit truncation, event forgery — as a
+  normal pack anyone can run against their own deployment. A miss blocks the
+  release; the result is published with the release notes, misses included.
+incident_ref: self-attack
+min_agentpolicy: 0.1.0
+license: Apache-2.0
+trust: launch
+domains: [secrets, iam, shell, payment, http, approval, fs]
+tool_count: 0
+tests_passing: 7
+last_updated: "2026-11-01"
+maintainer: agentic-suite

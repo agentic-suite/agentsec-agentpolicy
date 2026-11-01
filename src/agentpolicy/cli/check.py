@@ -43,6 +43,11 @@ def add_parser(subparsers: Any) -> None:
         action="store_true",
         help="compare against the posture default and report breaking changes",
     )
+    parser.add_argument(
+        "--parent",
+        default=None,
+        help="a parent (org) policy; fail if this policy ever widens it (M21 narrow-only)",
+    )
     parser.set_defaults(func=_run)
 
 
@@ -51,9 +56,32 @@ def _run(args: argparse.Namespace) -> int:
         policy = load_policy(args.policy)
     except PolicyParseError as exc:
         raise ConfigError(f"invalid policy: {exc}") from exc
+    if getattr(args, "parent", None) is not None:
+        return _check_narrow_only(args, policy)
     print(f"ok: {args.policy} (version {policy.version}, posture {policy.posture})")
     if args.migrate:
         return _report_migration(policy)
+    return 0
+
+
+def _check_narrow_only(args: argparse.Namespace, policy: Policy) -> int:
+    """Fail (exit 2) when *policy* widens its parent (M21 ``21.2``)."""
+    from agentpolicy.layering import narrow_only_violations
+
+    try:
+        parent = load_policy(args.parent)
+    except PolicyParseError as exc:
+        raise ConfigError(f"invalid parent policy: {exc}") from exc
+    violations = narrow_only_violations(parent, policy)
+    if violations:
+        raise ConfigError(
+            f"{args.policy} widens {args.parent} (narrow-only violated):\n  "
+            + "\n  ".join(violations)
+        )
+    print(
+        f"ok: {args.policy} (version {policy.version}, posture {policy.posture}) "
+        f"narrows {args.parent}"
+    )
     return 0
 
 

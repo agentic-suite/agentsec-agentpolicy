@@ -38,6 +38,47 @@ def add_parser(subparsers: Any) -> None:
     )
     approvals.add_argument("--json", action="store_true")
     approvals.set_defaults(func=_report_approvals)
+    coverage = sub.add_parser(
+        "coverage", help="action-space coverage: taxonomy x rules x fleet inventory"
+    )
+    coverage.add_argument("--inventory", default=None, help="JSONL window of agentwatch events")
+    coverage.add_argument(
+        "--out-of-scope", default="", help="comma-separated verbs declared out-of-scope"
+    )
+    coverage.add_argument("--json", action="store_true")
+    coverage.set_defaults(func=_report_coverage)
+
+
+def _report_coverage(args: argparse.Namespace) -> int:
+    """Action-space coverage report (M21 21.3)."""
+    import json
+    import os
+    from pathlib import Path
+
+    from agentpolicy.backtest import load_history
+    from agentpolicy.coverage import coverage_report, inventory_from_events
+    from agentpolicy.policy.models import default_policy
+
+    policy_path = os.environ.get("AGENTPOLICY_POLICY", "agentpolicy.yaml")
+    if Path(policy_path).is_file():
+        from agentpolicy.policy.loader import load_policy
+
+        policy = load_policy(policy_path)
+    else:
+        policy = default_policy("balanced")
+    inventory = inventory_from_events(load_history(args.inventory)) if args.inventory else {}
+    out_of_scope = [v.strip() for v in args.out_of_scope.split(",") if v.strip()]
+    report = coverage_report(policy, inventory=inventory, out_of_scope=out_of_scope)
+    if args.json:
+        print(json.dumps(report.to_dict(), indent=2, sort_keys=True))
+        return 0
+    print("=== Action-space coverage ===")
+    print(f"  gap:unexplained: {report.gap_unexplained}")
+    if report.dangerous:
+        print(f"  dangerous (uncovered+exercised): {', '.join(report.dangerous)}")
+    if report.dead:
+        print(f"  dead rules (covered+never): {', '.join(report.dead)}")
+    return 0
 
 
 def _report_approvals(args: argparse.Namespace) -> int:

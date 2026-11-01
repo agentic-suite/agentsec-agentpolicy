@@ -137,6 +137,7 @@ class Decision:
     freeze_id: str | None = None
     break_glass_id: str | None = None
     dual_control_id: str | None = None
+    matched_rule: str | None = None
 
     def __post_init__(self) -> None:
         if self.decision not in _VALID_DECISIONS:
@@ -149,6 +150,16 @@ class Decision:
                 f"got {self.criticality!r}"
             )
         _require_nonblank(self.reason_code, "reason_code")
+
+    @property
+    def clause(self) -> str:
+        """The clause that decided the outcome (M22 allow-justification).
+
+        The matched rule id when a rule decided the outcome, else the
+        reason-code class — mirroring the Cedar ``Explanation.clause``, so an
+        **allow** names its permitting rule exactly as a deny names its blocker.
+        """
+        return self.matched_rule or self.reason_code
 
     def to_dict(self) -> dict[str, Any]:
         """JSON-friendly representation of this decision."""

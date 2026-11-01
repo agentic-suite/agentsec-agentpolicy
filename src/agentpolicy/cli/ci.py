@@ -14,7 +14,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from agentpolicy import agentdrill, compliance, goldens
+from agentpolicy import agentdrill, claims, compliance, goldens, selfattack
 from agentpolicy.cli.errors import CliError
 
 _DEFAULT_FIXTURES = "tests/fixtures/acceptance_matrix.yaml"
@@ -50,6 +50,23 @@ def add_parser(subparsers: Any) -> None:
     export.add_argument("--json", action="store_true")
     export.add_argument("-o", "--output", default=None)
     export.set_defaults(func=_run_compliance_export)
+
+    claims_check = compliance_sub.add_parser(
+        "claims", help="lint published claims against the coverage matrix"
+    )
+    claims_check.add_argument("--json", action="store_true")
+    claims_check.set_defaults(func=_run_claims_check)
+
+    self_attack = subparsers.add_parser(
+        "self-attack", help="self-attack pack gate (a miss blocks the release)"
+    )
+    sa_sub = self_attack.add_subparsers(
+        dest="self_attack_command", required=True, metavar="SUBCOMMAND"
+    )
+    sa_check = sa_sub.add_parser("check", help="replay the self-attack pack")
+    sa_check.add_argument("--pack", default=selfattack.DEFAULT_PACK)
+    sa_check.add_argument("--json", action="store_true")
+    sa_check.set_defaults(func=_run_self_attack_check)
 
 
 def _run_goldens_check(args: argparse.Namespace) -> int:
@@ -90,6 +107,31 @@ def _run_drill_check(args: argparse.Namespace) -> int:
     else:
         print(f"drill: {len(pack_dirs)} incident pack(s) still block their replays")
     return 0 if not unblocked else 1
+
+
+def _run_claims_check(args: argparse.Namespace) -> int:
+    findings = claims.lint_claims()
+    if args.json:
+        print(json.dumps(findings, indent=2))
+    elif findings:
+        for finding in findings:
+            print(f"  CLAIM: {finding}")
+    else:
+        print("claims: every published claim maps to a covered control")
+    return 0 if not findings else 1
+
+
+def _run_self_attack_check(args: argparse.Namespace) -> int:
+    results = selfattack.self_attack_pack(args.pack)
+    misses = [r for r in results if not r.passed]
+    if args.json:
+        print(json.dumps([r.to_dict() for r in misses], indent=2))
+    elif misses:
+        for miss in misses:
+            print(f"  MISS {miss.pack}/{miss.name}: {miss.expected} -> {miss.got}")
+    else:
+        print(f"self-attack: {len(results)} case(s), no misses")
+    return 0 if not misses else 1
 
 
 def _run_compliance_export(args: argparse.Namespace) -> int:

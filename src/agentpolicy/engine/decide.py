@@ -40,13 +40,15 @@ class Verdict:
     ``source`` is ``"rule"`` when an explicit policy rule produced the outcome
     or ``"band"`` when it came from the risk-band mapping. ``reason`` carries
     the matched rule's human text (only populated for ``"rule"`` verdicts) so
-    the explanation stage can quote it.
+    the explanation stage can quote it; ``matched_rule`` carries the rule's id
+    (M22 allow-justification).
     """
 
     decision: DecisionValue
     source: str
     reason: str = ""
     obligations: tuple[str, ...] = ()
+    matched_rule: str | None = None
 
 
 def decide_from_score(risk_score: RiskScore, call: NormalizedCall, policy: Policy) -> Verdict:
@@ -61,7 +63,7 @@ def decide_from_score(risk_score: RiskScore, call: NormalizedCall, policy: Polic
     below is the single place to extend.
     """
     for wanted in ("deny", "allow", "escalate"):
-        for rule in policy.rules:
+        for i, rule in enumerate(policy.rules):
             if rule.decision == wanted and rule.matches(call):
                 obligations = rule.obligations
                 if wanted == "allow" and obligations:
@@ -70,8 +72,12 @@ def decide_from_score(risk_score: RiskScore, call: NormalizedCall, policy: Polic
                         "rule",
                         rule.reason,
                         obligations,
+                        matched_rule=f"rule[{i}]",
                     )
-                return Verdict(cast(DecisionValue, rule.decision), "rule", rule.reason)
+                return Verdict(
+                    cast(DecisionValue, rule.decision), "rule", rule.reason,
+                    matched_rule=f"rule[{i}]",
+                )
 
     # Band mapping covers every valid band; the ``"deny"`` default here is a
     # defensive net in case a future caller synthesizes an unknown band.

@@ -32,6 +32,25 @@ jobs:
         with:
           path: ./
 
+  # M22 release-cadence gate — drill agentpolicy against its own decision
+  # surface. A single miss (an attack that gets through) blocks the release;
+  # the result is published with the release notes, misses included.
+  self-attack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - uses: astral-sh/setup-uv@v2
+
+      - run: uv sync --group dev
+
+      - name: Self-attack pack gate (a miss blocks the release)
+        run: uv run agentpolicy self-attack check --pack packs/self-attack
+
   docker:
     runs-on: ubuntu-latest
     steps:
