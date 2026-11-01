@@ -461,3 +461,34 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
     uncovered control; wired as `compliance claims`. **Resolved.**
 - **Gates:** suite **1545 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
 - **Resolution:** all findings resolved; no open items.
+
+### M24 — Field tests (24.CR)
+
+- **Scope:** the field-test harness (`scripts/fieldtest/*`, `scripts/run_field_agents.py`), the case
+  registry/generator (`scripts/fieldtest/gen_cases.py`), the deep-verification gates
+  (`check_grounding.py`, `scan_results.py`, `verify_harness.py`), the Tier-1 harnesses
+  (`t1_claude.sh`, `t1_codex.sh`, `t1_evaluate.py`, `t1_proxy.py`), and the 97-case matrix.
+- **Findings & resolutions (every one a *harness* defect; no policy defect was found across the matrix):**
+  - *Capture could silently record nothing* → the LLM-capture URL filter in `run_field_agents.py` only
+    matched `/chat/completions|/completions|/embeddings`; the openai-agents SDK calls `/v1/responses`, so
+    `FT-FWK-OAI` passed the matrix but captured **0 pairs**. The `ft_assert_llm_capture` gate caught it
+    (`FT-FWK-OAI` FAIL: `capture: 0 + 0`); fixed by adding `/responses` (+`/messages`). **Resolved
+    (Group 23).**
+  - *Streamed responses were never captured* → `response.text` raises `ResponseNotRead` while streaming
+    (llamaindex ReActAgent), and the hook's `contextlib.suppress` swallowed it → **24 requests + 0
+    responses**. Fixed by also wrapping httpx's body-consuming methods (sync + async) and writing the
+    response file when the stream is consumed. **Resolved (Group 26).**
+  - *A transitive dependency clash killed every ADK call* → litellm lazily imports `mcp.types.CacheableResult`
+    / `mcp.shared.exceptions.MCPError`, renamed away in the pinned mcp; surfaced as a misleading
+    `APIConnectionError`. Fixed by moving the env to `mcp 2.3.0`. **Resolved (Group 24).**
+  - *That fix broke the MCP server* → `fastmcp 3.4.11` pins `mcp<2.0` and imports mcp's `request_ctx`
+    internals; fixed by `fastmcp 4.1.5`. Venv pinned in `pyproject.toml`. **Resolved (Group 28).**
+  - *One agent bound to every scenario tool* → the runner bound ALL five `scn_*` tools onto the tier-1
+    agent, so the model could call a *different* scenario's tool than the row under test and the
+    `RecordingEngine` key never matched → `not-available` (the SMOL/CREW/PAI FAILs). Fixed by building a
+    **fresh agent per scenario row** bound to exactly that row's tool. **Resolved (Group 29/30).**
+  - *Two length/threshold guards* → `check_grounding.py` gained the not-logged-LLM ⇒ FAIL rule and the
+    weak-assertion catalogue; `_ft_gemini_loop_local_ok` probes the Gemini CLI gate per run. **Resolved.**
+- **Gates:** suite **1562 passed, 1 skipped, 1 deselected** (5 docker-console errors were a transient
+  Docker-daemon race, re-run green) · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open product defects; the field sweep is **97/97 PASS**.
