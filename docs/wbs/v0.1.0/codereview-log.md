@@ -492,3 +492,31 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1562 passed, 1 skipped, 1 deselected** (5 docker-console errors were a transient
   Docker-daemon race, re-run green) · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
 - **Resolution:** all findings resolved; no open product defects; the field sweep is **97/97 PASS**.
+
+### M25 — Release readiness (25.CR)
+
+- **Scope:** the release tooling (`scripts/release/*`: SBOM/SHA256SUMS/provenance, first-run
+  evidence, security audit, docs audit), the compliance/standards matrix
+  (`src/agentpolicy/compliance.py`), and the release docs (`README`, `CHANGELOG`,
+  `docs/reference/VERSIONING.md`, release notes, `pyproject.toml` metadata).
+- **Findings & resolutions:**
+  - *A shipped dependency carried a CVE* → `opentelemetry-api 1.44.0` had CVE-2026-114603
+    (unbounded `tracestate` regex); bumped to `>=1.45.1` and aligned the whole otel family
+    (a partial bump broke otel imports). Shipped runtime closure now scans clean (25.3).
+  - *The security audit had no secret scan* → added **trufflehog** (verified) + **gitleaks**
+    (git history); gitleaks surfaced 12 history hits, all benign (intentional test fixtures,
+    a `temperature=TEMPERATURE` false positive, and Codex session UUIDs in sanitized field-test
+    evidence) → `.gitleaks.toml` documents each allowance; 0 real secrets. **Resolved.**
+  - *License drift* → `pyproject.toml` reported **MIT** while `LICENSE` + `README` say
+    **Apache-2.0**; corrected the metadata to Apache-2.0 everywhere. **Resolved.**
+  - *16 broken doc links* → fixed relative depths in `docs/design/*`, `migration-guide`, and
+    `release-notes`; repointed v0.2.0 forward-refs to existing v0.1.0 targets; created the missing
+    `scripts/fieldtest/README.md`. Docs audit green; all ADRs accepted (25.6). **Resolved.**
+  - *Stale release status* → README said "in development / not on PyPI"; CHANGELOG had a stray
+    `[Unreleased]` and release notes called PyPI "staged". Fixed to **released v0.1.0** + live PyPI
+    (25.D). **Resolved.**
+- **Gates (on the release commit `496777a`):** suite **1605 passed, 1 skipped** · coverage **95%**
+  (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open product defects. **Released:** tag `v0.1.0` +
+  GitHub Release (wheel/sdist/SBOM/SHA256SUMS/provenance) + PyPI `agentsec-agentpolicy==0.1.0`
+  (install-verified; hashes match).
