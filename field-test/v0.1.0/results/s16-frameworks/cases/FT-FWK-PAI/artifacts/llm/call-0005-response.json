@@ -2,36 +2,45 @@
   "body": {
     "choices": [
       {
-        "finish_reason": "stop",
+        "finish_reason": "tool_calls",
         "index": 0,
         "message": {
-          "content": "<tool_call>\n{\"name\": \"scn_decision-allow-01\", \"arguments\": {}}",
-          "role": "assistant"
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"environment\": \"production\", \"data_class\": \"internal\"}",
+                "name": "scn_decision-escalate-01"
+              },
+              "id": "call_0f42faef",
+              "type": "function"
+            }
+          ]
         }
       }
     ],
-    "created": 1793561448,
-    "id": "chatcmpl-73198602",
+    "created": 1793566669,
+    "id": "chatcmpl-72820be5",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 20,
+      "completion_tokens": 33,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.59,
-      "generation_tokens_per_second": 33.77,
-      "input_tokens": 406,
-      "output_tokens": 20,
-      "prompt_eval_duration": 1.97,
-      "prompt_tokens": 406,
+      "generation_duration": 1.1,
+      "generation_tokens_per_second": 29.97,
+      "input_tokens": 221,
+      "output_tokens": 33,
+      "prompt_eval_duration": 2.13,
+      "prompt_tokens": 221,
       "prompt_tokens_details": {
-        "cached_tokens": 256
+        "cached_tokens": 0
       },
-      "prompt_tokens_per_second": 76.1,
-      "time_to_first_token": 1.97,
-      "total_time": 2.56,
-      "total_tokens": 426
+      "prompt_tokens_per_second": 103.99,
+      "time_to_first_token": 2.13,
+      "total_time": 3.23,
+      "total_tokens": 254
     }
   },
   "status_code": 200

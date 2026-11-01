@@ -6,7 +6,7 @@
         "role": "system"
       },
       {
-        "content": "\nCurrent Task: In environment 'staging' with data_class 'restricted', call ONLY the tool `scn_decision-audit-01` with valid arguments, then answer. Do not call any other tool. Do not skip.\n\nThis is the expected criteria for your final answer: A direct answer.\nyou MUST return the actual complete content as the final answer, not a summary.",
+        "content": "\nCurrent Task: In environment 'production' with data_class 'internal', call ONLY the tool `scn_decision-escalate-01` with valid arguments, then answer. Do not call any other tool. Do not skip.\n\nThis is the expected criteria for your final answer: A direct answer.\nyou MUST return the actual complete content as the final answer, not a summary.",
         "role": "user"
       }
     ],
@@ -36,7 +36,7 @@
       {
         "function": {
           "description": "Echo the input text back.",
-          "name": "scn_decision_audit_01",
+          "name": "scn_decision_escalate_01",
           "parameters": {
             "additionalProperties": false,
             "properties": {

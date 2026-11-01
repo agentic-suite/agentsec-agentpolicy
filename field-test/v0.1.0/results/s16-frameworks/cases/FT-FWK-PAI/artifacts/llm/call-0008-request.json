@@ -2,7 +2,7 @@
   "body": {
     "messages": [
       {
-        "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_adversarial-case-04` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
+        "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_adversarial-unicode-03` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
         "role": "user"
       }
     ],
@@ -13,7 +13,7 @@
       {
         "function": {
           "description": "",
-          "name": "echo",
+          "name": "get_weather",
           "parameters": {
             "additionalProperties": true,
             "properties": {},
@@ -25,7 +25,7 @@
       {
         "function": {
           "description": "",
-          "name": "get_current_time",
+          "name": "search_docs",
           "parameters": {
             "additionalProperties": true,
             "properties": {},
@@ -37,7 +37,7 @@
       {
         "function": {
           "description": "",
-          "name": "scn_adversarial-case-04",
+          "name": "scn_adversarial-unicode-03",
           "parameters": {
             "additionalProperties": true,
             "properties": {},

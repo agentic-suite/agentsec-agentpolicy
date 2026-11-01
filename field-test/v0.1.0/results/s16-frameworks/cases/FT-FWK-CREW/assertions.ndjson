@@ -1,1 +1,4 @@
 {"name":"llm-endpoint-reachable","ok":true}
+{"name":"matrix-crewai","ok":true,"grounded":true,"cmd":"/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/run_field_agents.py crewai --plan B --llm-out /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-CREW/artifacts/llm"}
+{"name":"crewai-captured","ok":true,"grounded":true,"cmd":"capture: 41 request(s) + 41 response(s)"}
+{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}

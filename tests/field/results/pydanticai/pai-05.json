@@ -22,7 +22,7 @@
       "llm_responded": true,
       "response": null,
       "error": null,
-      "elapsed_s": 1.14,
+      "elapsed_s": 1.15,
       "decision": "deny",
       "reason_code": "deny_critical_op",
       "expected": "deny",

@@ -5,33 +5,33 @@
         "finish_reason": "stop",
         "index": 0,
         "message": {
-          "content": "The action to write in production with internal data requires approval. Please route the request to the on-call approver.",
+          "content": "hello world",
           "role": "assistant"
         }
       }
     ],
-    "created": 1793566518,
-    "id": "chatcmpl-2a14c8dc",
+    "created": 1793566611,
+    "id": "chatcmpl-5121b6cf",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 23,
+      "completion_tokens": 2,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 1.33,
-      "generation_tokens_per_second": 17.28,
-      "input_tokens": 426,
-      "output_tokens": 23,
-      "prompt_eval_duration": 0.67,
-      "prompt_tokens": 426,
+      "generation_duration": 0.37,
+      "generation_tokens_per_second": 5.37,
+      "input_tokens": 416,
+      "output_tokens": 2,
+      "prompt_eval_duration": 0.46,
+      "prompt_tokens": 416,
       "prompt_tokens_details": {
         "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 252.84,
-      "time_to_first_token": 0.67,
-      "total_time": 2.0,
-      "total_tokens": 449
+      "prompt_tokens_per_second": 347.93,
+      "time_to_first_token": 0.46,
+      "total_time": 0.83,
+      "total_tokens": 418
     }
   },
   "status_code": 200

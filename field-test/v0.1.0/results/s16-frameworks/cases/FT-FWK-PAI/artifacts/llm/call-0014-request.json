@@ -2,7 +2,7 @@
   "body": {
     "messages": [
       {
-        "content": "In environment 'production' with data_class 'restricted', call ONLY the tool `scn_adversarial-grant-bypass-10` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
+        "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_adversarial-blank-tool-07` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
         "role": "user"
       }
     ],
@@ -10,18 +10,6 @@
     "stream": false,
     "tool_choice": "auto",
     "tools": [
-      {
-        "function": {
-          "description": "",
-          "name": "get_weather",
-          "parameters": {
-            "additionalProperties": true,
-            "properties": {},
-            "type": "object"
-          }
-        },
-        "type": "function"
-      },
       {
         "function": {
           "description": "",
@@ -37,7 +25,31 @@
       {
         "function": {
           "description": "",
-          "name": "scn_adversarial-grant-bypass-10",
+          "name": "get_weather",
+          "parameters": {
+            "additionalProperties": true,
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "",
+          "name": "echo",
+          "parameters": {
+            "additionalProperties": true,
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "",
+          "name": "scn_adversarial-blank-tool-07",
           "parameters": {
             "additionalProperties": true,
             "properties": {},

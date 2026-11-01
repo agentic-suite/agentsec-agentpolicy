@@ -2,36 +2,45 @@
   "body": {
     "choices": [
       {
-        "finish_reason": "stop",
+        "finish_reason": "tool_calls",
         "index": 0,
         "message": {
-          "content": "Task completed in development environment with public data class.",
-          "role": "assistant"
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"Hello, this is a test input for the adversarial non-string tool.\"}",
+                "name": "scn_adversarial_nonstring_08"
+              },
+              "id": "call_77481425",
+              "type": "function"
+            }
+          ]
         }
       }
     ],
-    "created": 1793561505,
-    "id": "chatcmpl-835caadb",
+    "created": 1793566642,
+    "id": "chatcmpl-a1865dd9",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 10,
+      "completion_tokens": 41,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.27,
-      "generation_tokens_per_second": 37.13,
-      "input_tokens": 383,
-      "output_tokens": 10,
-      "prompt_eval_duration": 0.17,
-      "prompt_tokens": 383,
+      "generation_duration": 1.09,
+      "generation_tokens_per_second": 37.46,
+      "input_tokens": 348,
+      "output_tokens": 41,
+      "prompt_eval_duration": 0.25,
+      "prompt_tokens": 348,
       "prompt_tokens_details": {
         "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 762.15,
-      "time_to_first_token": 0.17,
-      "total_time": 0.44,
-      "total_tokens": 393
+      "prompt_tokens_per_second": 365.63,
+      "time_to_first_token": 0.25,
+      "total_time": 1.35,
+      "total_tokens": 389
     }
   },
   "status_code": 200

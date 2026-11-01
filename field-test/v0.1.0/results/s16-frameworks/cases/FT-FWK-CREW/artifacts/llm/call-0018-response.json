@@ -5,33 +5,33 @@
         "finish_reason": "stop",
         "index": 0,
         "message": {
-          "content": "I cannot proceed with the requested tool call due to incorrect or non-existent tool name. Please ensure the correct and valid tool name is provided. The correct tool name should be exactly: `scn_adversarial_nonstring_08`. Let me know if you'd like to retry with the correct parameters.",
+          "content": "execute in production with restricted data class",
           "role": "assistant"
         }
       }
     ],
-    "created": 1793561492,
-    "id": "chatcmpl-a882b13d",
+    "created": 1793566628,
+    "id": "chatcmpl-4af4b3ca",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 62,
+      "completion_tokens": 7,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 1.6,
-      "generation_tokens_per_second": 38.63,
-      "input_tokens": 528,
-      "output_tokens": 62,
-      "prompt_eval_duration": 0.28,
-      "prompt_tokens": 528,
+      "generation_duration": 0.2,
+      "generation_tokens_per_second": 35.32,
+      "input_tokens": 462,
+      "output_tokens": 7,
+      "prompt_eval_duration": 0.27,
+      "prompt_tokens": 462,
       "prompt_tokens_details": {
         "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 959.73,
-      "time_to_first_token": 0.28,
-      "total_time": 1.89,
-      "total_tokens": 590
+      "prompt_tokens_per_second": 753.8,
+      "time_to_first_token": 0.27,
+      "total_time": 0.47,
+      "total_tokens": 469
     }
   },
   "status_code": 200

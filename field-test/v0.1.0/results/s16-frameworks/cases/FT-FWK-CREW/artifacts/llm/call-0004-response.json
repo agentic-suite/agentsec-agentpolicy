@@ -10,8 +10,8 @@
         }
       }
     ],
-    "created": 1793566517,
-    "id": "chatcmpl-5adaaa62",
+    "created": 1793566611,
+    "id": "chatcmpl-13f366c9",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
@@ -19,19 +19,19 @@
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.63,
-      "generation_tokens_per_second": 15.96,
-      "input_tokens": 383,
+      "generation_duration": 0.37,
+      "generation_tokens_per_second": 27.13,
+      "input_tokens": 437,
       "output_tokens": 10,
-      "prompt_eval_duration": 0.89,
-      "prompt_tokens": 383,
+      "prompt_eval_duration": 1.06,
+      "prompt_tokens": 437,
       "prompt_tokens_details": {
         "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 142.79,
-      "time_to_first_token": 0.89,
-      "total_time": 1.52,
-      "total_tokens": 393
+      "prompt_tokens_per_second": 171.07,
+      "time_to_first_token": 1.06,
+      "total_time": 1.43,
+      "total_tokens": 447
     }
   },
   "status_code": 200

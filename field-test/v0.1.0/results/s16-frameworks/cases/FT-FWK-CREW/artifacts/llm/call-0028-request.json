@@ -6,7 +6,7 @@
         "role": "system"
       },
       {
-        "content": "\nCurrent Task: In environment 'staging' with data_class 'public', call ONLY the tool `scn_decision-allow-02` with valid arguments, then answer. Do not call any other tool. Do not skip.\n\nThis is the expected criteria for your final answer: A direct answer.\nyou MUST return the actual complete content as the final answer, not a summary.",
+        "content": "\nCurrent Task: In environment 'development' with data_class 'public', call ONLY the tool `scn_adversarial-nonstring-08` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.\n\nThis is the expected criteria for your final answer: A direct answer.\nyou MUST return the actual complete content as the final answer, not a summary.",
         "role": "user"
       },
       {
@@ -15,19 +15,39 @@
         "tool_calls": [
           {
             "function": {
-              "arguments": "{\"text\": \"Task completed in staging environment with public data class.\"}",
-              "name": "scn_decision_allow_02"
+              "arguments": "{\"text\": \"Hello, this is a test input for the adversarial non-string tool.\"}",
+              "name": "scn_adversarial_nonstring_08"
             },
-            "id": "call_a71e6ec0",
+            "id": "call_77481425",
             "type": "function"
           }
         ]
       },
       {
-        "content": "Task completed in staging environment with public data class.",
-        "name": "scn_decision_allow_02",
+        "content": "Error executing tool: [AgentPolicy] deny: action must be a non-blank string (reason_code deny_malformed_input)",
+        "name": "scn_adversarial_nonstring_08",
         "role": "tool",
-        "tool_call_id": "call_a71e6ec0"
+        "tool_call_id": "call_77481425"
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"text\": \"test\"}",
+              "name": "scn_adversarial_nonstring_08"
+            },
+            "id": "call_0147c05f",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "Error executing tool: [AgentPolicy] deny: action must be a non-blank string (reason_code deny_malformed_input)",
+        "name": "scn_adversarial_nonstring_08",
+        "role": "tool",
+        "tool_call_id": "call_0147c05f"
       }
     ],
     "model": "Qwen3-4B-Instruct-2507-4bit",
@@ -56,7 +76,7 @@
       {
         "function": {
           "description": "Echo the input text back.",
-          "name": "scn_decision_allow_02",
+          "name": "scn_adversarial_nonstring_08",
           "parameters": {
             "additionalProperties": false,
             "properties": {

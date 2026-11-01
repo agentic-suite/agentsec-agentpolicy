@@ -23,7 +23,7 @@
       "llm_responded": true,
       "response": null,
       "error": null,
-      "elapsed_s": 1.01,
+      "elapsed_s": 2.5,
       "decision": "deny",
       "reason_code": "deny_unknown_tool",
       "expected": "deny",

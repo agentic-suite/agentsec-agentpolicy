@@ -12,35 +12,35 @@
                 "arguments": "{\"environment\": \"staging\", \"data_class\": \"internal\"}",
                 "name": "scn_adversarial-unicode-02"
               },
-              "id": "call_3abd51aa",
+              "id": "call_310051a7",
               "type": "function"
             }
           ]
         }
       }
     ],
-    "created": 1793561449,
-    "id": "chatcmpl-a92d3ee9",
+    "created": 1793566671,
+    "id": "chatcmpl-096c4b32",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 35,
+      "completion_tokens": 36,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.85,
-      "generation_tokens_per_second": 41.4,
+      "generation_duration": 0.94,
+      "generation_tokens_per_second": 38.32,
       "input_tokens": 280,
-      "output_tokens": 35,
-      "prompt_eval_duration": 0.18,
+      "output_tokens": 36,
+      "prompt_eval_duration": 0.16,
       "prompt_tokens": 280,
       "prompt_tokens_details": {
         "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 136.8,
-      "time_to_first_token": 0.18,
-      "total_time": 1.02,
-      "total_tokens": 315
+      "prompt_tokens_per_second": 151.9,
+      "time_to_first_token": 0.16,
+      "total_time": 1.1,
+      "total_tokens": 316
     }
   },
   "status_code": 200

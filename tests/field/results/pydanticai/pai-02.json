@@ -23,7 +23,7 @@
       "llm_responded": true,
       "response": null,
       "error": null,
-      "elapsed_s": 1.04,
+      "elapsed_s": 1.12,
       "decision": "audit",
       "reason_code": "audit_sensitive_data",
       "expected": "audit",

@@ -2,7 +2,7 @@
   "body": {
     "messages": [
       {
-        "content": "In environment 'production' with data_class 'internal', call ONLY the tool `scn_decision-escalate-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "content": "In environment 'staging' with data_class 'restricted', call ONLY the tool `scn_decision-audit-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
         "role": "user"
       }
     ],
@@ -25,55 +25,7 @@
       {
         "function": {
           "description": "",
-          "name": "scn_decision-allow-01",
-          "parameters": {
-            "additionalProperties": true,
-            "properties": {},
-            "type": "object"
-          }
-        },
-        "type": "function"
-      },
-      {
-        "function": {
-          "description": "",
           "name": "scn_decision-audit-01",
-          "parameters": {
-            "additionalProperties": true,
-            "properties": {},
-            "type": "object"
-          }
-        },
-        "type": "function"
-      },
-      {
-        "function": {
-          "description": "",
-          "name": "scn_decision-escalate-01",
-          "parameters": {
-            "additionalProperties": true,
-            "properties": {},
-            "type": "object"
-          }
-        },
-        "type": "function"
-      },
-      {
-        "function": {
-          "description": "",
-          "name": "scn_decision-deny-01",
-          "parameters": {
-            "additionalProperties": true,
-            "properties": {},
-            "type": "object"
-          }
-        },
-        "type": "function"
-      },
-      {
-        "function": {
-          "description": "",
-          "name": "scn_adversarial-injection-01",
           "parameters": {
             "additionalProperties": true,
             "properties": {},

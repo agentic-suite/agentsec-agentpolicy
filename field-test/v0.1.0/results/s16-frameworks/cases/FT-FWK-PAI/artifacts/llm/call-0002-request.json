@@ -2,7 +2,7 @@
   "body": {
     "messages": [
       {
-        "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_adversarial-injection-01` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
+        "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_decision-deny-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
         "role": "user"
       }
     ],
@@ -25,55 +25,7 @@
       {
         "function": {
           "description": "",
-          "name": "scn_decision-allow-01",
-          "parameters": {
-            "additionalProperties": true,
-            "properties": {},
-            "type": "object"
-          }
-        },
-        "type": "function"
-      },
-      {
-        "function": {
-          "description": "",
-          "name": "scn_decision-audit-01",
-          "parameters": {
-            "additionalProperties": true,
-            "properties": {},
-            "type": "object"
-          }
-        },
-        "type": "function"
-      },
-      {
-        "function": {
-          "description": "",
-          "name": "scn_decision-escalate-01",
-          "parameters": {
-            "additionalProperties": true,
-            "properties": {},
-            "type": "object"
-          }
-        },
-        "type": "function"
-      },
-      {
-        "function": {
-          "description": "",
           "name": "scn_decision-deny-01",
-          "parameters": {
-            "additionalProperties": true,
-            "properties": {},
-            "type": "object"
-          }
-        },
-        "type": "function"
-      },
-      {
-        "function": {
-          "description": "",
-          "name": "scn_adversarial-injection-01",
           "parameters": {
             "additionalProperties": true,
             "properties": {},

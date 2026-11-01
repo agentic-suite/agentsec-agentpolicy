@@ -2,36 +2,45 @@
   "body": {
     "choices": [
       {
-        "finish_reason": "stop",
+        "finish_reason": "tool_calls",
         "index": 0,
         "message": {
-          "content": "<tool_call>\n{\"name\": \"scn_adversarial-injection-01\", \"arguments\": {}}",
-          "role": "assistant"
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{}",
+                "name": "scn_decision-deny-01"
+              },
+              "id": "call_07446abf",
+              "type": "function"
+            }
+          ]
         }
       }
     ],
-    "created": 1793561448,
-    "id": "chatcmpl-4f267419",
+    "created": 1793566668,
+    "id": "chatcmpl-5514a568",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 22,
+      "completion_tokens": 21,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 1.16,
-      "generation_tokens_per_second": 19.01,
-      "input_tokens": 424,
-      "output_tokens": 22,
-      "prompt_eval_duration": 0.89,
-      "prompt_tokens": 424,
+      "generation_duration": 0.99,
+      "generation_tokens_per_second": 21.25,
+      "input_tokens": 219,
+      "output_tokens": 21,
+      "prompt_eval_duration": 1.24,
+      "prompt_tokens": 219,
       "prompt_tokens_details": {
-        "cached_tokens": 256
+        "cached_tokens": 0
       },
-      "prompt_tokens_per_second": 188.29,
-      "time_to_first_token": 0.89,
-      "total_time": 2.05,
-      "total_tokens": 446
+      "prompt_tokens_per_second": 177.26,
+      "time_to_first_token": 1.24,
+      "total_time": 2.22,
+      "total_tokens": 240
     }
   },
   "status_code": 200

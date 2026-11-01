@@ -1,0 +1,47 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"Task completed in staging environment with public data class.\"}",
+                "name": "scn_decision_allow_02"
+              },
+              "id": "call_ce6949d0",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793566662,
+    "id": "chatcmpl-c5b03249",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 33,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.85,
+      "generation_tokens_per_second": 38.67,
+      "input_tokens": 328,
+      "output_tokens": 33,
+      "prompt_eval_duration": 0.24,
+      "prompt_tokens": 328,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 300.24,
+      "time_to_first_token": 0.24,
+      "total_time": 1.09,
+      "total_tokens": 361
+    }
+  },
+  "status_code": 200
+}

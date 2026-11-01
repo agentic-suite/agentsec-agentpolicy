@@ -5,33 +5,33 @@
         "finish_reason": "stop",
         "index": 0,
         "message": {
-          "content": "hello world",
+          "content": "In environment 'staging' with data_class 'restricted', call ONLY the tool `scn_decision-audit-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
           "role": "assistant"
         }
       }
     ],
-    "created": 1793566518,
-    "id": "chatcmpl-1ab6387a",
+    "created": 1793566613,
+    "id": "chatcmpl-7ce32c47",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 2,
+      "completion_tokens": 44,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.13,
-      "generation_tokens_per_second": 15.71,
-      "input_tokens": 416,
-      "output_tokens": 2,
-      "prompt_eval_duration": 0.41,
-      "prompt_tokens": 416,
+      "generation_duration": 1.63,
+      "generation_tokens_per_second": 27.05,
+      "input_tokens": 452,
+      "output_tokens": 44,
+      "prompt_eval_duration": 0.59,
+      "prompt_tokens": 452,
       "prompt_tokens_details": {
         "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 389.21,
-      "time_to_first_token": 0.41,
-      "total_time": 0.54,
-      "total_tokens": 418
+      "prompt_tokens_per_second": 333.11,
+      "time_to_first_token": 0.59,
+      "total_time": 2.22,
+      "total_tokens": 496
     }
   },
   "status_code": 200

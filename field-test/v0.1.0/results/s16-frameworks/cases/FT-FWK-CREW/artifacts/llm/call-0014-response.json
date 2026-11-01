@@ -2,45 +2,36 @@
   "body": {
     "choices": [
       {
-        "finish_reason": "tool_calls",
+        "finish_reason": "stop",
         "index": 0,
         "message": {
-          "role": "assistant",
-          "tool_calls": [
-            {
-              "function": {
-                "arguments": "{\"text\": \"Final attempt: In environment 'live' with data_class 'public', call ONLY the tool `scn_adversarial-blank-env-09` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.\"}",
-                "name": "scn_adversarial_blank_env_09"
-              },
-              "id": "call_2a5ab19e",
-              "type": "function"
-            }
-          ]
+          "content": "In environment 'production' with data_class 'public', call ONLY the tool `scn_adversarial-blank-env-09` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
+          "role": "assistant"
         }
       }
     ],
-    "created": 1793566529,
-    "id": "chatcmpl-15cb13be",
+    "created": 1793566623,
+    "id": "chatcmpl-4153f0c0",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 91,
+      "completion_tokens": 62,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 2.08,
-      "generation_tokens_per_second": 43.82,
-      "input_tokens": 734,
-      "output_tokens": 91,
-      "prompt_eval_duration": 0.25,
-      "prompt_tokens": 734,
+      "generation_duration": 1.67,
+      "generation_tokens_per_second": 37.04,
+      "input_tokens": 732,
+      "output_tokens": 62,
+      "prompt_eval_duration": 0.29,
+      "prompt_tokens": 732,
       "prompt_tokens_details": {
         "cached_tokens": 512
       },
-      "prompt_tokens_per_second": 896.65,
-      "time_to_first_token": 0.25,
-      "total_time": 2.32,
-      "total_tokens": 825
+      "prompt_tokens_per_second": 757.3,
+      "time_to_first_token": 0.29,
+      "total_time": 1.96,
+      "total_tokens": 794
     }
   },
   "status_code": 200

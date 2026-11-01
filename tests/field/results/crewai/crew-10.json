@@ -23,7 +23,7 @@
       "llm_responded": true,
       "response": "Task completed in staging environment with public data class.",
       "error": null,
-      "elapsed_s": 1.52,
+      "elapsed_s": 1.57,
       "decision": "allow",
       "reason_code": "allow_low_risk",
       "expected": "allow",

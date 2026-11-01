@@ -9,38 +9,38 @@
           "tool_calls": [
             {
               "function": {
-                "arguments": "{\"text\": \"Task completed in staging environment with public data class.\"}",
-                "name": "scn_decision_allow_02"
+                "arguments": "{\"text\": \"test\"}",
+                "name": "scn_adversarial_nonstring_08"
               },
-              "id": "call_a71e6ec0",
+              "id": "call_0147c05f",
               "type": "function"
             }
           ]
         }
       }
     ],
-    "created": 1793561506,
-    "id": "chatcmpl-768e4509",
+    "created": 1793566643,
+    "id": "chatcmpl-ac758b77",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 33,
+      "completion_tokens": 27,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.8,
-      "generation_tokens_per_second": 41.05,
-      "input_tokens": 328,
-      "output_tokens": 33,
+      "generation_duration": 0.72,
+      "generation_tokens_per_second": 37.7,
+      "input_tokens": 429,
+      "output_tokens": 27,
       "prompt_eval_duration": 0.23,
-      "prompt_tokens": 328,
+      "prompt_tokens": 429,
       "prompt_tokens_details": {
         "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 317.24,
+      "prompt_tokens_per_second": 762.68,
       "time_to_first_token": 0.23,
-      "total_time": 1.03,
-      "total_tokens": 361
+      "total_time": 0.94,
+      "total_tokens": 456
     }
   },
   "status_code": 200

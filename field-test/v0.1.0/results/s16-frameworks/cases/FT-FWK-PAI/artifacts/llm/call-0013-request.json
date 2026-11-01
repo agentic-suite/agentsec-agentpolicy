@@ -2,7 +2,7 @@
   "body": {
     "messages": [
       {
-        "content": "In environment '' with data_class 'public', call ONLY the tool `scn_adversarial-blank-env-09` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
+        "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_adversarial-unknown-06` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
         "role": "user"
       }
     ],
@@ -13,7 +13,7 @@
       {
         "function": {
           "description": "",
-          "name": "echo",
+          "name": "search_docs",
           "parameters": {
             "additionalProperties": true,
             "properties": {},
@@ -25,7 +25,19 @@
       {
         "function": {
           "description": "",
-          "name": "scn_adversarial-blank-env-09",
+          "name": "get_current_time",
+          "parameters": {
+            "additionalProperties": true,
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "",
+          "name": "scn_adversarial-unknown-06",
           "parameters": {
             "additionalProperties": true,
             "properties": {},

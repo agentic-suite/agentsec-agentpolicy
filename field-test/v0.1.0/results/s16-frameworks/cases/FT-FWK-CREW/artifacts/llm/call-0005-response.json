@@ -12,15 +12,15 @@
                 "arguments": "{\"text\": \"hello world\"}",
                 "name": "scn_adversarial_injection_01"
               },
-              "id": "call_f2841275",
+              "id": "call_44129ef6",
               "type": "function"
             }
           ]
         }
       }
     ],
-    "created": 1793566517,
-    "id": "chatcmpl-c99c44b6",
+    "created": 1793566611,
+    "id": "chatcmpl-fc14cc53",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
@@ -28,18 +28,18 @@
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 1.71,
-      "generation_tokens_per_second": 16.36,
+      "generation_duration": 1.52,
+      "generation_tokens_per_second": 18.39,
       "input_tokens": 348,
       "output_tokens": 28,
-      "prompt_eval_duration": 2.01,
+      "prompt_eval_duration": 1.66,
       "prompt_tokens": 348,
       "prompt_tokens_details": {
-        "cached_tokens": 0
+        "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 173.43,
-      "time_to_first_token": 2.01,
-      "total_time": 3.72,
+      "prompt_tokens_per_second": 55.47,
+      "time_to_first_token": 1.66,
+      "total_time": 3.18,
       "total_tokens": 376
     }
   },

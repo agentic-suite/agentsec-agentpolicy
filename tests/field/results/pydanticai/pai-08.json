@@ -23,7 +23,7 @@
       "llm_responded": true,
       "response": null,
       "error": null,
-      "elapsed_s": 0.71,
+      "elapsed_s": 1.01,
       "decision": "deny",
       "reason_code": "deny_malformed_input",
       "expected": "deny",
