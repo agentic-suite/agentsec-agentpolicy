@@ -8,7 +8,7 @@
 > **Status: IN PROGRESS (s16 interrupted mid-suite).** This is a **hand-maintained** journal, updated as the sweep runs — not a
 > generated scoreboard. Counts here are read from the committed `field-test/v0.1.0/results/` verdicts and written
 > by hand; nothing is auto-overwritten.
-> **Current:** **91 ✅ PASS · 2 ❌ FAIL · 0 ◆ declared · 4 ▫ not run** (93/97 verdicts on disk). The deterministic
+> **Current:** **94 ✅ PASS · 3 ❌ FAIL · 0 ◆ declared · 0 ▫ not run** (97/97 verdicts on disk). The deterministic
 > matrix ran green (**2,988/2,988 cells, 36 scenarios × 83 agents**); suites `s0`–`s15` + `s17` are complete and
 > deep-verified; **`FT-T1-CLAUDE` and `FT-T1-CODEX` run LIVE** (no hosted models, no vendor keys).
 > **Cursor and Gemini CLI are no longer claimed as supported** (removed from the plan/PRD as v0.1.0 Tier-1
@@ -22,7 +22,7 @@
 
 ## BLUF + Release Gate Verdict
 
-> **91 PASS · 2 FAIL · 0 declared · 4 not run (93/97 verdicts).** The harness, the Docker setup, the deep-verification
+> **94 PASS · 3 FAIL · 0 declared · 0 not run (97/97 verdicts).** The harness, the Docker setup, the deep-verification
 > gate, and the case matrix are **ready and exercised** (§What Was Tested). **`s0`–`s15` + `s17` are complete:
 > 85 deterministic cases PASS, every one deep-verified grounded, leak scan clean.** **Both shipped Tier-1 harnesses
 > run LIVE and PASS:** `FT-T1-CLAUDE` (Claude Code ↔ local oMLX over the Anthropic `/v1/messages` format, PreToolUse
@@ -38,15 +38,15 @@
 > LLM-involved case that does **not** log its request/response pairs is an automatic **FAIL** (deep-verification
 > rule, §Gates).
 
-### Run status (s16 mid-run; 93/97 verdicts on disk)
+### Run status (s16 COMPLETE except retries; 97/97 verdicts on disk)
 
 | | Count |
 |---|---|
-| PASS (raw verdict) | 91 |
-| — of which grounded (asserting check re-derived, not exit-0) | 91 (0 over-claimed) |
-| FAIL | **2** (`FT-FWK-CREW`, `FT-FWK-PAI` — live-model tool-call flakiness; §Small-Group Run Journal) |
+| PASS (raw verdict) | 94 |
+| — of which grounded (asserting check re-derived, not exit-0) | 94 (0 over-claimed) |
+| FAIL | **3** (`FT-FWK-CREW`, `FT-FWK-PAI`, `FT-FWK-SMOL` — small-model tool-call failures; §Small-Group Run Journal) |
 | declared (P/F\|D, environment cannot provide — named) | 0 (the Tier-1 scope now ships only what is field-tested) |
-| not run | 4 (all s16 — the interrupted suite) |
+| not run | 0 (all 97 cases have verdicts) |
 | Removed from scope (not claimed as supported) | 2 (FT-T1-CURSOR, FT-T1-GEMINI — §Field Notes 13) |
 | N/A (retired) | 0 |
 
@@ -311,8 +311,69 @@ Tried to bring Gemini local ("do gemini gemma setup and bring from claude"). Wha
 - **Captured evidence:** `field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-LI/` — verdict, assertions,
   `artifacts/llm/` (24 pairs), `li-*.json` per-agent run records.
 
----
+### Group 27 — `FT-FWK-SMOL` (live LLM) — **❌→✅ the investigation (resolved in Group 29)** (2026-11-01)
+- **Symptom:** `smolagents-captured` PASSes (**29 request + 29 response pairs**, balanced, sanitized), the
+  10 other agents' rows PASS — but **agent `sm-01` fails 4 of its 5 scenario rows**: `status=not-available
+  called=False`.
+- **First (wrong) diagnosis:** deterministic tool-call *hallucination* — the same 4 rows failed on two
+  consecutive 4-bit runs, and the captured responses showed the model narrating tool calls as prose.
+- **The 9B falsification run (`Qwen3.5-9B-MLX-4bit`) killed that hypothesis:** the same 4 rows failed
+  identically on the stronger model — proving the model was not the variable. *(See Group 29 for the real
+  root cause and fix: per-row tool binding in the runner.)*
+- **Captured evidence:** `field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-SMOL/` — verdict,
+  assertions, `artifacts/llm/` (29 pairs), `sm-01.json` row records showing the hallucinated-prose
+  responses verbatim.
 
+### Group 28 — `FT-FWK-SWE` + `FT-FWK-MCP` + `FT-REPLAN` (pytest wrappers) — **✅ PASS** (2026-11-01)
+- **`FT-FWK-SWE`** — `swe-bench` (the runner + its read-only guard) → **PASS**, grounded, leak clean.
+- **`FT-FWK-MCP`** — `mcp-self-test` (the shipped MCP server surface: `tests/test_mcp_tools.py` +
+  `tests/test_server_core.py`) → **PASS** on the repaired env (see below), grounded, leak clean.
+- **`FT-REPLAN`** — the replan gate (`tests/test_field.py`) → **PASS**, grounded, leak clean.
+- **Environment note (the day's second dependency clash):** these ran **after** the ADK fix moved the
+  venv to `mcp==2.3.0`, which broke `fastmcp 3.4.11` (it pins `mcp<2.0` and imports `request_ctx` from
+  mcp's server internals — gone in 2.x). Resolution: **`fastmcp==4.1.4`**, which supports mcp 2.x —
+  making the env simultaneously compatible with **litellm** (ADK's model path, needs the newer mcp
+  symbols) **and fastmcp** (the MCP server). Final env: `fastmcp 4.1.4 / mcp 2.3.0 / litellm 1.106.6 /
+  openai-agents / google-adk / crewai / smolagents / pydantic-ai / langgraph` — all verified green.
+- **Learning:** *in a multi-framework harness, the venv is a shared test surface — a version bump that
+  fixes one framework's transitive import can silently break another's. Verify the whole framework
+  matrix after any dependency change, not just the case that motivated it.*
+- **Captured evidence:** `field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-{SWE,MCP}/`,
+  `FT-REPLAN/` — verdicts + assertions + logs.
+
+
+### Group 29 — `FT-FWK-SMOL` (live LLM) — **✅ PASS: the "model failure" was a RUNNER bug (per-row tool binding)** (2026-11-01)
+The most instructive failure of the sweep. Three runs, two models, one wrong diagnosis — and the fix was in
+our harness, not the model. Your instruction to try the 9B model was what isolated it.
+- **Run 1 (pinned 4-bit):** `sm-01` fails 4/5 rows (`status=not-available called=False`); every other
+  agent passes. **Run 2 (retry, 4-bit):** identical — same agent, same 4 rows. First diagnosis:
+  deterministic tool-call *hallucination* (captured responses show the model narrating tool calls as prose:
+  "The system consistently denies the request due to unknown tool usage…").
+- **Run 3 (your call: `Qwen3.5-9B-MLX-4bit`):** **the same 4 rows fail on the stronger model.** This
+  falsified the weak-model hypothesis and proved the failure was structural, not stochastic —
+  *a deterministic failure that survives a model upgrade is a harness bug until proven otherwise.*
+- **The real root cause (from the captured pairs):** the runner built **one agent carrying ALL five
+  scenario tools** (`scn_tools=[allow, audit, escalate, deny, adversarial]`) and drove every scenario
+  through it — so the model could (and did) call **a different scenario's tool** than the row under test
+  (e.g. `scn_adversarial-injection-01` when the prompt named `scn_decision-allow-01`), and the
+  `RecordingEngine` key `(tool, action, env, data, agent)` never matched → `not-available`. The
+  single-scenario tier-2 agents (one tool each) all passed; only the 5-scenario agent failed.
+- **Fix:** `_run_one` now builds a **fresh agent per scenario row**, bound to exactly that row's tool —
+  the decision under test is always the decision actually made. No model change needed.
+- **Result:** `FT-FWK-SMOL` → **PASS on the pinned 4-bit model**: 14/14 rows, 29 request + 29 response
+  pairs (balanced, sanitized), leak scan clean, exit 0. (`sm-01` also verified 5/5 on the 9B.)
+- **Learnings (journal-grade):**
+  1. *Falsify the model hypothesis with a model swap before blaming the model* — the 9B run is what
+     turned "flaky 4-bit" into "runner bug".
+  2. *Captured evidence beats logs:* the pair files showed the wrong-tool picks; the runner's stdout
+     never did.
+  3. *Bind each test row to exactly what it tests:* an agent offered N scenario tools tests "which tool
+     will the model pick?", not "what does the guard decide?".
+- **Captured evidence:** `field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-SMOL/` — verdict (pass),
+  assertions, `artifacts/llm/` (29 pairs incl. the wrong-tool picks),
+  `tests/field/results/smolagents/sm-01.json`.
+
+---
 ## Environment
 
 | Item | Value |
@@ -454,12 +515,12 @@ see the note below). Current verdicts below; the rest await the sweep.
 | FT-FWK-CREW | s16-frameworks | P/F\|D | ❌ FAIL | live framework run failed — see §Small-Group Run Journal |
 | FT-FWK-LG | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — live LangGraph 10/10 rows, 17/17 LLM pairs captured |
 | FT-FWK-LI | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — LIVE llamaindex ↔ oMLX: 12/12 rows, 24 LLM pairs (stream-capture fix) |
-| FT-FWK-MCP | s16-frameworks | P/F | ▫ not run |  |
+| FT-FWK-MCP | s16-frameworks | P/F | ✅ PASS | ✓ grounded — MCP server surface (fastmcp 4.1.4 env) |
 | FT-FWK-OAI | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — LIVE openai-agents ↔ oMLX (Responses API): 12/12 rows, 34 LLM pairs |
 | FT-FWK-PAI | s16-frameworks | P/F\|D | ❌ FAIL | live framework run failed — see §Small-Group Run Journal |
-| FT-FWK-SMOL | s16-frameworks | P/F\|D | ▫ not run |  |
-| FT-FWK-SWE | s16-frameworks | P/F | ▫ not run |  |
-| FT-REPLAN | s16-frameworks | P/F | ▫ not run |  |
+| FT-FWK-SMOL | s16-frameworks | P/F\|D | ❌ FAIL | sm-01 tool-call hallucination (deterministic; 8B retry pending) — see Group 27 |
+| FT-FWK-SWE | s16-frameworks | P/F | ✅ PASS | ✓ grounded — swe-bench runner + read-only guard |
+| FT-REPLAN | s16-frameworks | P/F | ✅ PASS | ✓ grounded — replan gate |
 | FT-COST | s17-nfr | P/F | ✅ PASS | ✓ grounded |
 | FT-DEFER | s17-nfr | P/F | ✅ PASS | ✓ grounded |
 | FT-DOCTOR | s17-nfr | P/F | ✅ PASS | ✓ grounded |
@@ -522,7 +583,7 @@ see the note below). Current verdicts below; the rest await the sweep.
 | FT-MCP-ASK | s9-surfaces | P/F\|D | ✅ PASS | ✓ grounded |
 | FT-SURFACE-PARITY | s9-surfaces | P/F | ✅ PASS | ✓ grounded |
 
-**Totals:** 91 ✅ PASS (all grounded, 0 over-claimed) · 2 ❌ FAIL · 0 ◆ declared · 4 ▫ not run.
+**Totals:** 94 ✅ PASS (all grounded, 0 over-claimed) · 3 ❌ FAIL · 0 ◆ declared · 0 ▫ not run.
 
 ---
 
@@ -546,10 +607,10 @@ see the note below). Current verdicts below; the rest await the sweep.
 | s13-multiagent | 3 | 3 | 0 | 0 | 0 |
 | s14-draft | 2 | 2 | 0 | 0 | 0 |
 | s15-backtest | 2 | 2 | 0 | 0 | 0 |
-| s16-frameworks | 11 | 5 | 2 | 0 | 4 |
+| s16-frameworks | 11 | 8 | 3 | 0 | 0 |
 | s17-nfr | 8 | 8 | 0 | 0 | 0 |
 | s18-tier1 | 2 | 2 | 0 | 0 | 0 |
-| **Total** | **97** | **91** | **2** | **0** | **4** |
+| **Total** | **97** | **94** | **3** | **0** | **0** |
 
 ---
 
@@ -794,12 +855,14 @@ a green check you can't reproduce — the vocabulary is the product (§1)."*
 Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so far: **90 PASS · 2 FAIL · 0 declared ·
 4 not run** (93/97 verdicts).
 
-- **Coverage so far:** the deterministic matrix ran green (2,988 cells) and **91 cases pass, all 91 grounded**
+- **Coverage so far:** the deterministic matrix ran green (2,988 cells) and **94 cases pass, all 94 grounded**
   (0 over-claimed); the harness + Docker + gates are exercised. **`s0`–`s15` and `s17` are complete** — every
   case in them has a verdict and it is PASS. **s18 Tier-1: Claude Code + Codex CLI run LIVE and PASS** (box-local
   model, no vendor keys) — the shipped Tier-1 scope is exactly the field-tested set.
-- **Failing (2):** `FT-FWK-CREW` (10/14 rows) and `FT-FWK-PAI` (9/14 rows) — live-model tool-call flakiness
-  (**not** a policy defect; see §Root Cause Analysis). Stated as FAIL, never hidden.
+- **Failing (3):** `FT-FWK-CREW` (10/14 rows) and `FT-FWK-PAI` (9/14 rows) — live-model tool-call flakiness —
+  plus `FT-FWK-SMOL` (10/14 rows) — deterministic `sm-01` tool-call **hallucination** on the 4-bit pinned
+  model (**not** policy defects; every row that emitted a call decided correctly — see §Root Cause
+  Analysis + Groups 19/23–27). Stated as FAIL, never hidden; retries pending.
 - **Removed from scope (2026-11-01, 2 — not claimed as supported):**
   - **`FT-T1-CURSOR`** — Cursor **cannot run on this box**, for a structural reason, not a wiring gap: Cursor
     is a **GUI IDE (VS Code fork)** — its agent loop and its permission surface live inside a desktop Electron
@@ -818,10 +881,11 @@ Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so fa
     engine) plus the MCP/agentgate surface (CUJ-14) at the lower layer. **Re-entry path:** a future CLI build
     that lifts the OAuth gate (or a local main-loop route) re-adds the case; the investigation evidence is
     preserved here and in §Small-Group Run Journal Group 22.
-- **Not run (8):** the interrupted `s16-frameworks` remainder — `FT-FWK-OAI` (cut off mid-case) and
-  `FT-FWK-ADK/AG2/LI/SMOL/SWE/MCP` + `FT-REPLAN` (never started this sweep).
-- **Gaps:** the s16 remainder needs the live sweep to finish (vendor repos are present, oMLX is up). Tier-1 is
-  otherwise closed: the shipped scope (Claude Code, Codex CLI) is fully field-tested live.
+- **Not run (0):** **every case in the registry now has a verdict** (97/97). The sweep is complete except
+  for the 3 failing retries (below).
+- **Gaps:** the only open work is the 3 FAIL retries (`FT-FWK-CREW`, `FT-FWK-PAI`, `FT-FWK-SMOL` —
+  small-model tool-call failures; the SMOL 8B retry was interrupted and is pending). Tier-1 is closed:
+  the shipped scope (Claude Code, Codex CLI) is fully field-tested live.
 - **Not tested (honest):** everything not listed as PASS/FAIL/declared above — stated as `not run`, never omitted.
 
 ---
@@ -836,7 +900,7 @@ Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so fa
 | Decision latency | p99 < 100 ms | ✅ pass, grounded (s17) | FT-NFR-LATENCY |
 | Fail-closed coverage | 0 silent allows | ✅ pass, grounded (s17) | FT-FAILCLOSED |
 | Adversarial sub-matrix | 0 crafted allows | ✅ 8/8 grounded | FT-ADV-*, s10 |
-| Field-case pass rate | 100% after fixes | ◑ 85/87 with verdicts are PASS, 2 FAIL (live-LLM flakiness); 8 pending | this report |
+| Field-case pass rate | 100% after fixes | ◑ 94/97 with verdicts are PASS, 3 FAIL (small-model tool-calls, CREW/PAI/SMOL retries pending); 0 not run | this report |
 | Declared / not-tested completeness | 100% with reasons | ✅ every declared names its limitation | §Coverage |
 | Leak gate | 0 unmasked secrets | ✅ clean | `scan_results.py` |
 | LLM evidence capture | every live call logged | ✅ 59/59 pairs (17 LG + 28 CREW + 14 PAI), balanced, sanitized, all-2xx; not-logged ⇒ FAIL gate | `artifacts/llm/`, `check_grounding.py` |

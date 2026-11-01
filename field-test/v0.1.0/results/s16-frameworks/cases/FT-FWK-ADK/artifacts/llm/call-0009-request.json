@@ -14,18 +14,18 @@
         "tool_calls": [
           {
             "function": {
-              "arguments": "{\"text\": \"staging environment with public data_class\"}",
+              "arguments": "{\"text\": \"staging environment with data_class public\"}",
               "name": "scn_decision-allow-02"
             },
-            "id": "call_50ca0b72",
+            "id": "call_2b4e7e56",
             "type": "function"
           }
         ]
       },
       {
-        "content": "{\"result\": \"staging environment with public data_class\"}",
+        "content": "{\"result\": \"staging environment with data_class public\"}",
         "role": "tool",
-        "tool_call_id": "call_50ca0b72"
+        "tool_call_id": "call_2b4e7e56"
       }
     ],
     "model": "Qwen3-4B-Instruct-2507-4bit",

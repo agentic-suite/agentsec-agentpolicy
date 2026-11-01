@@ -9,38 +9,39 @@
           "tool_calls": [
             {
               "function": {
-                "arguments": "{\"text\": \"Audit request received for staging environment with restricted data class.\"}",
-                "name": "scn_decision-audit-01"
+                "arguments": "{\"text\": \"Action required: escalate to senior team due to critical system anomaly in production environment.\"}",
+                "name": "scn_decision-escalate-01"
               },
-              "id": "call_8b0279db",
+              "id": "call_afe28eee",
               "type": "function"
             }
           ]
         }
       }
     ],
-    "created": 1793564873,
-    "id": "chatcmpl-938b662f",
+    "created": 1793565878,
+    "id": "chatcmpl-ee851d02",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 35,
+      "completion_tokens": 41,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 1.49,
-      "generation_tokens_per_second": 23.45,
+      "generation_duration": 2.3,
+      "generation_tokens_per_second": 17.79,
       "input_tokens": 656,
-      "output_tokens": 35,
-      "prompt_eval_duration": 3.08,
+      "model_load_duration": 2.06,
+      "output_tokens": 41,
+      "prompt_eval_duration": 1.22,
       "prompt_tokens": 656,
       "prompt_tokens_details": {
-        "cached_tokens": 0
+        "cached_tokens": 512
       },
-      "prompt_tokens_per_second": 213.05,
-      "time_to_first_token": 3.08,
-      "total_time": 4.57,
-      "total_tokens": 691
+      "prompt_tokens_per_second": 117.55,
+      "time_to_first_token": 1.22,
+      "total_time": 3.53,
+      "total_tokens": 697
     }
   },
   "status_code": 200

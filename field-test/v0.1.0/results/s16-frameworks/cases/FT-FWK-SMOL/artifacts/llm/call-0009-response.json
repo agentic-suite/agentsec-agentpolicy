@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Action:\n{\n  \"name\": \"final_answer\",\n  \"arguments\": {\"answer\": \"In environment 'staging' with data_class 'restricted', call ONLY the tool `scn_decision-audit-01` with valid arguments, then answer. Do not call any other tool. Do not skip.\"}\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793566477,
+    "id": "chatcmpl-aabde9c8",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 65,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 2.69,
+      "generation_tokens_per_second": 24.18,
+      "input_tokens": 1424,
+      "output_tokens": 65,
+      "prompt_eval_duration": 2.34,
+      "prompt_tokens": 1424,
+      "prompt_tokens_details": {
+        "cached_tokens": 1280
+      },
+      "prompt_tokens_per_second": 61.6,
+      "time_to_first_token": 2.34,
+      "total_time": 5.03,
+      "total_tokens": 1489
+    }
+  },
+  "status_code": 200
+}

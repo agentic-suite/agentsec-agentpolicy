@@ -12,15 +12,15 @@
                 "arguments": "{\"text\": \"Audit request for environment 'staging' with data_class 'internal'.\"}",
                 "name": "scn_decision-audit-03"
               },
-              "id": "call_095cf6ab",
+              "id": "call_c46deae4",
               "type": "function"
             }
           ]
         }
       }
     ],
-    "created": 1793564884,
-    "id": "chatcmpl-b24b222a",
+    "created": 1793565888,
+    "id": "chatcmpl-090a0906",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
@@ -28,18 +28,18 @@
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.98,
-      "generation_tokens_per_second": 39.85,
+      "generation_duration": 1.03,
+      "generation_tokens_per_second": 38.01,
       "input_tokens": 381,
       "output_tokens": 39,
-      "prompt_eval_duration": 0.32,
+      "prompt_eval_duration": 0.2,
       "prompt_tokens": 381,
       "prompt_tokens_details": {
-        "cached_tokens": 0
+        "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 1200.71,
-      "time_to_first_token": 0.32,
-      "total_time": 1.3,
+      "prompt_tokens_per_second": 612.06,
+      "time_to_first_token": 0.2,
+      "total_time": 1.23,
       "total_tokens": 420
     }
   },

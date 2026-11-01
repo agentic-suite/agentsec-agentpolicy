@@ -8,6 +8,24 @@
       {
         "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_decision-allow-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
         "role": "user"
+      },
+      {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"text\": \"Action allowed in development environment with public data class.\"}",
+              "name": "scn_decision-allow-01"
+            },
+            "id": "call_b966ce9c",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "{\"result\": \"Action allowed in development environment with public data class.\"}",
+        "role": "tool",
+        "tool_call_id": "call_b966ce9c"
       }
     ],
     "model": "Qwen3-4B-Instruct-2507-4bit",

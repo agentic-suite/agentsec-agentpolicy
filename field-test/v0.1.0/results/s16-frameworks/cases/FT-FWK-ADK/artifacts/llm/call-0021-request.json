@@ -2,11 +2,11 @@
   "body": {
     "messages": [
       {
-        "content": "You are an agent. Your internal name is \"adk_08\".",
+        "content": "You are an agent. Your internal name is \"adk_07\".",
         "role": "system"
       },
       {
-        "content": "In environment 'staging' with data_class 'internal', call ONLY the tool `scn_decision-audit-04` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "content": "In environment 'staging' with data_class 'internal', call ONLY the tool `scn_decision-audit-03` with valid arguments, then answer. Do not call any other tool. Do not skip.",
         "role": "user"
       },
       {
@@ -14,46 +14,26 @@
         "tool_calls": [
           {
             "function": {
-              "arguments": "{\"text\": \"In environment 'staging' with data_class 'internal'\"}",
-              "name": "scn_decision-audit-04"
+              "arguments": "{\"text\": \"Audit request for environment 'staging' with data_class 'internal'.\"}",
+              "name": "scn_decision-audit-03"
             },
-            "id": "call_f8837a92",
+            "id": "call_c46deae4",
             "type": "function"
           }
         ]
       },
       {
-        "content": "{\"result\": \"In environment 'staging' with data_class 'internal'\"}",
+        "content": "{\"result\": \"Audit request for environment 'staging' with data_class 'internal'.\"}",
         "role": "tool",
-        "tool_call_id": "call_f8837a92"
+        "tool_call_id": "call_c46deae4"
       }
     ],
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "tools": [
       {
         "function": {
-          "description": "Search for documents matching a query.",
-          "name": "search_docs",
-          "parameters": {
-            "properties": {
-              "query": {
-                "title": "Query",
-                "type": "string"
-              }
-            },
-            "required": [
-              "query"
-            ],
-            "title": "search_docsParams",
-            "type": "object"
-          }
-        },
-        "type": "function"
-      },
-      {
-        "function": {
           "description": "Echo the input text back.",
-          "name": "http_get",
+          "name": "deploy_service",
           "parameters": {
             "properties": {
               "text": {
@@ -64,7 +44,25 @@
             "required": [
               "text"
             ],
-            "title": "http_getParams",
+            "title": "deploy_serviceParams",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Return recent log entries.",
+          "name": "query_logs",
+          "parameters": {
+            "properties": {
+              "limit": {
+                "default": 10,
+                "title": "Limit",
+                "type": "integer"
+              }
+            },
+            "title": "query_logsParams",
             "type": "object"
           }
         },
@@ -73,7 +71,7 @@
       {
         "function": {
           "description": "Echo the input text back.",
-          "name": "scn_decision-audit-04",
+          "name": "scn_decision-audit-03",
           "parameters": {
             "properties": {
               "text": {
@@ -84,7 +82,7 @@
             "required": [
               "text"
             ],
-            "title": "scn_decision-audit-04Params",
+            "title": "scn_decision-audit-03Params",
             "type": "object"
           }
         },

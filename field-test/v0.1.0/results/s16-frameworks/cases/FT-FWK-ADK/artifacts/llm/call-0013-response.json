@@ -5,33 +5,33 @@
         "finish_reason": "stop",
         "index": 0,
         "message": {
-          "content": "The decision has been approved.",
+          "content": "Decision allowed in staging environment with internal data class.",
           "role": "assistant"
         }
       }
     ],
-    "created": 1793564879,
-    "id": "chatcmpl-31a6ec90",
+    "created": 1793565884,
+    "id": "chatcmpl-5e880535",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 6,
+      "completion_tokens": 10,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.17,
-      "generation_tokens_per_second": 34.93,
-      "input_tokens": 518,
-      "output_tokens": 6,
-      "prompt_eval_duration": 0.34,
-      "prompt_tokens": 518,
+      "generation_duration": 0.31,
+      "generation_tokens_per_second": 32.73,
+      "input_tokens": 532,
+      "output_tokens": 10,
+      "prompt_eval_duration": 0.31,
+      "prompt_tokens": 532,
       "prompt_tokens_details": {
         "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 773.94,
-      "time_to_first_token": 0.34,
-      "total_time": 0.51,
-      "total_tokens": 524
+      "prompt_tokens_per_second": 901.59,
+      "time_to_first_token": 0.31,
+      "total_time": 0.61,
+      "total_tokens": 542
     }
   },
   "status_code": 200

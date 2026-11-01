@@ -1,0 +1,47 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"In environment 'staging' with data_class 'internal'\"}",
+                "name": "scn_decision-audit-02"
+              },
+              "id": "call_554d271f",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793566502,
+    "id": "chatcmpl-56b1256f",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 36,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.95,
+      "generation_tokens_per_second": 37.88,
+      "input_tokens": 1275,
+      "output_tokens": 36,
+      "prompt_eval_duration": 0.37,
+      "prompt_tokens": 1275,
+      "prompt_tokens_details": {
+        "cached_tokens": 1024
+      },
+      "prompt_tokens_per_second": 673.51,
+      "time_to_first_token": 0.37,
+      "total_time": 1.32,
+      "total_tokens": 1311
+    }
+  },
+  "status_code": 200
+}

@@ -972,7 +972,36 @@ def _run_one(
         A complete scenario row dict.
     """
     start = time.monotonic()
-    if build_error:
+    # Build a FRESH agent per scenario, bound to only this scenario's tool:
+    # one agent carrying every scenario tool invites the model to call a
+    # different scenario's tool (seen on smolagents sm-01: 4/5 rows called
+    # scn_adversarial-injection-01 regardless of the prompt's named tool).
+    # Per-row binding keeps the agent's tool list to exactly what the row
+    # drives — the decision under test stays the decision actually made.
+    obj: Any = None
+    build_error_row = build_error
+    if not build_error_row:
+        try:
+            obj = registry.build_agent(
+                agent_id,
+                payload={
+                    "engine": engine,
+                    "scenarios": [
+                        {
+                            "id": scenario.id,
+                            "type": scenario.type,
+                            "tool": scenario.tool,
+                            "action": scenario.action,
+                            "environment": scenario.environment,
+                            "data_class": scenario.data_class,
+                            "expected": scenario.expected_for(agent_class),
+                        }
+                    ],
+                },
+            )
+        except Exception as exc:
+            build_error_row = f"{type(exc).__name__}: {exc}"
+    if build_error_row:
         expected = (scenario.expected_for(agent_class) or {}).get("decision", "unknown")
         return {
             "scenario_id": scenario.id,

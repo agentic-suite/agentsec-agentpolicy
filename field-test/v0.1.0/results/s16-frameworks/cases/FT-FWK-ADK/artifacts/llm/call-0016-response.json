@@ -12,15 +12,15 @@
                 "arguments": "{\"text\": \"staging, internal\"}",
                 "name": "scn_decision-audit-02"
               },
-              "id": "call_4e0b0199",
+              "id": "call_444b2136",
               "type": "function"
             }
           ]
         }
       }
     ],
-    "created": 1793564882,
-    "id": "chatcmpl-e76aaa19",
+    "created": 1793565886,
+    "id": "chatcmpl-7a9e6e79",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
@@ -28,18 +28,18 @@
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.71,
-      "generation_tokens_per_second": 39.25,
+      "generation_duration": 0.73,
+      "generation_tokens_per_second": 38.1,
       "input_tokens": 381,
       "output_tokens": 28,
-      "prompt_eval_duration": 0.31,
+      "prompt_eval_duration": 0.19,
       "prompt_tokens": 381,
       "prompt_tokens_details": {
-        "cached_tokens": 0
+        "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 1237.07,
-      "time_to_first_token": 0.31,
-      "total_time": 1.02,
+      "prompt_tokens_per_second": 652.71,
+      "time_to_first_token": 0.19,
+      "total_time": 0.93,
       "total_tokens": 409
     }
   },

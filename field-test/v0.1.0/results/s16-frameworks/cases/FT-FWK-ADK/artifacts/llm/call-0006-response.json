@@ -2,36 +2,46 @@
   "body": {
     "choices": [
       {
-        "finish_reason": "stop",
+        "finish_reason": "tool_calls",
         "index": 0,
         "message": {
-          "content": "Audit request received for staging environment with restricted data class.",
-          "role": "assistant"
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"Audit request for restricted data in staging environment.\"}",
+                "name": "scn_decision-audit-01"
+              },
+              "id": "call_f0b2a209",
+              "type": "function"
+            }
+          ]
         }
       }
     ],
-    "created": 1793564874,
-    "id": "chatcmpl-6cf9cffd",
+    "created": 1793565878,
+    "id": "chatcmpl-d2d4edfd",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 11,
+      "completion_tokens": 33,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.64,
-      "generation_tokens_per_second": 17.25,
-      "input_tokens": 720,
-      "output_tokens": 11,
-      "prompt_eval_duration": 0.42,
-      "prompt_tokens": 720,
+      "generation_duration": 1.53,
+      "generation_tokens_per_second": 21.5,
+      "input_tokens": 656,
+      "model_load_duration": 2.06,
+      "output_tokens": 33,
+      "prompt_eval_duration": 2.68,
+      "prompt_tokens": 656,
       "prompt_tokens_details": {
         "cached_tokens": 512
       },
-      "prompt_tokens_per_second": 495.97,
-      "time_to_first_token": 0.42,
-      "total_time": 1.06,
-      "total_tokens": 731
+      "prompt_tokens_per_second": 53.83,
+      "time_to_first_token": 2.68,
+      "total_time": 4.21,
+      "total_tokens": 689
     }
   },
   "status_code": 200

@@ -12,15 +12,15 @@
                 "arguments": "{\"text\": \"approved\"}",
                 "name": "scn_decision-allow-03"
               },
-              "id": "call_d2e002cb",
+              "id": "call_358ac827",
               "type": "function"
             }
           ]
         }
       }
     ],
-    "created": 1793564877,
-    "id": "chatcmpl-905e69dc",
+    "created": 1793565881,
+    "id": "chatcmpl-36faae7a",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
@@ -28,18 +28,18 @@
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.7,
-      "generation_tokens_per_second": 35.71,
+      "generation_duration": 0.69,
+      "generation_tokens_per_second": 36.43,
       "input_tokens": 351,
       "output_tokens": 25,
-      "prompt_eval_duration": 0.35,
+      "prompt_eval_duration": 0.27,
       "prompt_tokens": 351,
       "prompt_tokens_details": {
-        "cached_tokens": 0
+        "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 996.47,
-      "time_to_first_token": 0.35,
-      "total_time": 1.05,
+      "prompt_tokens_per_second": 357.92,
+      "time_to_first_token": 0.27,
+      "total_time": 0.95,
       "total_tokens": 376
     }
   },

@@ -2,36 +2,45 @@
   "body": {
     "choices": [
       {
-        "finish_reason": "stop",
+        "finish_reason": "tool_calls",
         "index": 0,
         "message": {
-          "content": "Task completed in staging environment with restricted data class.",
-          "role": "assistant"
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"Task executed in production environment with internal data class.\"}",
+                "name": "scn_decision_escalate_01"
+              },
+              "id": "call_3e20a648",
+              "type": "function"
+            }
+          ]
         }
       }
     ],
-    "created": 1793561460,
-    "id": "chatcmpl-ae41da56",
+    "created": 1793566516,
+    "id": "chatcmpl-266814ae",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 10,
+      "completion_tokens": 35,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.26,
-      "generation_tokens_per_second": 38.35,
-      "input_tokens": 670,
-      "output_tokens": 10,
-      "prompt_eval_duration": 0.22,
-      "prompt_tokens": 670,
+      "generation_duration": 1.78,
+      "generation_tokens_per_second": 19.63,
+      "input_tokens": 330,
+      "output_tokens": 35,
+      "prompt_eval_duration": 0.62,
+      "prompt_tokens": 330,
       "prompt_tokens_details": {
-        "cached_tokens": 512
+        "cached_tokens": 0
       },
-      "prompt_tokens_per_second": 725.1,
-      "time_to_first_token": 0.22,
-      "total_time": 0.48,
-      "total_tokens": 680
+      "prompt_tokens_per_second": 535.35,
+      "time_to_first_token": 0.62,
+      "total_time": 2.4,
+      "total_tokens": 365
     }
   },
   "status_code": 200

@@ -10,8 +10,8 @@
         }
       }
     ],
-    "created": 1793564878,
-    "id": "chatcmpl-5df5b333",
+    "created": 1793565882,
+    "id": "chatcmpl-c989abaf",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
@@ -19,18 +19,18 @@
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.16,
-      "generation_tokens_per_second": 36.38,
+      "generation_duration": 0.19,
+      "generation_tokens_per_second": 31.76,
       "input_tokens": 395,
       "output_tokens": 6,
-      "prompt_eval_duration": 0.27,
+      "prompt_eval_duration": 0.23,
       "prompt_tokens": 395,
       "prompt_tokens_details": {
         "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 512.41,
-      "time_to_first_token": 0.27,
-      "total_time": 0.44,
+      "prompt_tokens_per_second": 612.21,
+      "time_to_first_token": 0.23,
+      "total_time": 0.42,
       "total_tokens": 401
     }
   },

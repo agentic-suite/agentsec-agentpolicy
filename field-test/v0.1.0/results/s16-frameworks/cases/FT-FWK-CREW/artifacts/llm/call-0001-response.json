@@ -9,18 +9,18 @@
           "tool_calls": [
             {
               "function": {
-                "arguments": "{\"text\": \"Task completed in staging environment with restricted data class.\"}",
-                "name": "scn_decision_audit_01"
+                "arguments": "{\"text\": \"Task completed in development environment with public data class.\"}",
+                "name": "scn_decision_allow_01"
               },
-              "id": "call_f7b18bdf",
+              "id": "call_716feaf4",
               "type": "function"
             }
           ]
         }
       }
     ],
-    "created": 1793561460,
-    "id": "chatcmpl-e32e980f",
+    "created": 1793566515,
+    "id": "chatcmpl-ce8b05ca",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
@@ -28,19 +28,19 @@
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.83,
-      "generation_tokens_per_second": 39.7,
-      "input_tokens": 614,
+      "generation_duration": 2.02,
+      "generation_tokens_per_second": 16.3,
+      "input_tokens": 327,
       "output_tokens": 33,
-      "prompt_eval_duration": 0.23,
-      "prompt_tokens": 614,
+      "prompt_eval_duration": 0.26,
+      "prompt_tokens": 327,
       "prompt_tokens_details": {
-        "cached_tokens": 512
+        "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 448.28,
-      "time_to_first_token": 0.23,
-      "total_time": 1.06,
-      "total_tokens": 647
+      "prompt_tokens_per_second": 271.92,
+      "time_to_first_token": 0.26,
+      "total_time": 2.29,
+      "total_tokens": 360
     }
   },
   "status_code": 200

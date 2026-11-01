@@ -9,38 +9,38 @@
           "tool_calls": [
             {
               "function": {
-                "arguments": "{\"text\": \"Current Task: In environment '' with data_class 'public', call ONLY the tool `scn_adversarial-blank-env-09` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.\"}",
-                "name": "scn_adversarial_blank_env_09"
+                "arguments": "{\"text\": \"Task completed in development environment with public data class.\"}",
+                "name": "scn_decision_deny_01"
               },
-              "id": "call_836697bb",
+              "id": "call_7cd819de",
               "type": "function"
             }
           ]
         }
       }
     ],
-    "created": 1793561463,
-    "id": "chatcmpl-f1c4e14f",
+    "created": 1793566516,
+    "id": "chatcmpl-32c8e5c4",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 89,
+      "completion_tokens": 34,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 2.18,
-      "generation_tokens_per_second": 40.86,
-      "input_tokens": 347,
-      "output_tokens": 89,
-      "prompt_eval_duration": 0.24,
-      "prompt_tokens": 347,
+      "generation_duration": 2.01,
+      "generation_tokens_per_second": 16.94,
+      "input_tokens": 328,
+      "output_tokens": 34,
+      "prompt_eval_duration": 1.05,
+      "prompt_tokens": 328,
       "prompt_tokens_details": {
-        "cached_tokens": 256
+        "cached_tokens": 0
       },
-      "prompt_tokens_per_second": 385.92,
-      "time_to_first_token": 0.24,
-      "total_time": 2.41,
-      "total_tokens": 436
+      "prompt_tokens_per_second": 312.18,
+      "time_to_first_token": 1.05,
+      "total_time": 3.06,
+      "total_tokens": 362
     }
   },
   "status_code": 200

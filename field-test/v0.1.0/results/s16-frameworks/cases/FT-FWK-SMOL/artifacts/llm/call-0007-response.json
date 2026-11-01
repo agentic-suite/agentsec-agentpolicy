@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Action:\n{\n  \"name\": \"final_answer\",\n  \"arguments\": \"In the development environment with data_class 'public', granting a role is denied due to policy restrictions. Destructive operations on sensitive data are not allowed; a read-only alternative or moving to a lower-risk environment is recommended.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793566476,
+    "id": "chatcmpl-f6dae8a4",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 62,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 3.6,
+      "generation_tokens_per_second": 17.2,
+      "input_tokens": 1437,
+      "output_tokens": 62,
+      "prompt_eval_duration": 1.2,
+      "prompt_tokens": 1437,
+      "prompt_tokens_details": {
+        "cached_tokens": 1024
+      },
+      "prompt_tokens_per_second": 344.93,
+      "time_to_first_token": 1.2,
+      "total_time": 4.8,
+      "total_tokens": 1499
+    }
+  },
+  "status_code": 200
+}

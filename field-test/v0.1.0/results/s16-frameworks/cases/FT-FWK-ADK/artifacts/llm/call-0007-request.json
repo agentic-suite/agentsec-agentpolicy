@@ -6,7 +6,7 @@
         "role": "system"
       },
       {
-        "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_decision-allow-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "content": "In environment 'staging' with data_class 'restricted', call ONLY the tool `scn_decision-audit-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
         "role": "user"
       },
       {
@@ -14,18 +14,18 @@
         "tool_calls": [
           {
             "function": {
-              "arguments": "{\"text\": \"Access granted for development environment with public data class.\"}",
-              "name": "scn_decision-allow-01"
+              "arguments": "{\"text\": \"Audit request for restricted data in staging environment.\"}",
+              "name": "scn_decision-audit-01"
             },
-            "id": "call_53ccb9db",
+            "id": "call_f0b2a209",
             "type": "function"
           }
         ]
       },
       {
-        "content": "{\"result\": \"Access granted for development environment with public data class.\"}",
+        "content": "{\"result\": \"Audit request for restricted data in staging environment.\"}",
         "role": "tool",
-        "tool_call_id": "call_53ccb9db"
+        "tool_call_id": "call_f0b2a209"
       }
     ],
     "model": "Qwen3-4B-Instruct-2507-4bit",

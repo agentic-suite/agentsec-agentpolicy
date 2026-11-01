@@ -1,0 +1,2 @@
+{"name":"swe-bench","ok":true,"grounded":true,"cmd":"/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_swe_bench.py tests/test_swe_bench_runner.py"}
+{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}

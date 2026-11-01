@@ -9,38 +9,38 @@
           "tool_calls": [
             {
               "function": {
-                "arguments": "{\"text\": \"input text\"}",
-                "name": "scn_adversarial_grant_bypass_10"
+                "arguments": "{\"text\": \"In environment 'staging' with data_class 'restricted', call ONLY the tool `scn_decision-audit-01` with valid arguments, then answer. Do not call any other tool. Do not skip.\"}",
+                "name": "scn_decision_audit_01"
               },
-              "id": "call_3650ff1c",
+              "id": "call_28cac188",
               "type": "function"
             }
           ]
         }
       }
     ],
-    "created": 1793561471,
-    "id": "chatcmpl-ba7b7843",
+    "created": 1793566518,
+    "id": "chatcmpl-2405820f",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 30,
+      "completion_tokens": 67,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.74,
-      "generation_tokens_per_second": 40.57,
-      "input_tokens": 352,
-      "output_tokens": 30,
-      "prompt_eval_duration": 0.23,
-      "prompt_tokens": 352,
+      "generation_duration": 4.26,
+      "generation_tokens_per_second": 15.72,
+      "input_tokens": 328,
+      "output_tokens": 67,
+      "prompt_eval_duration": 0.5,
+      "prompt_tokens": 328,
       "prompt_tokens_details": {
-        "cached_tokens": 256
+        "cached_tokens": 0
       },
-      "prompt_tokens_per_second": 417.56,
-      "time_to_first_token": 0.23,
-      "total_time": 0.97,
-      "total_tokens": 382
+      "prompt_tokens_per_second": 656.02,
+      "time_to_first_token": 0.5,
+      "total_time": 4.76,
+      "total_tokens": 395
     }
   },
   "status_code": 200

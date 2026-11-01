@@ -17,7 +17,7 @@
               "arguments": "{\"text\": \"approved\"}",
               "name": "scn_decision-allow-03"
             },
-            "id": "call_d2e002cb",
+            "id": "call_358ac827",
             "type": "function"
           }
         ]
@@ -25,7 +25,7 @@
       {
         "content": "{\"result\": \"approved\"}",
         "role": "tool",
-        "tool_call_id": "call_d2e002cb"
+        "tool_call_id": "call_358ac827"
       }
     ],
     "model": "Qwen3-4B-Instruct-2507-4bit",

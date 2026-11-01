@@ -17,7 +17,7 @@
               "arguments": "{\"text\": \"staging, internal\"}",
               "name": "scn_decision-audit-02"
             },
-            "id": "call_4e0b0199",
+            "id": "call_444b2136",
             "type": "function"
           }
         ]
@@ -25,7 +25,7 @@
       {
         "content": "{\"result\": \"staging, internal\"}",
         "role": "tool",
-        "tool_call_id": "call_4e0b0199"
+        "tool_call_id": "call_444b2136"
       }
     ],
     "model": "Qwen3-4B-Instruct-2507-4bit",

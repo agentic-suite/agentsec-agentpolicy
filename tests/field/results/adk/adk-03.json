@@ -23,7 +23,7 @@
       "llm_responded": true,
       "response": "parts=[Part(\n  text='The decision has been approved.'\n)] role='model'",
       "error": null,
-      "elapsed_s": 1.52,
+      "elapsed_s": 1.4,
       "decision": "allow",
       "reason_code": "allow_low_risk",
       "expected": "allow",

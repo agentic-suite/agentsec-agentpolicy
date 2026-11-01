@@ -5,33 +5,33 @@
         "finish_reason": "stop",
         "index": 0,
         "message": {
-          "content": "Access granted for development environment with public data class.",
+          "content": "Audit request for restricted data in staging environment.",
           "role": "assistant"
         }
       }
     ],
-    "created": 1793564874,
-    "id": "chatcmpl-6c1cffcd",
+    "created": 1793565879,
+    "id": "chatcmpl-ce4cf810",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 10,
+      "completion_tokens": 9,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.32,
-      "generation_tokens_per_second": 31.63,
-      "input_tokens": 717,
-      "output_tokens": 10,
-      "prompt_eval_duration": 0.63,
-      "prompt_tokens": 717,
+      "generation_duration": 0.25,
+      "generation_tokens_per_second": 36.69,
+      "input_tokens": 716,
+      "output_tokens": 9,
+      "prompt_eval_duration": 0.27,
+      "prompt_tokens": 716,
       "prompt_tokens_details": {
         "cached_tokens": 512
       },
-      "prompt_tokens_per_second": 323.41,
-      "time_to_first_token": 0.63,
-      "total_time": 0.95,
-      "total_tokens": 727
+      "prompt_tokens_per_second": 768.64,
+      "time_to_first_token": 0.27,
+      "total_time": 0.51,
+      "total_tokens": 725
     }
   },
   "status_code": 200

@@ -23,7 +23,7 @@
       "llm_responded": true,
       "response": "parts=[Part(\n  text=\"In environment 'staging' with data_class 'internal'\"\n)] role='model'",
       "error": null,
-      "elapsed_s": 1.83,
+      "elapsed_s": 1.73,
       "decision": "audit",
       "reason_code": "audit_sensitive_data",
       "expected": "audit",

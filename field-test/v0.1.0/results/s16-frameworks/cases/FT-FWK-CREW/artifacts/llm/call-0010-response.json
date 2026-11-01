@@ -5,33 +5,33 @@
         "finish_reason": "stop",
         "index": 0,
         "message": {
-          "content": "Current Task: In environment 'development' with data_class 'public', call ONLY the tool `scn_adversarial-unknown-06` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
+          "content": "In environment 'staging' with data_class 'restricted', call ONLY the tool `scn_decision-audit-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
           "role": "assistant"
         }
       }
     ],
-    "created": 1793561477,
-    "id": "chatcmpl-545d7636",
+    "created": 1793566520,
+    "id": "chatcmpl-a7a924de",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 64,
+      "completion_tokens": 44,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 1.63,
-      "generation_tokens_per_second": 39.14,
-      "input_tokens": 471,
-      "output_tokens": 64,
-      "prompt_eval_duration": 0.25,
-      "prompt_tokens": 471,
+      "generation_duration": 1.38,
+      "generation_tokens_per_second": 31.99,
+      "input_tokens": 452,
+      "output_tokens": 44,
+      "prompt_eval_duration": 0.28,
+      "prompt_tokens": 452,
       "prompt_tokens_details": {
         "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 845.32,
-      "time_to_first_token": 0.25,
-      "total_time": 1.89,
-      "total_tokens": 535
+      "prompt_tokens_per_second": 703.19,
+      "time_to_first_token": 0.28,
+      "total_time": 1.65,
+      "total_tokens": 496
     }
   },
   "status_code": 200

@@ -5,33 +5,33 @@
         "finish_reason": "stop",
         "index": 0,
         "message": {
-          "content": "The operation to grant a role in the production environment on restricted data is blocked due to policy restrictions. A read-only alternative or a move to a lower-risk environment is required.",
+          "content": "The action to write in production with internal data requires approval. Please route the request to the on-call approver.",
           "role": "assistant"
         }
       }
     ],
-    "created": 1793561472,
-    "id": "chatcmpl-90a74b8e",
+    "created": 1793566518,
+    "id": "chatcmpl-2a14c8dc",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 35,
+      "completion_tokens": 23,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.93,
-      "generation_tokens_per_second": 37.76,
-      "input_tokens": 457,
-      "output_tokens": 35,
-      "prompt_eval_duration": 0.26,
-      "prompt_tokens": 457,
+      "generation_duration": 1.33,
+      "generation_tokens_per_second": 17.28,
+      "input_tokens": 426,
+      "output_tokens": 23,
+      "prompt_eval_duration": 0.67,
+      "prompt_tokens": 426,
       "prompt_tokens_details": {
         "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 783.76,
-      "time_to_first_token": 0.26,
-      "total_time": 1.18,
-      "total_tokens": 492
+      "prompt_tokens_per_second": 252.84,
+      "time_to_first_token": 0.67,
+      "total_time": 2.0,
+      "total_tokens": 449
     }
   },
   "status_code": 200

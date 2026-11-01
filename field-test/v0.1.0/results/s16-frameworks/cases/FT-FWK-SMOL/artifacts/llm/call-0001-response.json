@@ -1,0 +1,48 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"In environment 'production' with data_class 'internal'\"}",
+                "name": "scn_decision-escalate-01"
+              },
+              "id": "call_f8b6d093",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793566469,
+    "id": "chatcmpl-0998df87",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 36,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 1.34,
+      "generation_tokens_per_second": 26.85,
+      "input_tokens": 1277,
+      "model_load_duration": 1.57,
+      "output_tokens": 36,
+      "prompt_eval_duration": 2.67,
+      "prompt_tokens": 1277,
+      "prompt_tokens_details": {
+        "cached_tokens": 512
+      },
+      "prompt_tokens_per_second": 286.6,
+      "time_to_first_token": 2.67,
+      "total_time": 4.01,
+      "total_tokens": 1313
+    }
+  },
+  "status_code": 200
+}

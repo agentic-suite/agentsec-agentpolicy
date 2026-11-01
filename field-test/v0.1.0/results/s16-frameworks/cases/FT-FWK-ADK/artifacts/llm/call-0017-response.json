@@ -5,33 +5,33 @@
         "finish_reason": "stop",
         "index": 0,
         "message": {
-          "content": "The decision audit for environment 'staging' with data_class 'internal' has been successfully processed. Result: staging, internal.",
+          "content": "staging, internal",
           "role": "assistant"
         }
       }
     ],
-    "created": 1793564883,
-    "id": "chatcmpl-1b7be0d0",
+    "created": 1793565887,
+    "id": "chatcmpl-0acd1ad3",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 26,
+      "completion_tokens": 4,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 0.69,
-      "generation_tokens_per_second": 37.95,
+      "generation_duration": 0.12,
+      "generation_tokens_per_second": 33.62,
       "input_tokens": 431,
-      "output_tokens": 26,
-      "prompt_eval_duration": 0.27,
+      "output_tokens": 4,
+      "prompt_eval_duration": 0.22,
       "prompt_tokens": 431,
       "prompt_tokens_details": {
         "cached_tokens": 256
       },
-      "prompt_tokens_per_second": 658.21,
-      "time_to_first_token": 0.27,
-      "total_time": 0.95,
-      "total_tokens": 457
+      "prompt_tokens_per_second": 796.45,
+      "time_to_first_token": 0.22,
+      "total_time": 0.34,
+      "total_tokens": 435
     }
   },
   "status_code": 200

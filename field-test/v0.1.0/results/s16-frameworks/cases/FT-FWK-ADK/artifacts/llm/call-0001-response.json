@@ -9,38 +9,39 @@
           "tool_calls": [
             {
               "function": {
-                "arguments": "{\"text\": \"access denied\"}",
+                "arguments": "{\"text\": \"Access to this environment is denied.\"}",
                 "name": "scn_decision-deny-01"
               },
-              "id": "call_becc7b63",
+              "id": "call_3bd31f58",
               "type": "function"
             }
           ]
         }
       }
     ],
-    "created": 1793564872,
-    "id": "chatcmpl-2795e26e",
+    "created": 1793565876,
+    "id": "chatcmpl-3ba73f2d",
     "model": "Qwen3-4B-Instruct-2507-4bit",
     "object": "chat.completion",
     "usage": {
-      "completion_tokens": 26,
+      "completion_tokens": 31,
       "completion_tokens_details": {
         "reasoning_tokens": 0
       },
-      "generation_duration": 2.16,
-      "generation_tokens_per_second": 12.02,
+      "generation_duration": 1.46,
+      "generation_tokens_per_second": 21.28,
       "input_tokens": 655,
-      "output_tokens": 26,
-      "prompt_eval_duration": 0.92,
+      "model_load_duration": 2.05,
+      "output_tokens": 31,
+      "prompt_eval_duration": 0.85,
       "prompt_tokens": 655,
       "prompt_tokens_details": {
-        "cached_tokens": 0
+        "cached_tokens": 512
       },
-      "prompt_tokens_per_second": 712.18,
-      "time_to_first_token": 0.92,
-      "total_time": 3.08,
-      "total_tokens": 681
+      "prompt_tokens_per_second": 168.39,
+      "time_to_first_token": 0.85,
+      "total_time": 2.31,
+      "total_tokens": 686
     }
   },
   "status_code": 200
