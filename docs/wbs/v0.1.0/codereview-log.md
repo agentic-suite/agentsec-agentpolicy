@@ -360,3 +360,54 @@ Reviewed as a **bulk port** — WBS `0.CR` acceptance: *no open findings (port: 
 - **Gates:** suite **1431 passed, 2 skipped** · coverage **95.01%** (≥ 95) · `ruff` zero · `mypy --strict` clean
   (138 files).
 - **Resolution:** all findings resolved; no open items.
+
+### M18 — Break-glass & dual-control (18.CR)
+
+- **Scope:** the break-glass ledger + engine composition (`breakglass.py`, `engine/engine.py`), the dual-control
+  quorum gate (`dualcontrol.py`), the `breakglass` CLI, and the additive `Decision.break_glass_id` /
+  `dual_control_id` fields.
+- **Findings & resolutions:**
+  - *An elevation could silently bypass the human gate* → the scope-ceiling waiver is gated on
+    `cedar.gates.is_human_gate` (the single human-gate source of truth), and the engine **floors** an
+    otherwise-allowed human-gate call to `escalate`, so a window never lowers the gate. **Resolved; covered by
+    the composition-guard tests.**
+  - *A second action-identity hash would have drifted* → dual-control binds to the M3/M7
+    `engine.escalation.action_identity` (one canonical hash). **Resolved.**
+  - *Elevation could become the default path by habit (RK-17)* → `elevate` **requires a non-blank reason** and a
+    short default TTL; reversion is automatic (`sweep` on read, audited `revert` event). **Resolved.**
+  - *Adding fields to `types.Decision` changed its JSON key set* → the dependent shape test moved with the work
+    (additive fields), as at M15. **Resolved.**
+- **Gates:** suite **1489 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open items.
+
+### M19 — NL policy drafting (19.CR)
+
+- **Scope:** the drafter (`draft.py`), the generated-tests pipeline (pack format), the human-review gate, the
+  boundary lock, and the `draft` CLI.
+- **Findings & resolutions:**
+  - *A model in the decision path would violate the core boundary* → `draft.py` is the only module that consults
+    a model; the boundary-lock test spies on the model and asserts the engine + Cedar core never call it, and a
+    source scan asserts the decision modules do not import `draft`. **Resolved.**
+  - *A draft could be plausible but wrong (RK-18)* → a draft must compile, **pass its own generated test**, and
+    lint clean, or it is rejected; the generated `tests.yaml` uses the shipped pack format (one replay engine).
+    **Resolved.**
+  - *Drafts must never auto-apply* → `Draft.reviewed` is `False` on creation and only `pin(..., reviewed=True)`
+    produces a reviewable artifact. **Resolved.**
+- **Gates:** suite **1489 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open items.
+
+### M20 — Policy backtest & PR decision-diff (20.CR)
+
+- **Scope:** the backtest engine (`backtest.py`), the flip-set classification, the advisory/watermark contract,
+  and the `backtest` CLI (`--ci` step summary).
+- **Findings & resolutions:**
+  - *A backtest could be mistaken for live enforcement* → the report is watermarked `backtest`, marked
+    `advisory`, excluded from the golden gate, and emits **no fleet events** (an `emit` spy proves it).
+    **Resolved.**
+  - *A non-deterministic flip set would be untrustworthy* → replay is ordered and `classify_transition` is a
+    pure function of the two collapsed outcomes; a reproducibility test asserts identical reports.
+    **Resolved.**
+  - *A backtest flip must not block a PR* → `--ci` always exits 0 and only attaches the diff to
+    `$GITHUB_STEP_SUMMARY`; coverage window + limits are stated on every report. **Resolved.**
+- **Gates:** suite **1489 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Resolution:** all findings resolved; no open items.

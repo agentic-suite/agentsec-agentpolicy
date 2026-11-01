@@ -291,7 +291,36 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 - **Gate:** suite **1431 passed, 2 skipped** · coverage **95.01%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
 - **Items closed:** 17.D0 · 17.1–17.4 · 17.T · 17.C · 17.L · 17.CR · 17.D.
 
-**⬜ M18 — Break-glass & dual-control.** Next.
+**M18 — Break-glass & dual-control — ✅ closed (2026-11-01).**
+
+- **Commit:** see `18.CI`. `agentpolicy/breakglass.py` (time-boxed elevation; mandatory logged reason; audited
+  `elevate`/`revert` events; **auto-revert on sweep/read**); `agentpolicy/dualcontrol.py` (quorum of **distinct**
+  approvers, action-identity-bound, TTL still applies); `cli/breakglass.py`; engine wiring (elevation waives the
+  identity/delegation **scope ceilings only**, stamps `break_glass_id` on every decision, and the mandatory
+  human-gate class is **never** bypassed — dual-control still applies inside a window).
+- **Gate:** suite **1489 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 18.D0 · 18.1–18.4 · 18.T · 18.C · 18.L · 18.CR · 18.D.
+
+**M19 — NL policy drafting — ✅ closed (2026-11-01).**
+
+- **Commit:** see `19.CI`. `agentpolicy/draft.py` (sentence → candidate Cedar rule; deterministic offline
+  default model; generated `tests.yaml` in the shipped pack format — a draft that does not compile, fails its
+  own test, or lints dirty is **rejected**; `pin` is the **human-review gate**, never auto-applied);
+  `cli/draft.py`. **Boundary lock:** the runtime decision path never calls a model (tested).
+- **Gate:** suite **1489 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 19.D0 · 19.1–19.3 · 19.T · 19.C · 19.L · 19.CR · 19.D.
+
+**M20 — Policy backtest & PR decision-diff — ✅ closed (2026-11-01).**
+
+- **Commit:** see `20.CI`. `agentpolicy/backtest.py` (replay a recorded agentwatch window against a candidate
+  vs the baseline; exact, reproducible flip set — newly-denied / newly-asked / newly-allowed / unchanged);
+  **read-only** (no fleet events) and **advisory** (watermarked `backtest`, excluded from live analytics and the
+  golden gate; states its coverage window + limits); `cli/backtest.py` (`--ci` attaches the diff to the PR step
+  summary, always exits 0).
+- **Gate:** suite **1489 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 20.D0 · 20.1–20.3 · 20.T · 20.C · 20.L · 20.CR · 20.D.
+
+**⬜ M21 — Narrow-only layering & action-space coverage report.** Next.
 
 ## Porting map (predecessor → agentpolicy)
 
