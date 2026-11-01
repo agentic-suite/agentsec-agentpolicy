@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Audit request received for staging environment with restricted data class.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793564874,
+    "id": "chatcmpl-6cf9cffd",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 11,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.64,
+      "generation_tokens_per_second": 17.25,
+      "input_tokens": 720,
+      "output_tokens": 11,
+      "prompt_eval_duration": 0.42,
+      "prompt_tokens": 720,
+      "prompt_tokens_details": {
+        "cached_tokens": 512
+      },
+      "prompt_tokens_per_second": 495.97,
+      "time_to_first_token": 0.42,
+      "total_time": 1.06,
+      "total_tokens": 731
+    }
+  },
+  "status_code": 200
+}

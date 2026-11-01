@@ -1,0 +1,97 @@
+{
+  "body": {
+    "created_at": 1793564680,
+    "error": null,
+    "id": "resp_b198a83726d6497dacbd0b83",
+    "incomplete_details": null,
+    "max_output_tokens": null,
+    "metadata": {},
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "response",
+    "output": [
+      {
+        "arguments": null,
+        "call_id": null,
+        "content": [
+          {
+            "annotations": [],
+            "text": "",
+            "type": "output_text"
+          }
+        ],
+        "id": "msg_6ab5805437dd46289c0b8312",
+        "name": null,
+        "role": "assistant",
+        "status": "completed",
+        "summary": null,
+        "type": "message"
+      },
+      {
+        "arguments": "{\"kwargs\": {\"environment\": \"production\", \"data_class\": \"customer_pii\"}}",
+        "call_id": "call_4a5797f5",
+        "content": null,
+        "id": "fc_446eba52",
+        "name": "scn_decision-deny-03",
+        "role": null,
+        "status": "completed",
+        "summary": null,
+        "type": "function_call"
+      }
+    ],
+    "previous_response_id": null,
+    "status": "completed",
+    "temperature": 0.7,
+    "text": null,
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "description": "Return recent log entries.",
+        "name": "query_logs",
+        "parameters": {
+          "properties": {
+            "limit": {
+              "default": 10,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          "title": "query_logs_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_decision-deny-03",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_decision-deny-03_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      }
+    ],
+    "top_p": 0.8,
+    "truncation": null,
+    "usage": {
+      "input_tokens": 298,
+      "input_tokens_details": {
+        "cached_tokens": 256
+      },
+      "output_tokens": 38,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 336
+    }
+  },
+  "status_code": 200
+}

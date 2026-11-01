@@ -8,13 +8,12 @@
 > **Status: IN PROGRESS (s16 interrupted mid-suite).** This is a **hand-maintained** journal, updated as the sweep runs — not a
 > generated scoreboard. Counts here are read from the committed `field-test/v0.1.0/results/` verdicts and written
 > by hand; nothing is auto-overwritten.
-> **Current:** **87 ✅ PASS · 2 ❌ FAIL · 0 ◆ declared · 8 ▫ not run** (89/97 verdicts on disk). The deterministic
+> **Current:** **90 ✅ PASS · 2 ❌ FAIL · 0 ◆ declared · 5 ▫ not run** (92/97 verdicts on disk). The deterministic
 > matrix ran green (**2,988/2,988 cells, 36 scenarios × 83 agents**); suites `s0`–`s15` + `s17` are complete and
-> deep-verified; **`FT-T1-CLAUDE` and `FT-T1-CODEX` now run LIVE** (Claude Code ↔ oMLX via Anthropic
-> `/v1/messages`; Codex CLI ↔ oMLX via the OpenAI **Responses API** — no hosted models, no vendor keys).
+> deep-verified; **`FT-T1-CLAUDE` and `FT-T1-CODEX` run LIVE** (no hosted models, no vendor keys).
 > **Cursor and Gemini CLI are no longer claimed as supported** (removed from the plan/PRD as v0.1.0 Tier-1
-> targets — untestable surfaces on this box; §Field Notes 13); **`s16-frameworks` is mid-run** (3 of 11 done;
-> interrupted — see the journal).
+> targets — untestable surfaces on this box; §Field Notes 13); **`s16-frameworks` is mid-run**
+> (LG ✅ · OAI ✅ · CREW/PAI ❌ flaky · 7 not yet run this sweep; see the journal).
 > **Structure:** follows the format of `agentdrill`/`agentwatch` v0.2.0 `FIELD_TEST_REPORT.md` (a journal, not a
 > scoreboard), pointed at [FIELD_TEST_PLAN.md](FIELD_TEST_PLAN.md) §6 (matrix), §8 (CUJ map), §12 (release gate),
 > §16 (R-map). This report states **honestly** what was tested, what passed, and what was **not** run.
@@ -23,7 +22,7 @@
 
 ## BLUF + Release Gate Verdict
 
-> **87 PASS · 2 FAIL · 0 declared · 8 not run (89/97 verdicts).** The harness, the Docker setup, the deep-verification
+> **90 PASS · 2 FAIL · 0 declared · 5 not run (92/97 verdicts).** The harness, the Docker setup, the deep-verification
 > gate, and the case matrix are **ready and exercised** (§What Was Tested). **`s0`–`s15` + `s17` are complete:
 > 85 deterministic cases PASS, every one deep-verified grounded, leak scan clean.** **Both shipped Tier-1 harnesses
 > run LIVE and PASS:** `FT-T1-CLAUDE` (Claude Code ↔ local oMLX over the Anthropic `/v1/messages` format, PreToolUse
@@ -39,15 +38,15 @@
 > LLM-involved case that does **not** log its request/response pairs is an automatic **FAIL** (deep-verification
 > rule, §Gates).
 
-### Run status (s16 mid-run; 89/97 verdicts on disk)
+### Run status (s16 mid-run; 92/97 verdicts on disk)
 
 | | Count |
 |---|---|
-| PASS (raw verdict) | 87 |
-| — of which grounded (asserting check re-derived, not exit-0) | 87 (0 over-claimed) |
+| PASS (raw verdict) | 90 |
+| — of which grounded (asserting check re-derived, not exit-0) | 90 (0 over-claimed) |
 | FAIL | **2** (`FT-FWK-CREW`, `FT-FWK-PAI` — live-model tool-call flakiness; §Small-Group Run Journal) |
 | declared (P/F\|D, environment cannot provide — named) | 0 (the Tier-1 scope now ships only what is field-tested) |
-| not run | 8 (all s16 — the interrupted suite) |
+| not run | 5 (all s16 — the interrupted suite) |
 | Removed from scope (not claimed as supported) | 2 (FT-T1-CURSOR, FT-T1-GEMINI — §Field Notes 13) |
 | N/A (retired) | 0 |
 
@@ -248,6 +247,53 @@ Tried to bring Gemini local ("do gemini gemma setup and bring from claude"). Wha
   limitation text), `t1-gemini-evaluate-parity` assertion PASS; gemma install log + bundle-source findings
   summarized here.
 
+### Group 23 — `FT-FWK-OAI` (live LLM) — **✅ PASS after a capture-filter fix; the "hang" was a red herring** (2026-11-01)
+- **Symptom:** the case appeared to **hang** twice (interrupted mid-run, `oa-01.json` left at
+  `status: running`, 1/5 rows) — but a standalone re-run of the same runner completed **12/12 rows in ~90 s**.
+  The "hang" was the local model server still serving orphaned requests from the killed runs, not a code hang.
+- **The real defect (found by instrumenting the hook):** the run **completed but captured 0 pairs** while
+  printing `[llm-capture] recording…`. Instrumentation showed why: **the openai-agents SDK calls
+  `/v1/responses` (the Responses API)**, and `install_llm_capture`'s URL filter in `run_field_agents.py`
+  only matched `/chat/completions|/completions|/embeddings` — so every call fell through the filter.
+  (The same gap was already fixed in `t1_proxy.py` for the Tier-1 CLIs — Codex — but **not** in the
+  framework runner. Two capture paths, one fix each; the second was missed until a case failed on it.)
+- **A second lesson — the silent suppressor:** `_write` is wrapped in `contextlib.suppress(Exception)`, so a
+  capture that never fires **looks identical to a capture that works** from the runner's perspective. The
+  only honest detector was the assertion (`openai-agents-captured` FAIL: `capture: 0 + 0`) — the
+  evidence gate caught what logging and exit codes could not.
+- **Fix:** add `/responses` (+ `/messages`) to the runner's `_is_llm` filter.
+- **Result:** `FT-FWK-OAI` → **PASS**: 12/12 rows (all five outcomes + adversarial), **34 request + 34
+  response pairs** captured (sanitized), leak scan clean, exit 0.
+- **Captured evidence:** `field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-OAI/` — verdict, assertions,
+  `artifacts/llm/` (34 pairs), `oa-*.json` per-agent run records (decisions + expected + status per row).
+
+### Group 24 — `FT-FWK-ADK` (live LLM) — **✅ PASS after a dependency-clash fix** (2026-11-01)
+- **Symptom:** `0/12` rows, every row `status=not-available`, stderr full of
+  `litellm.APIConnectionError: cannot import name 'CacheableResult' from 'mcp.types'` — i.e. **every LLM
+  call failed before it reached oMLX**.
+- **Root cause — a transitive dependency clash, not our code:** Google ADK routes its model calls through
+  **litellm**; litellm (1.106.6) lazily imports from `mcp.types`/`mcp.shared.exceptions` with symbol names
+  that the installed `mcp 1.28.1` **no longer exports** (`CacheableResult`, `MCPError`). litellm's own mcp
+  pin predates the rename. The failure surfaces as `APIConnectionError` — pointing at the *endpoint* —
+  which is exactly what makes it a trap: the endpoint was healthy the whole time.
+- **Debug path (what made it findable):** the error only fires on the **lazy import path**
+  (`litellm.responses.mcp.chat_completions_handler`, triggered when tools are attached), so imports and
+  agent builds succeed while every call dies. Reproducing the import directly (`from litellm.responses.mcp
+  ... import acompletion_with_mcp`) isolated it from our adapter entirely.
+- **Fix:** move the venv to `mcp==2.3.0`, which exports both names litellm expects; `agentpolicy`'s own
+  MCP surface imports clean on it (verified before the case re-run).
+- **Result:** `FT-FWK-ADK` → **PASS**: 12/12 rows, **21 request + 21 response pairs** captured (sanitized),
+  leak scan clean, exit 0.
+- **Captured evidence:** `field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-ADK/` — verdict, assertions,
+  `artifacts/llm/` (21 pairs), `adk-*.json` per-agent run records.
+
+### Group 25 — `FT-FWK-AG2` (live LLM) — **✅ PASS, first try** (2026-11-01)
+- **Run:** `run-case.sh FT-FWK-AG2` → **PASS**, exit 0 — no fixes needed.
+- **Result:** 12/12 rows via the autogen adapter (oMLX behind the mcp 2.3.0 env from Group 24 — the same
+  dependency surface), **23 request + 23 response pairs** captured (sanitized), leak scan clean.
+- **Captured evidence:** `field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-AG2/` — verdict, assertions,
+  `artifacts/llm/` (23 pairs), `ag-*.json` per-agent run records.
+
 ---
 
 ## Environment
@@ -386,13 +432,13 @@ see the note below). Current verdicts below; the rest await the sweep.
 | FT-DRAFT-LOCK | s14-draft | P/F | ✅ PASS | ✓ grounded |
 | FT-BACKTEST | s15-backtest | P/F | ✅ PASS | ✓ grounded |
 | FT-BACKTEST-RO | s15-backtest | P/F | ✅ PASS | ✓ grounded |
-| FT-FWK-ADK | s16-frameworks | P/F\|D | ▫ not run |  |
-| FT-FWK-AG2 | s16-frameworks | P/F\|D | ▫ not run |  |
+| FT-FWK-ADK | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — LIVE google-adk ↔ oMLX: 12/12 rows, 21 LLM pairs (after mcp 2.3.0 dependency fix) |
+| FT-FWK-AG2 | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — LIVE autogen ↔ oMLX: 12/12 rows, 23 LLM pairs |
 | FT-FWK-CREW | s16-frameworks | P/F\|D | ❌ FAIL | live framework run failed — see §Small-Group Run Journal |
 | FT-FWK-LG | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — live LangGraph 10/10 rows, 17/17 LLM pairs captured |
 | FT-FWK-LI | s16-frameworks | P/F\|D | ▫ not run |  |
 | FT-FWK-MCP | s16-frameworks | P/F | ▫ not run |  |
-| FT-FWK-OAI | s16-frameworks | P/F\|D | ▫ not run |  |
+| FT-FWK-OAI | s16-frameworks | P/F\|D | ✅ PASS | ✓ grounded — LIVE openai-agents ↔ oMLX (Responses API): 12/12 rows, 34 LLM pairs |
 | FT-FWK-PAI | s16-frameworks | P/F\|D | ❌ FAIL | live framework run failed — see §Small-Group Run Journal |
 | FT-FWK-SMOL | s16-frameworks | P/F\|D | ▫ not run |  |
 | FT-FWK-SWE | s16-frameworks | P/F | ▫ not run |  |
@@ -459,7 +505,7 @@ see the note below). Current verdicts below; the rest await the sweep.
 | FT-MCP-ASK | s9-surfaces | P/F\|D | ✅ PASS | ✓ grounded |
 | FT-SURFACE-PARITY | s9-surfaces | P/F | ✅ PASS | ✓ grounded |
 
-**Totals:** 87 ✅ PASS (all grounded, 0 over-claimed) · 2 ❌ FAIL · 0 ◆ declared · 8 ▫ not run.
+**Totals:** 90 ✅ PASS (all grounded, 0 over-claimed) · 2 ❌ FAIL · 0 ◆ declared · 5 ▫ not run.
 
 ---
 
@@ -483,10 +529,10 @@ see the note below). Current verdicts below; the rest await the sweep.
 | s13-multiagent | 3 | 3 | 0 | 0 | 0 |
 | s14-draft | 2 | 2 | 0 | 0 | 0 |
 | s15-backtest | 2 | 2 | 0 | 0 | 0 |
-| s16-frameworks | 11 | 1 | 2 | 0 | 8 |
+| s16-frameworks | 11 | 4 | 2 | 0 | 5 |
 | s17-nfr | 8 | 8 | 0 | 0 | 0 |
 | s18-tier1 | 2 | 2 | 0 | 0 | 0 |
-| **Total** | **97** | **87** | **2** | **0** | **8** |
+| **Total** | **97** | **90** | **2** | **0** | **5** |
 
 ---
 
@@ -728,8 +774,8 @@ a green check you can't reproduce — the vocabulary is the product (§1)."*
 
 ## Coverage, Gaps, and Declared Limitations
 
-Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so far: **87 PASS · 2 FAIL · 0 declared ·
-8 not run** (89/97 verdicts).
+Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so far: **90 PASS · 2 FAIL · 0 declared ·
+5 not run** (92/97 verdicts).
 
 - **Coverage so far:** the deterministic matrix ran green (2,988 cells) and **87 cases pass, all 87 grounded**
   (0 over-claimed); the harness + Docker + gates are exercised. **`s0`–`s15` and `s17` are complete** — every

@@ -1,0 +1,121 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "You are an agent. Your internal name is \"adk_04\".",
+        "role": "system"
+      },
+      {
+        "content": "In environment 'staging' with data_class 'internal', call ONLY the tool `scn_decision-allow-04` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "role": "user"
+      },
+      {
+        "content": "<tool_call>",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"text\": \"approved\"}",
+              "name": "scn_decision-allow-04"
+            },
+            "id": "adk_tool_call_270c8ad9d6e74687b8ec45361fc9fede",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "{\"result\": \"approved\"}",
+        "role": "tool",
+        "tool_call_id": "adk_tool_call_270c8ad9d6e74687b8ec45361fc9fede"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "tools": [
+      {
+        "function": {
+          "description": "Add two integers.",
+          "name": "add",
+          "parameters": {
+            "properties": {
+              "a": {
+                "title": "A",
+                "type": "integer"
+              },
+              "b": {
+                "title": "B",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "a",
+              "b"
+            ],
+            "title": "addParams",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Get current weather for a city.",
+          "name": "get_weather",
+          "parameters": {
+            "properties": {
+              "city": {
+                "default": "San Francisco",
+                "title": "City",
+                "type": "string"
+              }
+            },
+            "title": "get_weatherParams",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "echo",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "echoParams",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_decision-allow-04",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "scn_decision-allow-04Params",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}

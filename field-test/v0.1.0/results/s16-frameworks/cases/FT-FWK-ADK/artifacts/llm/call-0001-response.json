@@ -1,0 +1,47 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"access denied\"}",
+                "name": "scn_decision-deny-01"
+              },
+              "id": "call_becc7b63",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793564872,
+    "id": "chatcmpl-2795e26e",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 26,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 2.16,
+      "generation_tokens_per_second": 12.02,
+      "input_tokens": 655,
+      "output_tokens": 26,
+      "prompt_eval_duration": 0.92,
+      "prompt_tokens": 655,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_tokens_per_second": 712.18,
+      "time_to_first_token": 0.92,
+      "total_time": 3.08,
+      "total_tokens": 681
+    }
+  },
+  "status_code": 200
+}

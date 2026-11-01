@@ -1,0 +1,71 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"Action is allowed in development with public data.\"}",
+                "name": "scn_decision-allow-01"
+              },
+              "id": "call_fc973ac7",
+              "type": "function"
+            },
+            {
+              "function": {
+                "arguments": "{\"text\": \"Action requires audit in staging with restricted data.\"}",
+                "name": "scn_decision-audit-01"
+              },
+              "id": "call_d0fce90a",
+              "type": "function"
+            },
+            {
+              "function": {
+                "arguments": "{\"text\": \"Action is denied in development with public data.\"}",
+                "name": "scn_decision-deny-01"
+              },
+              "id": "call_92a715a8",
+              "type": "function"
+            },
+            {
+              "function": {
+                "arguments": "{\"text\": \"Malicious input intended to compromise system integrity.\"}",
+                "name": "scn_adversarial-injection-01"
+              },
+              "id": "call_4badb6d2",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793564899,
+    "id": "chatcmpl-9effa3ec",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 137,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 5.48,
+      "generation_tokens_per_second": 25.0,
+      "input_tokens": 768,
+      "output_tokens": 137,
+      "prompt_eval_duration": 3.07,
+      "prompt_tokens": 768,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_tokens_per_second": 250.13,
+      "time_to_first_token": 3.07,
+      "total_time": 8.55,
+      "total_tokens": 905
+    }
+  },
+  "status_code": 200
+}

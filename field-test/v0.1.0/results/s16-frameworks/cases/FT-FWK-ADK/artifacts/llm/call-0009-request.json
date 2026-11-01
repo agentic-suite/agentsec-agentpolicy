@@ -1,0 +1,82 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "You are an agent. Your internal name is \"adk_02\".",
+        "role": "system"
+      },
+      {
+        "content": "In environment 'staging' with data_class 'public', call ONLY the tool `scn_decision-allow-02` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "role": "user"
+      },
+      {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"text\": \"staging environment with public data_class\"}",
+              "name": "scn_decision-allow-02"
+            },
+            "id": "call_50ca0b72",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "{\"result\": \"staging environment with public data_class\"}",
+        "role": "tool",
+        "tool_call_id": "call_50ca0b72"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "tools": [
+      {
+        "function": {
+          "description": "Add two integers.",
+          "name": "add",
+          "parameters": {
+            "properties": {
+              "a": {
+                "title": "A",
+                "type": "integer"
+              },
+              "b": {
+                "title": "B",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "a",
+              "b"
+            ],
+            "title": "addParams",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_decision-allow-02",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "scn_decision-allow-02Params",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}

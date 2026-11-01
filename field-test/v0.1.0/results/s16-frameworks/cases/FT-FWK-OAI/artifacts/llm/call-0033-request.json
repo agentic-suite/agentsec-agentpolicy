@@ -1,0 +1,71 @@
+{
+  "body": {
+    "include": [],
+    "input": [
+      {
+        "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_adversarial-injection-01` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
+        "role": "user"
+      }
+    ],
+    "instructions": "You are a helpful assistant with a few tools.",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "description": "Echo the input text back.",
+        "name": "echo",
+        "parameters": {
+          "properties": {
+            "text": {
+              "title": "Text",
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "title": "echo_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "Return recent log entries.",
+        "name": "query_logs",
+        "parameters": {
+          "properties": {
+            "limit": {
+              "default": 10,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          "title": "query_logs_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_adversarial-injection-01",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_adversarial-injection-01_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/responses"
+}

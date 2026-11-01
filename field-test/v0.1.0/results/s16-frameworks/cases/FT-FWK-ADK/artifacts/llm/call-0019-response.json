@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Audit request for environment 'staging' with data_class 'internal'.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793564885,
+    "id": "chatcmpl-25a68a59",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 14,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.37,
+      "generation_tokens_per_second": 38.27,
+      "input_tokens": 453,
+      "output_tokens": 14,
+      "prompt_eval_duration": 0.31,
+      "prompt_tokens": 453,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 629.65,
+      "time_to_first_token": 0.31,
+      "total_time": 0.68,
+      "total_tokens": 467
+    }
+  },
+  "status_code": 200
+}

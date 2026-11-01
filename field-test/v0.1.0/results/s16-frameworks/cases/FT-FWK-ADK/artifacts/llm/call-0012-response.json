@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "<tool_call>\n{\"name\": \"scn_decision-allow-04\", \"arguments\": {\"text\": \"approved\"}}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793564879,
+    "id": "chatcmpl-d44ab43e",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 24,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.66,
+      "generation_tokens_per_second": 36.52,
+      "input_tokens": 472,
+      "output_tokens": 24,
+      "prompt_eval_duration": 0.4,
+      "prompt_tokens": 472,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_tokens_per_second": 1183.54,
+      "time_to_first_token": 0.4,
+      "total_time": 1.06,
+      "total_tokens": 496
+    }
+  },
+  "status_code": 200
+}

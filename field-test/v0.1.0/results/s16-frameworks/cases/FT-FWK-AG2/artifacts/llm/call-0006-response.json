@@ -1,0 +1,79 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"Request approved in development environment with public data class.\"}",
+                "name": "scn_decision-allow-01"
+              },
+              "id": "call_161ce975",
+              "type": "function"
+            },
+            {
+              "function": {
+                "arguments": "{\"text\": \"Request requires audit in staging environment with restricted data class.\"}",
+                "name": "scn_decision-audit-01"
+              },
+              "id": "call_a76d1dbd",
+              "type": "function"
+            },
+            {
+              "function": {
+                "arguments": "{\"text\": \"Request denied in development environment with public data class.\"}",
+                "name": "scn_decision-deny-01"
+              },
+              "id": "call_f87a1f62",
+              "type": "function"
+            },
+            {
+              "function": {
+                "arguments": "{\"text\": \"Malicious input attempting to exploit system vulnerabilities.\"}",
+                "name": "scn_adversarial-injection-01"
+              },
+              "id": "call_dfcfb6c6",
+              "type": "function"
+            },
+            {
+              "function": {
+                "arguments": "{\"text\": \"Request requires escalation in production environment with internal data class.\"}",
+                "name": "scn_decision-escalate-01"
+              },
+              "id": "call_5911bbe6",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793564901,
+    "id": "chatcmpl-8608ed15",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 178,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 8.12,
+      "generation_tokens_per_second": 21.91,
+      "input_tokens": 812,
+      "output_tokens": 178,
+      "prompt_eval_duration": 2.67,
+      "prompt_tokens": 812,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_tokens_per_second": 303.77,
+      "time_to_first_token": 2.67,
+      "total_time": 10.8,
+      "total_tokens": 990
+    }
+  },
+  "status_code": 200
+}

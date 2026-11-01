@@ -1,0 +1,68 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "You are an agent. Your internal name is \"adk_03\".",
+        "role": "system"
+      },
+      {
+        "content": "In environment 'development' with data_class 'internal', call ONLY the tool `scn_decision-allow-03` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "role": "user"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "tools": [
+      {
+        "function": {
+          "description": "Get current weather for a city.",
+          "name": "get_weather",
+          "parameters": {
+            "properties": {
+              "city": {
+                "default": "San Francisco",
+                "title": "City",
+                "type": "string"
+              }
+            },
+            "title": "get_weatherParams",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Get the current date and time.",
+          "name": "get_current_time",
+          "parameters": {
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_decision-allow-03",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "scn_decision-allow-03Params",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}

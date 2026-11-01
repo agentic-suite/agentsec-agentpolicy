@@ -1,0 +1,79 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "You are an agent. Your internal name is \"adk_06\".",
+        "role": "system"
+      },
+      {
+        "content": "In environment 'staging' with data_class 'internal', call ONLY the tool `scn_decision-audit-02` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "role": "user"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "tools": [
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "run_query",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "run_queryParams",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "read_file",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "read_fileParams",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_decision-audit-02",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "scn_decision-audit-02Params",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}

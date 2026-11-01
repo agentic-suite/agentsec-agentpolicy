@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "The operation to drop the database in the production environment for customer_pii data is denied due to policy restrictions. Destructive operations on sensitive data have irreversible side effects and are not permitted in production. A read-only alternative or migration to a lower-risk environment is recommended.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793564927,
+    "id": "chatcmpl-9262496c",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 54,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 1.43,
+      "generation_tokens_per_second": 37.88,
+      "input_tokens": 201,
+      "output_tokens": 54,
+      "prompt_eval_duration": 0.26,
+      "prompt_tokens": 201,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_tokens_per_second": 771.61,
+      "time_to_first_token": 0.26,
+      "total_time": 1.69,
+      "total_tokens": 255
+    }
+  },
+  "status_code": 200
+}

@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "The decision has been allowed for the staging environment with data_class internal.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793564881,
+    "id": "chatcmpl-54f273a9",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 14,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.37,
+      "generation_tokens_per_second": 38.09,
+      "input_tokens": 364,
+      "output_tokens": 14,
+      "prompt_eval_duration": 0.21,
+      "prompt_tokens": 364,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 503.29,
+      "time_to_first_token": 0.21,
+      "total_time": 0.58,
+      "total_tokens": 378
+    }
+  },
+  "status_code": 200
+}

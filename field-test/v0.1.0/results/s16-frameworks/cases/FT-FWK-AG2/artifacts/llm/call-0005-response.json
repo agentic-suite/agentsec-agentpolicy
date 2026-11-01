@@ -1,0 +1,63 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"Action is allowed in development environment with public data class.\"}",
+                "name": "scn_decision-allow-01"
+              },
+              "id": "call_7307e60e",
+              "type": "function"
+            },
+            {
+              "function": {
+                "arguments": "{\"text\": \"Action requires audit in staging environment with restricted data class.\"}",
+                "name": "scn_decision-audit-01"
+              },
+              "id": "call_deb7970c",
+              "type": "function"
+            },
+            {
+              "function": {
+                "arguments": "{\"text\": \"Action is denied in development environment with public data class.\"}",
+                "name": "scn_decision-deny-01"
+              },
+              "id": "call_7435c4c8",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793564899,
+    "id": "chatcmpl-c9c36252",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 107,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 4.18,
+      "generation_tokens_per_second": 25.59,
+      "input_tokens": 707,
+      "output_tokens": 107,
+      "prompt_eval_duration": 4.44,
+      "prompt_tokens": 707,
+      "prompt_tokens_details": {
+        "cached_tokens": 512
+      },
+      "prompt_tokens_per_second": 43.91,
+      "time_to_first_token": 4.44,
+      "total_time": 8.62,
+      "total_tokens": 814
+    }
+  },
+  "status_code": 200
+}

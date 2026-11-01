@@ -1,0 +1,38 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "You are a helpful assistant with a few tools.",
+        "role": "system"
+      },
+      {
+        "content": "In environment 'staging' with data_class 'internal', call ONLY the tool `scn_adversarial-unicode-02` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
+        "name": "user",
+        "role": "user"
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"text\": \"staging environment with data_class internal\"}",
+              "name": "scn_adversarial-unicode-02"
+            },
+            "id": "call_7fea672e",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "staging environment with data_class internal",
+        "role": "tool",
+        "tool_call_id": "call_7fea672e"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "stream": false
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}

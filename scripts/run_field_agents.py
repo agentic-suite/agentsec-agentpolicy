@@ -103,7 +103,10 @@ def install_llm_capture(out_dir: str | Path) -> None:
 
     def _is_llm(url: object) -> bool:
         text = str(url)
-        return any(p in text for p in ("/chat/completions", "/completions", "/embeddings"))
+        return any(
+            p in text
+            for p in ("/chat/completions", "/completions", "/embeddings", "/responses", "/messages")
+        )
 
     def _write(request: Any, response: Any) -> None:
         if not _is_llm(getattr(request, "url", "")):

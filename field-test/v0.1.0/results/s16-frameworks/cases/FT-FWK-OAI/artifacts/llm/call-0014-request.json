@@ -1,0 +1,218 @@
+{
+  "body": {
+    "include": [],
+    "input": [
+      {
+        "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_decision-allow-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "role": "user"
+      },
+      {
+        "arguments": null,
+        "call_id": null,
+        "content": [
+          {
+            "annotations": [],
+            "text": "",
+            "type": "output_text"
+          }
+        ],
+        "id": "msg_7b6c114e12d1462eac5fcdb8",
+        "name": null,
+        "role": "assistant",
+        "status": "completed",
+        "summary": null,
+        "type": "message"
+      },
+      {
+        "arguments": "{\"kwargs\": {\"environment\": \"development\", \"data_class\": \"public\"}}",
+        "call_id": "call_2ede7b24",
+        "content": null,
+        "id": "fc_e7eaab1e",
+        "name": "scn_decision-allow-01",
+        "role": null,
+        "status": "completed",
+        "summary": null,
+        "type": "function_call"
+      },
+      {
+        "call_id": "call_2ede7b24",
+        "output": "An error occurred while running the tool. Please try again. Error: _tool_arg.<locals>._echo() got an unexpected keyword argument 'environment'",
+        "type": "function_call_output"
+      },
+      {
+        "arguments": null,
+        "call_id": null,
+        "content": [
+          {
+            "annotations": [],
+            "text": "",
+            "type": "output_text"
+          }
+        ],
+        "id": "msg_b875204e6ad247ba9eb80de5",
+        "name": null,
+        "role": "assistant",
+        "status": "completed",
+        "summary": null,
+        "type": "message"
+      },
+      {
+        "arguments": "{\"kwargs\": {\"environment\": \"development\", \"data_class\": \"public\"}}",
+        "call_id": "call_58a3c8c0",
+        "content": null,
+        "id": "fc_219431d9",
+        "name": "scn_decision-allow-01",
+        "role": null,
+        "status": "completed",
+        "summary": null,
+        "type": "function_call"
+      },
+      {
+        "call_id": "call_58a3c8c0",
+        "output": "An error occurred while running the tool. Please try again. Error: _tool_arg.<locals>._echo() got an unexpected keyword argument 'environment'",
+        "type": "function_call_output"
+      },
+      {
+        "arguments": null,
+        "call_id": null,
+        "content": [
+          {
+            "annotations": [],
+            "text": "",
+            "type": "output_text"
+          }
+        ],
+        "id": "msg_8b46e8b4a89b4841bfa8350c",
+        "name": null,
+        "role": "assistant",
+        "status": "completed",
+        "summary": null,
+        "type": "message"
+      },
+      {
+        "arguments": "{\"kwargs\": {\"env\": \"development\", \"data_class\": \"public\"}}",
+        "call_id": "call_08229c6c",
+        "content": null,
+        "id": "fc_a9d36f83",
+        "name": "scn_decision-allow-01",
+        "role": null,
+        "status": "completed",
+        "summary": null,
+        "type": "function_call"
+      },
+      {
+        "call_id": "call_08229c6c",
+        "output": "An error occurred while running the tool. Please try again. Error: _tool_arg.<locals>._echo() got an unexpected keyword argument 'env'",
+        "type": "function_call_output"
+      }
+    ],
+    "instructions": "You are a helpful assistant with a few tools.",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "tools": [
+      {
+        "description": "Get current weather for a city.",
+        "name": "get_weather",
+        "parameters": {
+          "properties": {
+            "city": {
+              "default": "San Francisco",
+              "title": "City",
+              "type": "string"
+            }
+          },
+          "title": "get_weather_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_decision-allow-01",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_decision-allow-01_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_decision-audit-01",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_decision-audit-01_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_decision-escalate-01",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_decision-escalate-01_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_decision-deny-01",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_decision-deny-01_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_adversarial-injection-01",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_adversarial-injection-01_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/responses"
+}

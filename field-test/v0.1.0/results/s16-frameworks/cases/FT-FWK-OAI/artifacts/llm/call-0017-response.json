@@ -1,0 +1,154 @@
+{
+  "body": {
+    "created_at": 1793564667,
+    "error": null,
+    "id": "resp_558c167f36af4f6e9e1f48ff",
+    "incomplete_details": null,
+    "max_output_tokens": null,
+    "metadata": {},
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "response",
+    "output": [
+      {
+        "arguments": null,
+        "call_id": null,
+        "content": [
+          {
+            "annotations": [],
+            "text": "It appears that the tool `scn_decision-allow-01` does not accept the arguments in the current format, and the system is not recognizing any of the provided parameters. Without a clear understanding of the valid input structure, further attempts to pass arguments are not productive.\n\nPlease clarify the correct argument structure or provide additional details so I can assist effectively.",
+            "type": "output_text"
+          }
+        ],
+        "id": "msg_e02691e6b5bd4bbdaa0bdde0",
+        "name": null,
+        "role": "assistant",
+        "status": "completed",
+        "summary": null,
+        "type": "message"
+      }
+    ],
+    "previous_response_id": null,
+    "status": "completed",
+    "temperature": 0.7,
+    "text": null,
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "description": "Get current weather for a city.",
+        "name": "get_weather",
+        "parameters": {
+          "properties": {
+            "city": {
+              "default": "San Francisco",
+              "title": "City",
+              "type": "string"
+            }
+          },
+          "title": "get_weather_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_decision-allow-01",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_decision-allow-01_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_decision-audit-01",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_decision-audit-01_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_decision-escalate-01",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_decision-escalate-01_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_decision-deny-01",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_decision-deny-01_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_adversarial-injection-01",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_adversarial-injection-01_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      }
+    ],
+    "top_p": 0.8,
+    "truncation": null,
+    "usage": {
+      "input_tokens": 992,
+      "input_tokens_details": {
+        "cached_tokens": 768
+      },
+      "output_tokens": 72,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1064
+    }
+  },
+  "status_code": 200
+}

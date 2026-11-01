@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "In environment 'staging' with data_class 'internal'",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793564887,
+    "id": "chatcmpl-1f39083d",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 12,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.31,
+      "generation_tokens_per_second": 38.76,
+      "input_tokens": 448,
+      "output_tokens": 12,
+      "prompt_eval_duration": 0.27,
+      "prompt_tokens": 448,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 703.88,
+      "time_to_first_token": 0.27,
+      "total_time": 0.58,
+      "total_tokens": 460
+    }
+  },
+  "status_code": 200
+}

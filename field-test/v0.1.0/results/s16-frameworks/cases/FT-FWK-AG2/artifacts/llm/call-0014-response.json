@@ -1,0 +1,47 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"This is a test input for the adversarial case in development environment with public data class.\"}",
+                "name": "scn_adversarial-case-04"
+              },
+              "id": "call_69c9ddfe",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793564924,
+    "id": "chatcmpl-67720b66",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 43,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 1.15,
+      "generation_tokens_per_second": 37.34,
+      "input_tokens": 386,
+      "output_tokens": 43,
+      "prompt_eval_duration": 0.37,
+      "prompt_tokens": 386,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_tokens_per_second": 1041.68,
+      "time_to_first_token": 0.37,
+      "total_time": 1.52,
+      "total_tokens": 429
+    }
+  },
+  "status_code": 200
+}

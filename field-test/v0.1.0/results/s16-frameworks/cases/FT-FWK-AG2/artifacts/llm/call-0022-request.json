@@ -1,0 +1,80 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "You are a helpful assistant with a few tools.",
+        "role": "system"
+      },
+      {
+        "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_adversarial-nonstring-08` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
+        "name": "user",
+        "role": "user"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "stream": false,
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "function": {
+          "description": "Search for documents matching a query.",
+          "name": "search_docs",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "query": {
+                "description": "query",
+                "title": "Query",
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "type": "object"
+          },
+          "strict": false
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Get the current date and time.",
+          "name": "get_current_time",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {},
+            "required": [],
+            "type": "object"
+          },
+          "strict": false
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_adversarial-nonstring-08",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "description": "text",
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "type": "object"
+          },
+          "strict": false
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}

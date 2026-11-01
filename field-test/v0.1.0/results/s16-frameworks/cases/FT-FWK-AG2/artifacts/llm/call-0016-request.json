@@ -1,0 +1,65 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "You are a helpful assistant with a few tools.",
+        "role": "system"
+      },
+      {
+        "content": "In environment 'production' with data_class 'customer_pii', call ONLY the tool `scn_adversarial-whitespace-05` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
+        "name": "user",
+        "role": "user"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "stream": false,
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "function": {
+          "description": "Return recent log entries.",
+          "name": "query_logs",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "limit": {
+                "default": 10,
+                "description": "limit",
+                "title": "Limit",
+                "type": "integer"
+              }
+            },
+            "required": [],
+            "type": "object"
+          },
+          "strict": false
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_adversarial-whitespace-05",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "description": "text",
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "type": "object"
+          },
+          "strict": false
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}
