@@ -1,0 +1,3 @@
+{"name":"llm-endpoint-reachable","ok":true}
+{"name":"matrix-crewai","ok":false,"grounded":true,"cmd":"/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/run_field_agents.py crewai --plan B"}
+{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}

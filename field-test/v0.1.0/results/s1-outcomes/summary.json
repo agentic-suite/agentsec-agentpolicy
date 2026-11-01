@@ -1,0 +1,224 @@
+{
+  "cases": [
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_acceptance_matrix.py -k allow",
+          "grounded": true,
+          "name": "allow",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-DEC-ALLOW",
+      "llm_captured": false,
+      "run_id": "s1-outcomes",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_cedar_core.py tests/test_m5_explain.py",
+          "grounded": true,
+          "name": "ask",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-DEC-ASK",
+      "llm_captured": false,
+      "run_id": "s1-outcomes",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_decide.py tests/test_score.py",
+          "grounded": true,
+          "name": "context",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-DEC-CONTEXT",
+      "llm_captured": false,
+      "run_id": "s1-outcomes",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_acceptance_matrix.py -k deny",
+          "grounded": true,
+          "name": "deny",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-DEC-DENY",
+      "llm_captured": false,
+      "run_id": "s1-outcomes",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_cedar_latency.py tests/test_cedar_core.py",
+          "grounded": true,
+          "name": "determinism",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-DEC-DETERMINISM",
+      "llm_captured": false,
+      "run_id": "s1-outcomes",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_m5_explain.py tests/test_m12_budgets.py",
+          "grounded": true,
+          "name": "rate-limit",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-DEC-RATE",
+      "llm_captured": false,
+      "run_id": "s1-outcomes",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_m5_explain.py tests/test_output_inspector.py",
+          "grounded": true,
+          "name": "redact",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-DEC-REDACT",
+      "llm_captured": false,
+      "run_id": "s1-outcomes",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_acceptance_matrix.py tests/test_fail_closed.py",
+          "grounded": true,
+          "name": "fail-closed",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-DEC-UNKNOWN",
+      "llm_captured": false,
+      "run_id": "s1-outcomes",
+      "status": "pass"
+    }
+  ],
+  "env": {
+    "arch": "arm64",
+    "compose": "5.6.1",
+    "docker": "Docker version 29.5.2, build 79eb04c7d8",
+    "llm_base_url": "http://host.docker.internal:8000/v1",
+    "llm_model": "Qwen3.5-4B-4bit",
+    "os": "Darwin",
+    "python": "Python-3.13.14",
+    "run_id": "s1-outcomes",
+    "version": "v0.1.0"
+  },
+  "generated_at": "2026-11-01T19:10:22.461715+00:00",
+  "green": true,
+  "run_id": "s1-outcomes",
+  "totals": {
+    "declared": 0,
+    "fail": 0,
+    "over_claimed": 0,
+    "pass": 8
+  }
+}

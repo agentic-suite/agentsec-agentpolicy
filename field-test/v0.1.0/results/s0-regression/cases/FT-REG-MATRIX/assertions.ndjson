@@ -1,0 +1,2 @@
+{"name":"matrix","ok":true,"grounded":true,"cmd":"/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/agentpolicy field-test --agents all --matrix both --report none"}
+{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}

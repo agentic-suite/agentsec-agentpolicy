@@ -1,0 +1,2 @@
+{"name":"declared","ok":true,"limitation":"Claude Code not installed on the box; reachable via the PreToolUse hook, covered at the agentgate/agentseatbelt lower layer until exercised on a harness host","release_gate_item":"PRD 19 Tier-1"}
+{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}

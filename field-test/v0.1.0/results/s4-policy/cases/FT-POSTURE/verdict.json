@@ -1,0 +1,13 @@
+{
+  "id": "FT-POSTURE",
+  "status": "pass",
+  "class": "P/F",
+  "declared": false,
+  "grounded": true,
+  "assertions_total": 1,
+  "assertions_grounded": 1,
+  "llm_captured": false,
+  "run_id": "s4-policy",
+  "assertions": [{"name":"posture","ok":true,"grounded":true,"cmd":"/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_postures.py"},{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}
+]
+}

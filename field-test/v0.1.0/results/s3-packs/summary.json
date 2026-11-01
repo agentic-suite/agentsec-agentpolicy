@@ -1,0 +1,223 @@
+{
+  "cases": [
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_m23_parity_claims.py",
+          "grounded": true,
+          "name": "claims-tests",
+          "ok": true
+        },
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/agentpolicy compliance claims",
+          "grounded": true,
+          "name": "claims-gate",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 2,
+      "assertions_total": 2,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-CLAIMS",
+      "llm_captured": false,
+      "run_id": "s3-packs",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_m23_parity_claims.py",
+          "grounded": true,
+          "name": "compliance",
+          "ok": true
+        },
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/agentpolicy compliance claims",
+          "grounded": true,
+          "name": "claims-gate",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 2,
+      "assertions_total": 2,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-COMPLIANCE-MATRIX",
+      "llm_captured": false,
+      "run_id": "s3-packs",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_m11_ci.py",
+          "grounded": true,
+          "name": "drill-tests",
+          "ok": true
+        },
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/agentpolicy drill check",
+          "grounded": true,
+          "name": "drill-gate",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 2,
+      "assertions_total": 2,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-DRILL",
+      "llm_captured": false,
+      "run_id": "s3-packs",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_m11_ci.py",
+          "grounded": true,
+          "name": "golden-flip",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-GOLDEN-FLIP",
+      "llm_captured": false,
+      "run_id": "s3-packs",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_m4_packs.py tests/test_pack_catalog.py",
+          "grounded": true,
+          "name": "pack-launch",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-PACK-LAUNCH",
+      "llm_captured": false,
+      "run_id": "s3-packs",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_pack.py",
+          "grounded": true,
+          "name": "pack-validate",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-PACK-VALIDATE",
+      "llm_captured": false,
+      "run_id": "s3-packs",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_m22_selfattack.py",
+          "grounded": true,
+          "name": "self-attack-tests",
+          "ok": true
+        },
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/agentpolicy self-attack check --pack packs/self-attack",
+          "grounded": true,
+          "name": "self-attack-gate",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 2,
+      "assertions_total": 2,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-SELF-ATTACK",
+      "llm_captured": false,
+      "run_id": "s3-packs",
+      "status": "pass"
+    }
+  ],
+  "env": {
+    "arch": "arm64",
+    "compose": "5.6.1",
+    "docker": "Docker version 29.5.2, build 79eb04c7d8",
+    "llm_base_url": "http://host.docker.internal:8000/v1",
+    "llm_model": "Qwen3.5-4B-4bit",
+    "os": "Darwin",
+    "python": "Python-3.13.14",
+    "run_id": "s3-packs",
+    "version": "v0.1.0"
+  },
+  "generated_at": "2026-11-01T19:10:36.459328+00:00",
+  "green": true,
+  "run_id": "s3-packs",
+  "totals": {
+    "declared": 0,
+    "fail": 0,
+    "over_claimed": 0,
+    "pass": 7
+  }
+}

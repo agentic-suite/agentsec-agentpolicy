@@ -1,0 +1,15 @@
+{
+  "id": "FT-T1-GEMINI",
+  "status": "declared",
+  "class": "P/F|D",
+  "declared": true,
+  "grounded": false,
+  "assertions_total": 1,
+  "assertions_grounded": 0,
+  "llm_captured": false,
+  "limitation": "Gemini CLI not installed on the box; reachable via its config/MCP surface",
+  "release_gate_item": "PRD 19 Tier-1",
+  "run_id": "s18-tier1",
+  "assertions": [{"name":"declared","ok":true,"limitation":"Gemini CLI not installed on the box; reachable via its config/MCP surface","release_gate_item":"PRD 19 Tier-1"},{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}
+]
+}

@@ -1,0 +1,4 @@
+{"name":"stack-up","ok":true}
+{"name":"stack-ready","ok":true}
+{"name":"mcp-tools","ok":true,"grounded":true,"cmd":"ft_sut bash -lc agentpolicy --version"}
+{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}

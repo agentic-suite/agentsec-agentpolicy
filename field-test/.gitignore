@@ -1,5 +1,0 @@
-# Field-test run artifacts are transient (regenerated per run). Keep the tree
-# but ignore the evidence — the published report (docs/field-test/) is the
-# committed output.
-results/
-_setup/

@@ -1,0 +1,105 @@
+== deep-verification gate (/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/field-test/v0.1.0/results) ==
+CASE                   VERDICT        GROUNDING     NOTE
+FT-REG-MATRIX          PASS           grounded      2 grounded check(s)
+FT-REG-CLI             PASS           grounded      2 grounded check(s)
+FT-REG-ACCEPT          PASS           grounded      2 grounded check(s)
+FT-DEC-ALLOW           PASS           grounded      2 grounded check(s)
+FT-DEC-DENY            PASS           grounded      2 grounded check(s)
+FT-DEC-ASK             PASS           grounded      2 grounded check(s)
+FT-DEC-RATE            PASS           grounded      2 grounded check(s)
+FT-DEC-REDACT          PASS           grounded      2 grounded check(s)
+FT-DEC-UNKNOWN         PASS           grounded      2 grounded check(s)
+FT-DEC-CONTEXT         PASS           grounded      2 grounded check(s)
+FT-DEC-DETERMINISM     PASS           grounded      2 grounded check(s)
+FT-EXPLAIN-CLAUSE      PASS           grounded      2 grounded check(s)
+FT-EXPLAIN-ACTIONABLE  PASS           grounded      2 grounded check(s)
+FT-EVENT-BIND          PASS           grounded      2 grounded check(s)
+FT-AUDIT-CHAIN         PASS           grounded      2 grounded check(s)
+FT-AUDIT-PROVENANCE    PASS           grounded      2 grounded check(s)
+FT-EVIDENCE-OFFLINE    PASS           grounded      2 grounded check(s)
+FT-ALLOW-JUSTIFY       PASS           grounded      2 grounded check(s)
+FT-PACK-LAUNCH         PASS           grounded      2 grounded check(s)
+FT-PACK-VALIDATE       PASS           grounded      2 grounded check(s)
+FT-GOLDEN-FLIP         PASS           grounded      2 grounded check(s)
+FT-DRILL               PASS           grounded      3 grounded check(s)
+FT-CLAIMS              PASS           grounded      3 grounded check(s)
+FT-SELF-ATTACK         PASS           grounded      3 grounded check(s)
+FT-COMPLIANCE-MATRIX   PASS           grounded      3 grounded check(s)
+FT-POSTURE             PASS           grounded      2 grounded check(s)
+FT-INIT                PASS           grounded      2 grounded check(s)
+FT-DIFF                PASS           grounded      2 grounded check(s)
+FT-LINT                PASS           grounded      2 grounded check(s)
+FT-EXPORT              PASS           grounded      2 grounded check(s)
+FT-LAYER-NARROW        PASS           grounded      2 grounded check(s)
+FT-COVERAGE            PASS           grounded      2 grounded check(s)
+FT-SHADOW              PASS           grounded      2 grounded check(s)
+FT-CALIBRATION         PASS           grounded      2 grounded check(s)
+FT-CANARY              PASS           grounded      2 grounded check(s)
+FT-BUDGET-EXHAUST      PASS           grounded      2 grounded check(s)
+FT-BUDGET-RETRY        PASS           grounded      2 grounded check(s)
+FT-BUDGET-BURST        PASS           grounded      2 grounded check(s)
+FT-BUDGET-STATE        PASS           grounded      2 grounded check(s)
+FT-HALT                PASS           grounded      2 grounded check(s)
+FT-ARG-VALIDATE        PASS           grounded      2 grounded check(s)
+FT-HTTP-GUARD          PASS           grounded      2 grounded check(s)
+FT-EXFIL-SINK          PASS           grounded      2 grounded check(s)
+FT-HIDING              PASS           grounded      2 grounded check(s)
+FT-ARG-SECRET          PASS           grounded      2 grounded check(s)
+FT-REDACT-RECEIPT      PASS           grounded      2 grounded check(s)
+FT-VERIFY              PASS           grounded      2 grounded check(s)
+FT-ASK-ROUNDTRIP       PASS           grounded      2 grounded check(s)
+FT-ASK-TIMEOUT         PASS           grounded      2 grounded check(s)
+FT-ASK-BINDING         PASS           grounded      2 grounded check(s)
+FT-DUALCONTROL         PASS           grounded      2 grounded check(s)
+FT-BREAKGLASS          PASS           grounded      2 grounded check(s)
+FT-SURFACE-PARITY      PASS           grounded      2 grounded check(s)
+FT-AUTHZEN             PASS           grounded      2 grounded check(s)
+FT-ADAPTERS            PASS           grounded      2 grounded check(s)
+FT-MCP-ASK             PASS           grounded      2 grounded check(s)
+FT-DOCKER-SMOKE        PASS           grounded      2 grounded check(s)
+FT-NORM-OBFUSCATION    PASS           grounded      2 grounded check(s)
+FT-DISPATCHER          PASS           grounded      2 grounded check(s)
+FT-ADV-REPLAY          PASS           grounded      2 grounded check(s)
+FT-ADV-FLOOD           PASS           grounded      2 grounded check(s)
+FT-DENYSTORM           PASS           grounded      2 grounded check(s)
+FT-ADV-DISTINCT        PASS           grounded      2 grounded check(s)
+FT-SCOPE               PASS           grounded      2 grounded check(s)
+FT-STEPUP              PASS           grounded      2 grounded check(s)
+FT-FREEZE              PASS           grounded      2 grounded check(s)
+FT-DATACLASS           PASS           grounded      2 grounded check(s)
+FT-ENROLL              PASS           grounded      2 grounded check(s)
+FT-APPROVALS           PASS           grounded      2 grounded check(s)
+FT-ALT                 not run        —             no verdict
+FT-DELEGATION          not run        —             no verdict
+FT-INTERAGENT          not run        —             no verdict
+FT-DRAFT               not run        —             no verdict
+FT-DRAFT-LOCK          not run        —             no verdict
+FT-BACKTEST            not run        —             no verdict
+FT-BACKTEST-RO         not run        —             no verdict
+FT-FWK-LG              declared       —             no vendored framework repo / oMLX endpoint on the box; covered by the CI deterministic matrix + agent-build smoke
+FT-FWK-PAI             not run        —             no verdict
+FT-FWK-CREW            not run        —             no verdict
+FT-FWK-OAI             not run        —             no verdict
+FT-FWK-AG2             not run        —             no verdict
+FT-FWK-SMOL            not run        —             no verdict
+FT-FWK-LI              not run        —             no verdict
+FT-FWK-ADK             not run        —             no verdict
+FT-FWK-SWE             not run        —             no verdict
+FT-FWK-MCP             not run        —             no verdict
+FT-REPLAN              not run        —             no verdict
+FT-NFR-LATENCY         not run        —             no verdict
+FT-NFR-PORT            not run        —             no verdict
+FT-FAILCLOSED          not run        —             no verdict
+FT-SANDBOX             not run        —             no verdict
+FT-COST                not run        —             no verdict
+FT-PARITY              not run        —             no verdict
+FT-DEFER               not run        —             no verdict
+FT-DOCTOR              not run        —             no verdict
+FT-T1-CLAUDE           declared       —             Claude Code not installed on the box; reachable via the PreToolUse hook, covered at the agentgate/agentseatbelt lower layer until exercised on a harness host
+FT-T1-CURSOR           declared       —             no Cursor host on the box; policyweave compile-out proven by the export test, harness wire-up declared
+FT-T1-CODEX            declared       —             Codex CLI not installed on the box; reachable via its config/hook surface
+FT-T1-GEMINI           declared       —             Gemini CLI not installed on the box; reachable via its config/MCP surface
+
+census: 69 PASS (69 grounded, 0 over-claimed) · 0 FAIL
+
+deep-verification: every PASS is grounded.

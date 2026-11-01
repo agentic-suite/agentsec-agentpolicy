@@ -1,0 +1,2 @@
+{"name":"declared","ok":true,"limitation":"Codex CLI not installed on the box; reachable via its config/hook surface","release_gate_item":"PRD 19 Tier-1"}
+{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}

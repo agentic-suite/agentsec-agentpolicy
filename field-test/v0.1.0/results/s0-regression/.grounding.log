@@ -1,0 +1,105 @@
+== deep-verification gate (/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/field-test/v0.1.0/results) ==
+CASE                   VERDICT        GROUNDING     NOTE
+FT-REG-MATRIX          PASS           grounded      2 grounded check(s)
+FT-REG-CLI             PASS           grounded      2 grounded check(s)
+FT-REG-ACCEPT          PASS           grounded      2 grounded check(s)
+FT-DEC-ALLOW           not run        —             no verdict
+FT-DEC-DENY            not run        —             no verdict
+FT-DEC-ASK             PASS           grounded      2 grounded check(s)
+FT-DEC-RATE            not run        —             no verdict
+FT-DEC-REDACT          not run        —             no verdict
+FT-DEC-UNKNOWN         not run        —             no verdict
+FT-DEC-CONTEXT         not run        —             no verdict
+FT-DEC-DETERMINISM     not run        —             no verdict
+FT-EXPLAIN-CLAUSE      not run        —             no verdict
+FT-EXPLAIN-ACTIONABLE  PASS           grounded      2 grounded check(s)
+FT-EVENT-BIND          not run        —             no verdict
+FT-AUDIT-CHAIN         not run        —             no verdict
+FT-AUDIT-PROVENANCE    not run        —             no verdict
+FT-EVIDENCE-OFFLINE    not run        —             no verdict
+FT-ALLOW-JUSTIFY       not run        —             no verdict
+FT-PACK-LAUNCH         not run        —             no verdict
+FT-PACK-VALIDATE       not run        —             no verdict
+FT-GOLDEN-FLIP         not run        —             no verdict
+FT-DRILL               not run        —             no verdict
+FT-CLAIMS              not run        —             no verdict
+FT-SELF-ATTACK         PASS           grounded      3 grounded check(s)
+FT-COMPLIANCE-MATRIX   not run        —             no verdict
+FT-POSTURE             not run        —             no verdict
+FT-INIT                not run        —             no verdict
+FT-DIFF                not run        —             no verdict
+FT-LINT                not run        —             no verdict
+FT-EXPORT              not run        —             no verdict
+FT-LAYER-NARROW        not run        —             no verdict
+FT-COVERAGE            not run        —             no verdict
+FT-SHADOW              not run        —             no verdict
+FT-CALIBRATION         not run        —             no verdict
+FT-CANARY              not run        —             no verdict
+FT-BUDGET-EXHAUST      not run        —             no verdict
+FT-BUDGET-RETRY        not run        —             no verdict
+FT-BUDGET-BURST        not run        —             no verdict
+FT-BUDGET-STATE        not run        —             no verdict
+FT-HALT                not run        —             no verdict
+FT-ARG-VALIDATE        not run        —             no verdict
+FT-HTTP-GUARD          not run        —             no verdict
+FT-EXFIL-SINK          not run        —             no verdict
+FT-HIDING              not run        —             no verdict
+FT-ARG-SECRET          not run        —             no verdict
+FT-REDACT-RECEIPT      not run        —             no verdict
+FT-VERIFY              not run        —             no verdict
+FT-ASK-ROUNDTRIP       not run        —             no verdict
+FT-ASK-TIMEOUT         not run        —             no verdict
+FT-ASK-BINDING         not run        —             no verdict
+FT-DUALCONTROL         not run        —             no verdict
+FT-BREAKGLASS          not run        —             no verdict
+FT-SURFACE-PARITY      not run        —             no verdict
+FT-AUTHZEN             not run        —             no verdict
+FT-ADAPTERS            not run        —             no verdict
+FT-MCP-ASK             not run        —             no verdict
+FT-DOCKER-SMOKE        PASS           grounded      2 grounded check(s)
+FT-NORM-OBFUSCATION    not run        —             no verdict
+FT-DISPATCHER          not run        —             no verdict
+FT-ADV-REPLAY          not run        —             no verdict
+FT-ADV-FLOOD           not run        —             no verdict
+FT-DENYSTORM           not run        —             no verdict
+FT-ADV-DISTINCT        not run        —             no verdict
+FT-SCOPE               not run        —             no verdict
+FT-STEPUP              not run        —             no verdict
+FT-FREEZE              not run        —             no verdict
+FT-DATACLASS           not run        —             no verdict
+FT-ENROLL              not run        —             no verdict
+FT-APPROVALS           not run        —             no verdict
+FT-ALT                 not run        —             no verdict
+FT-DELEGATION          not run        —             no verdict
+FT-INTERAGENT          not run        —             no verdict
+FT-DRAFT               not run        —             no verdict
+FT-DRAFT-LOCK          not run        —             no verdict
+FT-BACKTEST            not run        —             no verdict
+FT-BACKTEST-RO         not run        —             no verdict
+FT-FWK-LG              declared       —             no vendored framework repo / oMLX endpoint on the box; covered by the CI deterministic matrix + agent-build smoke
+FT-FWK-PAI             not run        —             no verdict
+FT-FWK-CREW            not run        —             no verdict
+FT-FWK-OAI             not run        —             no verdict
+FT-FWK-AG2             not run        —             no verdict
+FT-FWK-SMOL            not run        —             no verdict
+FT-FWK-LI              not run        —             no verdict
+FT-FWK-ADK             not run        —             no verdict
+FT-FWK-SWE             not run        —             no verdict
+FT-FWK-MCP             not run        —             no verdict
+FT-REPLAN              not run        —             no verdict
+FT-NFR-LATENCY         not run        —             no verdict
+FT-NFR-PORT            not run        —             no verdict
+FT-FAILCLOSED          not run        —             no verdict
+FT-SANDBOX             not run        —             no verdict
+FT-COST                not run        —             no verdict
+FT-PARITY              not run        —             no verdict
+FT-DEFER               not run        —             no verdict
+FT-DOCTOR              not run        —             no verdict
+FT-T1-CLAUDE           declared       —             Claude Code not installed on the box; reachable via the PreToolUse hook, covered at the agentgate/agentseatbelt lower layer until exercised on a harness host
+FT-T1-CURSOR           declared       —             no Cursor host on the box; policyweave compile-out proven by the export test, harness wire-up declared
+FT-T1-CODEX            declared       —             Codex CLI not installed on the box; reachable via its config/hook surface
+FT-T1-GEMINI           declared       —             Gemini CLI not installed on the box; reachable via its config/MCP surface
+
+census: 7 PASS (7 grounded, 0 over-claimed) · 0 FAIL
+
+deep-verification: every PASS is grounded.

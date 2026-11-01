@@ -1,0 +1,2 @@
++ compose up (full stack)
++ compose exec agentpolicy bash -lc agentpolicy --version

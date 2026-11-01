@@ -1,0 +1,199 @@
+{
+  "cases": [
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_m22_allow_justify.py",
+          "grounded": true,
+          "name": "allow-justify",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-ALLOW-JUSTIFY",
+      "llm_captured": false,
+      "run_id": "s2-explain",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_audit_replay.py tests/test_audit_sinks.py",
+          "grounded": true,
+          "name": "audit-chain",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-AUDIT-CHAIN",
+      "llm_captured": false,
+      "run_id": "s2-explain",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_m6_audit.py",
+          "grounded": true,
+          "name": "audit-provenance",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-AUDIT-PROVENANCE",
+      "llm_captured": false,
+      "run_id": "s2-explain",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_watcher.py tests/test_otel.py",
+          "grounded": true,
+          "name": "event-bind",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-EVENT-BIND",
+      "llm_captured": false,
+      "run_id": "s2-explain",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_audit_models.py tests/test_m6_audit.py",
+          "grounded": true,
+          "name": "evidence",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-EVIDENCE-OFFLINE",
+      "llm_captured": false,
+      "run_id": "s2-explain",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_actionability.py",
+          "grounded": true,
+          "name": "actionable",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-EXPLAIN-ACTIONABLE",
+      "llm_captured": false,
+      "run_id": "s2-explain",
+      "status": "pass"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_explain.py tests/test_m5_explain.py",
+          "grounded": true,
+          "name": "clause",
+          "ok": true
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 1,
+      "class": "P/F",
+      "declared": false,
+      "grounded": true,
+      "id": "FT-EXPLAIN-CLAUSE",
+      "llm_captured": false,
+      "run_id": "s2-explain",
+      "status": "pass"
+    }
+  ],
+  "env": {
+    "arch": "arm64",
+    "compose": "5.6.1",
+    "docker": "Docker version 29.5.2, build 79eb04c7d8",
+    "llm_base_url": "http://host.docker.internal:8000/v1",
+    "llm_model": "Qwen3.5-4B-4bit",
+    "os": "Darwin",
+    "python": "Python-3.13.14",
+    "run_id": "s2-explain",
+    "version": "v0.1.0"
+  },
+  "generated_at": "2026-11-01T19:10:30.531564+00:00",
+  "green": true,
+  "run_id": "s2-explain",
+  "totals": {
+    "declared": 0,
+    "fail": 0,
+    "over_claimed": 0,
+    "pass": 7
+  }
+}
