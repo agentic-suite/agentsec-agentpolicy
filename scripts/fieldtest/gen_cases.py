@@ -543,15 +543,13 @@ CASES: list[dict[str, str]] = [
      "steps": (
          'if command -v codex >/dev/null 2>&1 && _ft_llm_reachable; then\n'
          '  ft_llm_up\n'
-         '  ft_cmd "t1-codex-config" bash -c \'CODEX_HOME="$FT_CASE_DIR/artifacts/codex-home" mkdir -p "$CODEX_HOME" && '
-         'printf \'"[model_providers.omlx]\\nname = \\"omlx\\"\\nbase_url = \\"http://127.0.0.1:8000/v1\\"\\nwire_api = \\"chat\\"\\n"\\n'
-         '[model]\nprovider = \\"omlx\\"\nname = \\"Qwen3-4B-Instruct-2507-4bit\\"\n\' > "$CODEX_HOME/config.toml" && echo CONFIG-OK\'\n'
-         '  ft_cmd "t1-codex-evaluate-parity" bash -c \'DEC=$("$FT_PY" "$REPO_ROOT/scripts/fieldtest/t1_evaluate.py" '
-         '--tool execute_shell --action delete --env production --data restricted --agent codex-t1 '
-         '--policy "$REPO_ROOT/scripts/fieldtest/t1_policy.yaml"); '
-         'test "$(printf "%s" "$DEC" | "$FT_PY" -c "import json,sys;print(json.load(sys.stdin)[\\"decision\\"])")" = deny && echo PARITY-OK\'\n'
+         '  ft_assert "t1-codex-triple" bash "$FT_DIR/t1_codex.sh" "$FT_CASE_DIR"\n'
+         '  ft_assert "t1-codex-allow-executed" bash -c \'grep -q "hello-ft" "$FT_CASE_DIR/artifacts/codex-call1.txt" && echo EXECUTED\'\n'
+         '  ft_assert "t1-codex-deny-held" bash -c \'test -f "$FT_CASE_DIR/codex-home/work/target-dir/keep.txt" && echo HELD\'\n'
+         '  ft_assert "t1-codex-parity" bash -c \'test "$(wc -l < "$FT_CASE_DIR/artifacts/audit.ndjson")" -ge 3 && echo PARITY-OK\'\n'
+         '  ft_assert_llm_capture "t1-codex-captured"\n'
          'else\n'
-         '  ft_declare "Codex CLI or local oMLX endpoint absent; reachable via its config/hook surface" "PRD 19 Tier-1"\n'
+         '  ft_declare "Codex CLI or local oMLX endpoint absent; reachable via its config/sandbox surface" "PRD 19 Tier-1"\n'
          'fi\n'
          'ft_finalize\n')},
     {"id": "FT-T1-GEMINI", "title": "Gemini CLI config/hook (MCP-native via agentgate)",

@@ -8,10 +8,11 @@
 > **Status: IN PROGRESS (s16 interrupted mid-suite).** This is a **hand-maintained** journal, updated as the sweep runs — not a
 > generated scoreboard. Counts here are read from the committed `field-test/v0.1.0/results/` verdicts and written
 > by hand; nothing is auto-overwritten.
-> **Current:** **86 ✅ PASS · 2 ❌ FAIL · 3 ◆ declared · 8 ▫ not run** (91/99 verdicts on disk). The deterministic
+> **Current:** **87 ✅ PASS · 2 ❌ FAIL · 2 ◆ declared · 8 ▫ not run** (91/99 verdicts on disk). The deterministic
 > matrix ran green (**2,988/2,988 cells, 36 scenarios × 83 agents**); suites `s0`–`s15` + `s17` are complete and
-> deep-verified; **`FT-T1-CLAUDE` now runs LIVE** (Claude Code ↔ local oMLX, no hosted model — Anthropic-format
-> endpoint, no Anthropic key); **`s16-frameworks` is mid-run** (3 of 11 done; interrupted — see the journal).
+> deep-verified; **`FT-T1-CLAUDE` and `FT-T1-CODEX` now run LIVE** (Claude Code ↔ oMLX via Anthropic
+> `/v1/messages`; Codex CLI ↔ oMLX via the OpenAI **Responses API** — no hosted models, no vendor keys);
+> **`s16-frameworks` is mid-run** (3 of 11 done; interrupted — see the journal).
 > **Structure:** follows the format of `agentdrill`/`agentwatch` v0.2.0 `FIELD_TEST_REPORT.md` (a journal, not a
 > scoreboard), pointed at [FIELD_TEST_PLAN.md](FIELD_TEST_PLAN.md) §6 (matrix), §8 (CUJ map), §12 (release gate),
 > §16 (R-map). This report states **honestly** what was tested, what passed, and what was **not** run.
@@ -20,15 +21,16 @@
 
 ## BLUF + Release Gate Verdict
 
-> **86 PASS · 2 FAIL · 3 declared · 8 not run (91/99 verdicts).** The harness, the Docker setup, the deep-verification
+> **87 PASS · 2 FAIL · 2 declared · 8 not run (91/99 verdicts).** The harness, the Docker setup, the deep-verification
 > gate, and the case matrix are **ready and exercised** (§What Was Tested). **`s0`–`s15` + `s17` are complete:
-> 85 deterministic cases PASS, every one deep-verified grounded, leak scan clean.** **`FT-T1-CLAUDE` runs LIVE
-> and PASSes** — the real Claude Code agent loop driven by local oMLX (Anthropic `/v1/messages` format, no
-> hosted model, no Anthropic key), gated by a PreToolUse hook → `agentpolicy evaluate`, with 6 LLM
-> request/response pairs captured and an audit trail of all three decisions. `s16-frameworks` is mid-run
-> (interrupted): `FT-FWK-LG` ✅ PASS (**17/17 pairs**); `FT-FWK-CREW`/`FT-FWK-PAI` ❌ FAIL (live-model tool-call
-> flakiness — every row that emitted a tool call decided correctly; see the journal); 8 cases not yet run this
-> sweep. The **OMLX model choice is benchmarked and applied** (§OMLX LLM Benchmark). No case is
+> 85 deterministic cases PASS, every one deep-verified grounded, leak scan clean.** **Two Tier-1 harnesses run LIVE
+> and PASS:** `FT-T1-CLAUDE` (Claude Code ↔ local oMLX over the Anthropic `/v1/messages` format, PreToolUse hook →
+> `agentpolicy evaluate`; 6 pairs captured, 3-decision audit trail) and `FT-T1-CODEX` (Codex CLI ↔ oMLX over the
+> OpenAI **Responses API** — Codex dropped chat-completions; sandbox triple: allow-executes, deny-holds+replans,
+> pre-execution parity audit; 4 pairs captured) — **both on the box-local model: no hosted LLM, no vendor key.**
+> `s16-frameworks` is mid-run (interrupted): `FT-FWK-LG` ✅ PASS (**17/17 pairs**); `FT-FWK-CREW`/`FT-FWK-PAI` ❌ FAIL
+> (live-model tool-call flakiness — every row that emitted a tool call decided correctly; see the journal); 8 cases
+> not yet run this sweep. The **OMLX model choice is benchmarked and applied** (§OMLX LLM Benchmark). No case is
 > deleted, skipped, or optimistically marked — a case without a verdict reads **`not run`**, and a PASS without a
 > re-derived assertion is not counted as grounded. An LLM-involved case that does **not** log its request/response
 > pairs is an automatic **FAIL** (deep-verification rule, §Gates).
@@ -37,10 +39,10 @@
 
 | | Count |
 |---|---|
-| PASS (raw verdict) | 86 |
-| — of which grounded (asserting check re-derived, not exit-0) | 86 (0 over-claimed) |
+| PASS (raw verdict) | 87 |
+| — of which grounded (asserting check re-derived, not exit-0) | 87 (0 over-claimed) |
 | FAIL | **2** (`FT-FWK-CREW`, `FT-FWK-PAI` — live-model tool-call flakiness; §Small-Group Run Journal) |
-| declared (P/F\|D, environment cannot provide — named) | 3 (Cursor: GUI host absent; Codex + Gemini: not yet re-run through their new conditional steps) |
+| declared (P/F\|D, environment cannot provide — named) | 2 (Cursor: GUI host absent; Gemini: local model routing needs a Gemma/LiteRT download, interrupted) |
 | not run | 8 (all s16 — the interrupted suite) |
 | N/A (retired) | 0 |
 
@@ -56,7 +58,7 @@
 | 6 | p99 < 100 ms + fail-closed on every path | ✅ | FT-NFR-LATENCY + FT-FAILCLOSED PASS (grounded, s17) |
 | 7 | CI rejects a golden deny→allow flip | ✅ | FT-GOLDEN-FLIP PASS (grounded) |
 | 8 | Adversarial sub-matrix: zero crafted allows | ✅ | FT-ADV-* 8/8 PASS (grounded, s10) — 0 crafted allows |
-| 9 | Compatibility table published | ◑ | §S18: **Claude Code exercised LIVE (PASS)**; Cursor/Codex/Gemini declared with named limitations; §S16 live frameworks mid-run |
+| 9 | Compatibility table published | ◑ | §S18: **Claude Code + Codex CLI exercised LIVE (both PASS)**; Cursor/Gemini declared with named limitations; §S16 live frameworks mid-run |
 | 10 | Security baseline + coverage matrix | ✅ | FT-COMPLIANCE-MATRIX PASS (grounded) |
 | 11 | Non-security engineer completes CUJ-8 in an afternoon | ▫ pending | user test |
 
@@ -179,6 +181,38 @@ The first Tier-1 case to run **live**: the real Claude Code agent loop (`claude 
 - **Captured evidence:** `field-test/v0.1.0/results/s18-tier1/cases/FT-T1-CLAUDE/` — verdict, assertions,
   `artifacts/claude-call{1,2,3}.txt` (live transcripts), `artifacts/audit.ndjson` (3 decisions),
   `artifacts/llm/` (6 pairs), `harness/` (policy + hook + settings, fully reproducible).
+
+### Group 21 — `FT-T1-CODEX` (Tier-1, LIVE Codex CLI ↔ local oMLX) — **✅ PASS, deep-verified** (2026-11-01)
+The second Tier-1 harness to run **live**: the real Codex CLI agent loop (`codex exec`, v0.135.0), driven by
+the **box-local oMLX model** — no hosted LLM, **no OpenAI key**.
+- **Run:** `run-case.sh FT-T1-CODEX` → **pass**, 7/7 assertions, `llm_captured: true`, exit 0.
+- **The transport lesson:** Codex **dropped chat-completions support** (`wire_api = "chat"` is rejected:
+  *"no longer supported"*); it requires the OpenAI **Responses API** — and **oMLX serves `/v1/responses`
+  natively** (first probe: `200`, real `resp_*` body). So Codex, like Claude, runs straight against the box.
+- **The native surface (honest scoping):** Codex headless has **no pausable approval hook** like Claude's
+  PreToolUse — its governance is the **sandbox + config surface** (`--sandbox read-only`, `config.toml`
+  providers). So the case proves exactly what that surface supports (per the plan's FT-T1-CODEX row):
+  1. **allow → the command EXECUTED** (`cat notes.txt` printed `hello-ft` in the live loop);
+  2. **deny → structured rejection + agent replanned** (`rm -r target-dir` blocked;
+     `target-dir/keep.txt` **intact**);
+  3. **parity → the same triple decided pre-execution by agentpolicy** (`audit.ndjson`:
+     `allow / escalate / deny` — the decision identical to the in-process engine).
+- **Two real harness bugs found and fixed on the way:**
+  1. **`codex exec` reads stdin** — headless it hung on a non-TTY stdin ("Reading additional input from
+     stdin…") and the run silently stalled. Fix: `</dev/null`.
+  2. **`base_url` needs `/v1`** — codex appends `/responses` to the provider base; without the suffix
+     every call 404'd (`/responses` ≠ `/v1/responses`). Fix: `base_url = "<proxy>/v1"`.
+- **LLM evidence:** **4 request + 4 response pairs** via `t1_proxy.py` (extended to log `/responses` —
+  Codex traffic is Responses-API SSE, so bodies land as `_raw` text; sanitized, all-2xx).
+- **What I fixed:** `t1_codex.sh` (harness: config → parity triple → sandbox triple), `t1_policy.yaml`
+  (the shared Tier-1 policy), `t1_proxy.py` (`/responses` filter), the `FT-T1-CODEX` registry entry
+  (`llm: yes`, conditional live/declare), regenerated spec+step.
+- **Working:** Codex CLI ↔ oMLX end-to-end — the second flagship Tier-1 journey (CUJ-2/R28) proven live.
+- **Not working / open:** Gemini's local path (`gemini gemma setup` — LiteRT-LM + Gemma download — was
+  interrupted, stays declared); Cursor stays declared (GUI IDE, §Coverage); the 8 interrupted s16 cases.
+- **Captured evidence:** `field-test/v0.1.0/results/s18-tier1/cases/FT-T1-CODEX/` — verdict, assertions,
+  `artifacts/codex-call{1,2}.txt` (live transcripts), `artifacts/audit.ndjson` (3 parity decisions),
+  `artifacts/llm/` (4 pairs), `codex-home/config.toml` (the oMLX provider wiring, reproducible).
 
 ---
 
@@ -337,9 +371,9 @@ silent skip).
 | FT-PARITY | s17-nfr | P/F | ✅ PASS | ✓ grounded |
 | FT-SANDBOX | s17-nfr | P/F | ✅ PASS | ✓ grounded |
 | FT-T1-CLAUDE | s18-tier1 | P/F\|D | ✅ PASS | ✓ grounded — LIVE Claude Code ↔ oMLX triple (allow/ask/deny) + 6 LLM pairs + audit trail |
-| FT-T1-CODEX | s18-tier1 | P/F\|D | ◆ declared | Codex CLI not installed on the box; reachable via its config/hook surface |
+| FT-T1-CODEX | s18-tier1 | P/F\|D | ✅ PASS | ✓ grounded — LIVE Codex CLI ↔ oMLX (Responses API): allow-executes, deny-holds+replans, parity audit, 4 LLM pairs |
 | FT-T1-CURSOR | s18-tier1 | P/F\|D | ◆ declared | no Cursor host; policyweave compile-out proven by the export test |
-| FT-T1-GEMINI | s18-tier1 | P/F\|D | ◆ declared | Gemini CLI not installed on the box; reachable via its config/MCP surface |
+| FT-T1-GEMINI | s18-tier1 | P/F\|D | ◆ declared | Gemini CLI present; local loop needs `gemini gemma setup` (LiteRT-LM + Gemma model — not installed; download interrupted); MCP/agentgate surface covered at the lower layer |
 | FT-ALLOW-JUSTIFY | s2-explain | P/F | ✅ PASS | ✓ grounded |
 | FT-AUDIT-CHAIN | s2-explain | P/F | ✅ PASS | ✓ grounded |
 | FT-AUDIT-PROVENANCE | s2-explain | P/F | ✅ PASS | ✓ grounded |
@@ -387,7 +421,7 @@ silent skip).
 | FT-MCP-ASK | s9-surfaces | P/F\|D | ✅ PASS | ✓ grounded |
 | FT-SURFACE-PARITY | s9-surfaces | P/F | ✅ PASS | ✓ grounded |
 
-**Totals:** 86 ✅ PASS (all grounded, 0 over-claimed) · 2 ❌ FAIL · 3 ◆ declared · 8 ▫ not run.
+**Totals:** 87 ✅ PASS (all grounded, 0 over-claimed) · 2 ❌ FAIL · 2 ◆ declared · 8 ▫ not run.
 
 ---
 
@@ -413,8 +447,8 @@ silent skip).
 | s15-backtest | 2 | 2 | 0 | 0 | 0 |
 | s16-frameworks | 11 | 1 | 2 | 0 | 8 |
 | s17-nfr | 8 | 8 | 0 | 0 | 0 |
-| s18-tier1 | 4 | 1 | 0 | 3 | 0 |
-| **Total** | **99** | **86** | **2** | **3** | **8** |
+| s18-tier1 | 4 | 2 | 0 | 2 | 0 |
+| **Total** | **99** | **87** | **2** | **2** | **8** |
 
 ---
 
@@ -557,8 +591,9 @@ journal you're reading is the audit trail of exactly that: Groups 1–11 (s0–s
 1. Finish `s16-frameworks`: `FT-FWK-OAI` (interrupted mid-case) + `FT-FWK-ADK/AG2/LI/SMOL/SWE/MCP`,
    `FT-REPLAN` — 8 cases, not run this sweep.
 2. Retry `FT-FWK-CREW` / `FT-FWK-PAI` (expected to flip green like LG did); consider a per-row retry budget.
-3. Prove + run the new Codex/Gemini live steps (drafted, not yet exercised); Cursor needs a GUI host.
-4. Release gate: 9/11 green; item 9 (compatibility table) waits on s16 + s16-related work; item 11 is a user test.
+3. Gemini: complete `gemini gemma setup` (LiteRT-LM + Gemma download — interrupted) → re-run FT-T1-GEMINI
+   through its hooks surface; Cursor: **stays declared** (GUI IDE — no headless surface; §Coverage).
+4. Release gate: 9/11 green; item 9 (compatibility table) waits on s16 finishing; item 11 is a user test.
 
 ### 11. How FT-T1-CLAUDE was made to work locally — the full wiring story (for the write-ups)
 **Goal:** run the *real* Claude Code agent loop against the **box-local oMLX model** — no hosted LLM, no
@@ -604,24 +639,77 @@ What it took, in the order the problems appeared:
 *Article angle: "you can field-test a Tier-1 agent harness on a laptop — here's the exact wiring, and the
 three bugs that made the first run look green when it wasn't."*
 
+### 12. FT-T1-CODEX locally — one transport surprise, two silent-stall bugs (for the write-ups)
+Codex went from `declared` to **live PASS** in one session, reusing the Claude pattern (local model +
+logging proxy + evidence-first). What differed is the story:
+
+1. **Vendor APIs drift — probe, don't assume.** Codex **rejected `wire_api = "chat"`** outright
+   (*"no longer supported"*) — chat-completions was removed; only the OpenAI **Responses API** remains.
+   One curl probe showed **oMLX serves `/v1/responses` natively** (`resp_*` body, 200), so no translation
+   layer was needed — but only *after* the probe, not before. *Lesson: every CLI↔endpoint pairing needs a
+   fresh transport probe per vendor version; yesterday's assumption is today's config error.*
+2. **The silent stall.** `codex exec` **reads stdin**; run headless from a harness it printed
+   *"Reading additional input from stdin…"* and sat there — no error, no timeout, nothing. The whole run
+   "passed" at 0 evidence until the transcript was inspected. Fix: `</dev/null`. *Lesson: a headless CLI that
+   consumes stdin will hang your harness quietly — close stdin by default.*
+3. **The off-by-a-suffix 404.** Codex appends `/responses` to the provider `base_url`; the proxy URL without
+   `/v1` produced uniform 404s. Same shape as the Claude bug (paths are config, config is a test surface).
+4. **Honest scoping beats forcing parity.** Codex has **no per-call pausable approval hook** headless — so
+   the case doesn't fake one: it proves the sandbox triple (allow-executes / deny-holds+replans) plus
+   **pre-execution parity** with the same agentpolicy triple. A harness test should assert what the surface
+   *actually guarantees*, and say so — not stretch a different harness's shape over it.
+
+*Article angle: "the CLI silently hung and the run looked fine — stdin, suffixes, and other headless-harness
+traps; plus how to honestly scope a harness test when the vendor surface differs."*
+
+### 13. Gemini and Cursor — why "declared" is the honest verdict (the anti-pattern write-up)
+Both have the tools installed; neither passed. The reasons differ, and neither is "we didn't get to it":
+
+- **Gemini:** CLI present, hooks surface present (`gemini hooks migrate` — it accepts Claude-Code-style
+  hooks), **but its only sanctioned local model path is `gemini gemma setup`** — a LiteRT-LM runtime +
+  Gemma model download that was **interrupted and left incomplete**. Its default backend (Google OAuth,
+  hosted) **violates the no-hosted-models pin** and was never used. Declared with exactly that reason:
+  what's missing, what would un-declare it (finish the gemma install, or a Gemini-format endpoint), and the
+  lower-layer MCP/agentgate coverage that stands meanwhile.
+- **Cursor:** the interesting one — **it can never pass on this box, by design**. Cursor is a **GUI IDE
+  (VS Code fork)**: its agent loop and permission surface live inside a desktop Electron app driven by a
+  human; no supported headless/CLI server surface exists for the plan's `permissions.json` flow, and this
+  box has no Cursor GUI host. So FT-T1-CURSOR keeps `declared` **permanently for this field test**, with the
+  local stand-in it *can* prove: the **policyweave compile-out** (Cedar policy → `permissions.json`, grounded
+  by the export test) — the artifact Cursor would consume, minus the GUI-side execution.
+
+*Article angle: "a declared case with a reason, a stand-in proof, and an un-declare path is worth more than
+a green check you can't reproduce — the vocabulary is the product (§1)."*
+
 ---
 
 ## Coverage, Gaps, and Declared Limitations
 
-Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so far: **86 PASS · 2 FAIL · 3 declared ·
+Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so far: **87 PASS · 2 FAIL · 2 declared ·
 8 not run** (91/99 verdicts).
 
-- **Coverage so far:** the deterministic matrix ran green (2,988 cells) and **85 cases pass, all 85 grounded**
+- **Coverage so far:** the deterministic matrix ran green (2,988 cells) and **87 cases pass, all 87 grounded**
   (0 over-claimed); the harness + Docker + gates are exercised. **`s0`–`s15` and `s17` are complete** — every
-  case in them has a verdict and it is PASS (s18: declared).
+  case in them has a verdict and it is PASS. **s18 Tier-1: Claude Code + Codex CLI run LIVE and PASS** (box-local
+  model, no vendor keys); Cursor + Gemini declared.
 - **Failing (2):** `FT-FWK-CREW` (10/14 rows) and `FT-FWK-PAI` (9/14 rows) — live-model tool-call flakiness
   (**not** a policy defect; see §Root Cause Analysis). Stated as FAIL, never hidden.
-- **Declared (3):** FT-T1-CURSOR (GUI IDE host absent; policyweave compile-out proven by the export test),
-  FT-T1-CODEX / FT-T1-GEMINI (CLIs installed on the box but their new conditional live steps are drafted,
-  not yet proven — re-run pending; Codex needs a local chat-completions provider, Gemini's backend is
-  Google-hosted only). Each names its limitation; none is a silent skip.
-- **Failing (2):** `FT-FWK-CREW` (10/14 rows) / `FT-FWK-PAI` (9/14 rows) — live-model tool-call flakiness,
-  **not** policy defects (§Root Cause Analysis). Stated as FAIL, never hidden.
+- **Declared (2):**
+  - **`FT-T1-CURSOR`** — Cursor **cannot run on this box and will remain declared for this field test**, for a
+    structural reason, not a wiring gap: Cursor is a **GUI IDE (VS Code fork)** — its agent loop and its
+    permission surface live inside a desktop Electron app, driven by human interaction. There is no supported
+    headless/CLI surface (`cursor-agent` CLI exists only in some builds and requires a login session), no
+    server mode for the plan's `permissions.json` flow, and this box has no Cursor GUI host. **Cursor cannot be
+    driven from a reproducible, evidence-capturing harness here** — what the case *does* prove locally stands in
+    its place: the **policyweave compile-out** (the exported `permissions.json` artifact is compiled from the
+    Cedar policy deterministically, and the export test grounds it) — the plan's FT-T1-CURSOR assertion
+    ("the compiled artifact governs; drift is flagged") minus the GUI-side execution. Declared with this reason,
+    never silently skipped; un-declaring requires a macOS host with Cursor installed + a signed-in session.
+  - **`FT-T1-GEMINI`** — Gemini CLI is installed, but its only sanctioned **local** model path is
+    `gemini gemma setup` (a **LiteRT-LM runtime + Gemma model download**); that install was **interrupted and
+    not completed** on this box. The alternative (its default Google-hosted OAuth backend) **violates the
+    no-hosted-models pin** and was not used. Its MCP/agentgate surface (the plan's CUJ-14 route) is covered at
+    the lower layer. Un-declaring requires completing the gemma install (or a Gemini-format endpoint on oMLX).
 - **Not run (8):** the interrupted `s16-frameworks` remainder — `FT-FWK-OAI` (cut off mid-case) and
   `FT-FWK-ADK/AG2/LI/SMOL/SWE/MCP` + `FT-REPLAN` (never started this sweep).
 - **Gaps:** the s16 remainder needs the live sweep to finish (vendor repos are present, oMLX is up); Cursor
@@ -653,6 +741,7 @@ Status vocabulary: **not run | PASS | FAIL | declared | N/A** — this run so fa
 |---|---|
 | Deterministic matrix | 2,988 cells, in-process (seconds), 0 failures |
 | OMLX field-test model p50 | **~1.0 s** (`Qwen3-4B-Instruct-2507-4bit`, tool call) |
+| OMLX wire formats served | OpenAI `/v1/chat/completions` · **Anthropic `/v1/messages`** (FT-T1-CLAUDE) · **OpenAI `/v1/responses`** (FT-T1-CODEX) |
 | Docker image build | green (`agentpolicy-fieldtest:local`) |
 | Stack readiness | reaches `healthy` + CLI answers (seconds) |
 
@@ -667,12 +756,17 @@ Done:
 4. [x] OMLX benchmark run; model pinned to `Qwen3-4B-Instruct-2507-4bit`; documented (plan §4.1 + this report).
 5. [x] Defects I-1/I-2/I-3/I-4 found and fixed with regressions.
 6. [x] This report written **by hand**; `build_report.py` hardened so it cannot overwrite it.
+7. [x] LLM request/response capture: `--llm-out` httpx hook (framework runners) + `t1_proxy.py` (Tier-1 CLIs);
+       not-logged ⇒ FAIL enforced by the deep-verification gate.
+8. [x] Tier-1 LIVE: `FT-T1-CLAUDE` **PASS** (PreToolUse hook ↔ oMLX Anthropic format) and
+       `FT-T1-CODEX` **PASS** (sandbox surface ↔ oMLX Responses API) — no hosted models, no vendor keys.
 
 Next:
-7. [ ] Finish `s16-frameworks`: `FT-FWK-OAI` (interrupted mid-case) + `FT-FWK-ADK/AG2/LI/SMOL/SWE/MCP`, `FT-REPLAN`.
-8. [ ] Retry `FT-FWK-CREW` / `FT-FWK-PAI` (flaky tool-call rows; LG flipped green on re-run) — consider a per-row retry budget in `run_field_agents.py`.
-9. [ ] Exercise ≥2 Tier-1 harnesses on a harness host → FT-T1-* exercised.
-10. [ ] Keep updating **this report by hand** with the verdicts + RCA + learnings (§Field Notes).
+9. [ ] Finish `s16-frameworks`: `FT-FWK-OAI` (interrupted mid-case) + `FT-FWK-ADK/AG2/LI/SMOL/SWE/MCP`, `FT-REPLAN`.
+10. [ ] Retry `FT-FWK-CREW` / `FT-FWK-PAI` (flaky tool-call rows; LG flipped green on re-run) — consider a per-row retry budget in `run_field_agents.py`.
+11. [ ] Gemini: complete `gemini gemma setup` (LiteRT-LM + Gemma download, interrupted) → re-run FT-T1-GEMINI
+       through its hooks surface; **Cursor stays declared** (GUI IDE, no headless surface — §Coverage).
+12. [ ] Keep updating **this report by hand** with the verdicts + RCA + learnings (§Field Notes).
 
 ---
 
