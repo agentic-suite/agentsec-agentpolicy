@@ -1,0 +1,155 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "You are an agent. Your internal name is \"adk_01\".",
+        "role": "system"
+      },
+      {
+        "content": "In environment 'staging' with data_class 'restricted', call ONLY the tool `scn_decision-audit-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "role": "user"
+      },
+      {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"text\": \"Audit request for restricted data in staging environment.\"}",
+              "name": "scn_decision-audit-01"
+            },
+            "id": "call_f0b2a209",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "{\"result\": \"Audit request for restricted data in staging environment.\"}",
+        "role": "tool",
+        "tool_call_id": "call_f0b2a209"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "tools": [
+      {
+        "function": {
+          "description": "Get current weather for a city.",
+          "name": "get_weather",
+          "parameters": {
+            "properties": {
+              "city": {
+                "default": "San Francisco",
+                "title": "City",
+                "type": "string"
+              }
+            },
+            "title": "get_weatherParams",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_decision-allow-01",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "scn_decision-allow-01Params",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_decision-audit-01",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "scn_decision-audit-01Params",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_decision-escalate-01",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "scn_decision-escalate-01Params",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_decision-deny-01",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "scn_decision-deny-01Params",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_adversarial-injection-01",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "scn_adversarial-injection-01Params",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}

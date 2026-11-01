@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "The call to `scn_decision-audit-02` with the input \"staging environment with data_class internal\" has been successfully processed.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793561445,
+    "id": "chatcmpl-7ffcff26",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 30,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.77,
+      "generation_tokens_per_second": 38.77,
+      "input_tokens": 381,
+      "output_tokens": 30,
+      "prompt_eval_duration": 0.17,
+      "prompt_tokens": 381,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 728.05,
+      "time_to_first_token": 0.17,
+      "total_time": 0.95,
+      "total_tokens": 411
+    }
+  },
+  "status_code": 200
+}

@@ -1,0 +1,47 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"In environment 'test' with data_class 'public', call ONLY the tool `scn_adversarial-blank-env-09` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.\"}",
+                "name": "scn_adversarial_blank_env_09"
+              },
+              "id": "call_b8edf7c0",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793566618,
+    "id": "chatcmpl-cc7c89bd",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 88,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 2.31,
+      "generation_tokens_per_second": 38.07,
+      "input_tokens": 476,
+      "output_tokens": 88,
+      "prompt_eval_duration": 0.28,
+      "prompt_tokens": 476,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 788.56,
+      "time_to_first_token": 0.28,
+      "total_time": 2.59,
+      "total_tokens": 564
+    }
+  },
+  "status_code": 200
+}

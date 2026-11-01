@@ -1,0 +1,16 @@
+version: '1.0'
+fixtures:
+- name: query_database-0
+  tool: query_database
+  action: query
+  environment: staging
+  data_class: internal
+  agent_id: analyst
+  expect: audit
+- name: drop_database-1
+  tool: drop_database
+  action: drop
+  environment: production
+  data_class: customer_pii
+  agent_id: admin
+  expect: deny

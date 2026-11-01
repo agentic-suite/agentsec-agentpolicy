@@ -1,0 +1,11 @@
+if command -v claude >/dev/null 2>&1 && _ft_llm_reachable; then
+  ft_llm_up
+  ft_assert "t1-claude-triple" bash "$FT_DIR/t1_claude.sh" "$FT_CASE_DIR"
+  ft_assert "t1-claude-allow-executed" bash -c 'test -s "$FT_CASE_DIR/artifacts/claude-call1.txt" && echo EXECUTED'
+  ft_assert "t1-claude-ask-paused" bash -c 'test ! -e "$FT_CASE_DIR/harness/work/ft-t1-side-effect.txt" && echo PAUSED'
+  ft_assert "t1-claude-audit-trail" bash -c 'test "$(wc -l < "$FT_CASE_DIR/artifacts/audit.ndjson")" -ge 3 && echo AUDIT-OK'
+  ft_assert_llm_capture "t1-claude-captured"
+else
+  ft_declare "Claude Code CLI or local oMLX endpoint absent; reachable via the PreToolUse hook, covered at the agentgate/agentseatbelt lower layer" "PRD 19 Tier-1"
+fi
+ft_finalize

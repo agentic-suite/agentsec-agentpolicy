@@ -1,0 +1,23 @@
+# Incident replay for the exfil-sink rule class (M13 13.1 / CUJ-13).
+fixtures:
+  - name: exfil-send-email-restricted
+    tool: send_email
+    action: write
+    environment: production
+    data_class: restricted
+    agent_id: release-bot
+    expect: deny
+  - name: exfil-slack-pii
+    tool: send_slack
+    action: write
+    environment: production
+    data_class: customer_pii
+    agent_id: release-bot
+    expect: deny
+  - name: benign-internal-read
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    agent_id: debug-bot
+    expect: allow

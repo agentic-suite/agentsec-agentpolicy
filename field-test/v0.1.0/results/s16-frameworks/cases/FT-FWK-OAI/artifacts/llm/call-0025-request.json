@@ -1,0 +1,95 @@
+{
+  "body": {
+    "include": [],
+    "input": [
+      {
+        "content": "In environment 'production' with data_class 'customer_pii', call ONLY the tool `scn_decision-deny-02` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "role": "user"
+      }
+    ],
+    "instructions": "You are a helpful assistant with a few tools.",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "description": "Add two integers.",
+        "name": "add",
+        "parameters": {
+          "properties": {
+            "a": {
+              "title": "A",
+              "type": "integer"
+            },
+            "b": {
+              "title": "B",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "a",
+            "b"
+          ],
+          "title": "add_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "Get current weather for a city.",
+        "name": "get_weather",
+        "parameters": {
+          "properties": {
+            "city": {
+              "default": "San Francisco",
+              "title": "City",
+              "type": "string"
+            }
+          },
+          "title": "get_weather_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "Echo the input text back.",
+        "name": "echo",
+        "parameters": {
+          "properties": {
+            "text": {
+              "title": "Text",
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "title": "echo_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_decision-deny-02",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_decision-deny-02_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/responses"
+}

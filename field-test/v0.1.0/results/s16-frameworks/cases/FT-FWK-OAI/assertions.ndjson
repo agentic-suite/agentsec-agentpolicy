@@ -1,0 +1,4 @@
+{"name":"llm-endpoint-reachable","ok":true}
+{"name":"matrix-openai-agents","ok":true,"grounded":true,"cmd":"/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/run_field_agents.py openai-agents --plan B --llm-out /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-OAI/artifacts/llm"}
+{"name":"openai-agents-captured","ok":true,"grounded":true,"cmd":"capture: 34 request(s) + 34 response(s)"}
+{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}

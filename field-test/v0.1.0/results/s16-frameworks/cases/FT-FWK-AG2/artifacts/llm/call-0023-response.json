@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "The tool `scn_adversarial-nonstring-08` was called with invalid arguments, resulting in a denial due to malformed input. The input provided was not a valid non-blank string. Please ensure the input is a non-empty string before attempting the call.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793564935,
+    "id": "chatcmpl-8b10915e",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 55,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 1.47,
+      "generation_tokens_per_second": 37.52,
+      "input_tokens": 155,
+      "output_tokens": 55,
+      "prompt_eval_duration": 0.23,
+      "prompt_tokens": 155,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_tokens_per_second": 686.34,
+      "time_to_first_token": 0.23,
+      "total_time": 1.69,
+      "total_tokens": 210
+    }
+  },
+  "status_code": 200
+}

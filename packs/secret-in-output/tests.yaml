@@ -1,0 +1,22 @@
+fixtures:
+  - name: secret-read-redacted
+    tool: read_secrets
+    action: read
+    environment: production
+    data_class: restricted
+    agent_id: support-bot
+    expect: redact
+  - name: customer-pii-read-redacted
+    tool: query_logs
+    action: read
+    environment: production
+    data_class: customer_pii
+    agent_id: support-bot
+    expect: redact
+  - name: public-read-clean
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    agent_id: debug-bot
+    expect: allow

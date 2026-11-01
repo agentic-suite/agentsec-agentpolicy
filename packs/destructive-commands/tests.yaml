@@ -1,0 +1,29 @@
+fixtures:
+  - name: replit-prod-db-delete
+    tool: drop_database
+    action: delete
+    environment: production
+    data_class: customer_pii
+    agent_id: release-bot
+    expect: deny
+  - name: prod-force-push
+    tool: git_push
+    action: force_push
+    environment: production
+    data_class: internal
+    agent_id: release-bot
+    expect: deny
+  - name: staging-delete-allowed-by-base
+    tool: delete_file
+    action: delete
+    environment: staging
+    data_class: internal
+    agent_id: dev-bot
+    expect: deny
+  - name: staging-read-unaffected
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    agent_id: dev-bot
+    expect: allow

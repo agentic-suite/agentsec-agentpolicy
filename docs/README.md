@@ -26,7 +26,7 @@ actions: **allow / deny / ask / rate-limit / redact**. Part of the [agentic-suit
 | [tutorials/](tutorials/) | Hands-on guides |
 | [guides/](guides/) | User guide |
 | [compliance/](compliance/) | OWASP/ATLAS/NIST/EU/OpenSSF mappings |
-| [adapters/](adapters/) | Harness adapters (Claude Code, Cursor, Codex CLI, Gemini CLI, Copilot, MCP clients) |
+| [adapters/](adapters/) | Harness adapters (Claude Code, Codex CLI, Copilot, MCP clients; LangGraph, PydanticAI, CrewAI & other frameworks in-loop) |
 | [examples/](examples/) · [articles/](articles/) · [skills/](skills/) | Samples, posts, the read-only policy skill |
 | [testing/](testing/) | Test plans (unit, conformance, field-test agents, docker) |
 

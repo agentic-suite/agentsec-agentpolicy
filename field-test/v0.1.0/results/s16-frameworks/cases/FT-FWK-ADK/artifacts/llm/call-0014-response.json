@@ -1,0 +1,47 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"Allow access to staging environment with internal data class.\"}",
+                "name": "scn_decision-allow-05"
+              },
+              "id": "call_12f956a9",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793565885,
+    "id": "chatcmpl-9603a36c",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 34,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.91,
+      "generation_tokens_per_second": 37.56,
+      "input_tokens": 308,
+      "output_tokens": 34,
+      "prompt_eval_duration": 0.21,
+      "prompt_tokens": 308,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 251.98,
+      "time_to_first_token": 0.21,
+      "total_time": 1.11,
+      "total_tokens": 342
+    }
+  },
+  "status_code": 200
+}

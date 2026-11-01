@@ -1,0 +1,11 @@
+{
+  "body": {
+    "error": {
+      "code": null,
+      "message": "Model 'Qwen3-4B-Instruct-2507-4bit' is busy; cannot start work while unload is pending until active requests finish or are aborted",
+      "param": null,
+      "type": "invalid_request_error"
+    }
+  },
+  "status_code": 409
+}

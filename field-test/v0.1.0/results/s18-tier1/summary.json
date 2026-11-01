@@ -1,0 +1,138 @@
+{
+  "cases": [
+    {
+      "assertions": [
+        {
+          "limitation": "Claude Code not installed on the box; reachable via the PreToolUse hook, covered at the agentgate/agentseatbelt lower layer until exercised on a harness host",
+          "name": "declared",
+          "ok": true,
+          "release_gate_item": "PRD 19 Tier-1"
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 0,
+      "assertions_total": 1,
+      "class": "P/F|D",
+      "declared": true,
+      "grounded": false,
+      "id": "FT-T1-CLAUDE",
+      "limitation": "Claude Code not installed on the box; reachable via the PreToolUse hook, covered at the agentgate/agentseatbelt lower layer until exercised on a harness host",
+      "llm_captured": false,
+      "release_gate_item": "PRD 19 Tier-1",
+      "run_id": "s18-tier1",
+      "status": "declared"
+    },
+    {
+      "assertions": [
+        {
+          "limitation": "Codex CLI not installed on the box; reachable via its config/hook surface",
+          "name": "declared",
+          "ok": true,
+          "release_gate_item": "PRD 19 Tier-1"
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 0,
+      "assertions_total": 1,
+      "class": "P/F|D",
+      "declared": true,
+      "grounded": false,
+      "id": "FT-T1-CODEX",
+      "limitation": "Codex CLI not installed on the box; reachable via its config/hook surface",
+      "llm_captured": false,
+      "release_gate_item": "PRD 19 Tier-1",
+      "run_id": "s18-tier1",
+      "status": "declared"
+    },
+    {
+      "assertions": [
+        {
+          "cmd": "/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/fieldtest/run_pytest.py tests/test_m9_lint_export.py",
+          "grounded": true,
+          "name": "export-compile",
+          "ok": true
+        },
+        {
+          "limitation": "no Cursor host on the box; policyweave compile-out proven by the export test, harness wire-up declared",
+          "name": "declared",
+          "ok": true,
+          "release_gate_item": "PRD 19 Tier-1"
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 1,
+      "assertions_total": 2,
+      "class": "P/F|D",
+      "declared": true,
+      "grounded": true,
+      "id": "FT-T1-CURSOR",
+      "limitation": "no Cursor host on the box; policyweave compile-out proven by the export test, harness wire-up declared",
+      "llm_captured": false,
+      "release_gate_item": "PRD 19 Tier-1",
+      "run_id": "s18-tier1",
+      "status": "declared"
+    },
+    {
+      "assertions": [
+        {
+          "limitation": "Gemini CLI not installed on the box; reachable via its config/MCP surface",
+          "name": "declared",
+          "ok": true,
+          "release_gate_item": "PRD 19 Tier-1"
+        },
+        {
+          "cmd": "scan artifacts for secrets",
+          "grounded": true,
+          "name": "no-secret-leak",
+          "ok": true
+        }
+      ],
+      "assertions_grounded": 0,
+      "assertions_total": 1,
+      "class": "P/F|D",
+      "declared": true,
+      "grounded": false,
+      "id": "FT-T1-GEMINI",
+      "limitation": "Gemini CLI not installed on the box; reachable via its config/MCP surface",
+      "llm_captured": false,
+      "release_gate_item": "PRD 19 Tier-1",
+      "run_id": "s18-tier1",
+      "status": "declared"
+    }
+  ],
+  "env": {
+    "arch": "arm64",
+    "compose": "5.6.1",
+    "docker": "Docker version 29.5.2, build 79eb04c7d8",
+    "llm_base_url": "http://host.docker.internal:8000/v1",
+    "llm_model": "Qwen3.5-4B-4bit",
+    "os": "Darwin",
+    "python": "Python-3.13.14",
+    "run_id": "s18-tier1",
+    "version": "v0.1.0"
+  },
+  "generated_at": "2026-11-01T19:30:25.727049+00:00",
+  "green": true,
+  "run_id": "s18-tier1",
+  "totals": {
+    "declared": 4,
+    "fail": 0,
+    "over_claimed": 0,
+    "pass": 0
+  }
+}

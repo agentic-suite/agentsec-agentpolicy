@@ -1,0 +1,110 @@
+{
+  "body": {
+    "created_at": 1793564689,
+    "error": null,
+    "id": "resp_ff4e4d47bacb4aa29ae2679a",
+    "incomplete_details": null,
+    "max_output_tokens": null,
+    "metadata": {},
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "response",
+    "output": [
+      {
+        "arguments": null,
+        "call_id": null,
+        "content": [
+          {
+            "annotations": [],
+            "text": "The operation to delete an instance in the production environment with internal data is blocked due to security and risk policies. This is a protective measure because deletion of sensitive data in production has irreversible side effects and poses a high risk. \n\n**Recommendation:**  \n- Use a read-only alternative to inspect or analyze the data.  \n- Consider moving the operation to a lower-risk environment (e.g., staging or development) for further processing.  \n- Consult with relevant stakeholders or data governance teams before proceeding.  \n\nLet me know if you'd like assistance with another action or tool.",
+            "type": "output_text"
+          }
+        ],
+        "id": "msg_9fc8c97f8a90437ab16807eb",
+        "name": null,
+        "role": "assistant",
+        "status": "completed",
+        "summary": null,
+        "type": "message"
+      }
+    ],
+    "previous_response_id": null,
+    "status": "completed",
+    "temperature": 0.7,
+    "text": null,
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "description": "Get current weather for a city.",
+        "name": "get_weather",
+        "parameters": {
+          "properties": {
+            "city": {
+              "default": "San Francisco",
+              "title": "City",
+              "type": "string"
+            }
+          },
+          "title": "get_weather_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "Add two integers.",
+        "name": "add",
+        "parameters": {
+          "properties": {
+            "a": {
+              "title": "A",
+              "type": "integer"
+            },
+            "b": {
+              "title": "B",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "a",
+            "b"
+          ],
+          "title": "add_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_decision-deny-05",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_decision-deny-05_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      }
+    ],
+    "top_p": 0.8,
+    "truncation": null,
+    "usage": {
+      "input_tokens": 510,
+      "input_tokens_details": {
+        "cached_tokens": 256
+      },
+      "output_tokens": 114,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 624
+    }
+  },
+  "status_code": 200
+}

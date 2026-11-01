@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "In environment 'production' with data_class 'internal', call ONLY the tool `scn_decision-escalate-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793566613,
+    "id": "chatcmpl-36adbe29",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 44,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 1.26,
+      "generation_tokens_per_second": 34.93,
+      "input_tokens": 460,
+      "output_tokens": 44,
+      "prompt_eval_duration": 0.95,
+      "prompt_tokens": 460,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 214.03,
+      "time_to_first_token": 0.95,
+      "total_time": 2.21,
+      "total_tokens": 504
+    }
+  },
+  "status_code": 200
+}

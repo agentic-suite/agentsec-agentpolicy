@@ -1,0 +1,115 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "You are a helpful assistant with a few tools.",
+        "role": "system"
+      },
+      {
+        "content": "In environment 'development' with data_class 'public', call ONLY the tool `scn_adversarial-blank-tool-07` with valid arguments, then answer. Do not call any other tool. Do not skip. The tool name may contain intentional whitespace or unicode \u2014 call it exactly by name.",
+        "name": "user",
+        "role": "user"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "stream": false,
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "function": {
+          "description": "Add two integers.",
+          "name": "add",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "a": {
+                "description": "a",
+                "title": "A",
+                "type": "integer"
+              },
+              "b": {
+                "description": "b",
+                "title": "B",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "a",
+              "b"
+            ],
+            "type": "object"
+          },
+          "strict": false
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Get current weather for a city.",
+          "name": "get_weather",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "city": {
+                "default": "San Francisco",
+                "description": "city",
+                "title": "City",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          },
+          "strict": false
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "echo",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "description": "text",
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "type": "object"
+          },
+          "strict": false
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_adversarial-blank-tool-07",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "description": "text",
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "type": "object"
+          },
+          "strict": false
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}

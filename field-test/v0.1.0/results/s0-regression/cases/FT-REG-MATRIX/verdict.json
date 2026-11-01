@@ -1,0 +1,13 @@
+{
+  "id": "FT-REG-MATRIX",
+  "status": "pass",
+  "class": "P/F",
+  "declared": false,
+  "grounded": true,
+  "assertions_total": 1,
+  "assertions_grounded": 1,
+  "llm_captured": false,
+  "run_id": "s0-regression",
+  "assertions": [{"name":"matrix","ok":true,"grounded":true,"cmd":"/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/agentpolicy field-test --agents all --matrix both --report none"},{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}
+]
+}

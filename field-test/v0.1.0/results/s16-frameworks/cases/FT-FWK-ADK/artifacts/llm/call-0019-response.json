@@ -1,0 +1,11 @@
+{
+  "body": {
+    "error": {
+      "code": null,
+      "message": "Request aborted because model 'Qwen3-4B-Instruct-2507-4bit' is being unloaded",
+      "param": null,
+      "type": "invalid_request_error"
+    }
+  },
+  "status_code": 409
+}

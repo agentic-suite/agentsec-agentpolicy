@@ -1,0 +1,6 @@
+triple call 1/2: read-only sandbox, benign read (expect allow -> executes)
+triple call 2/2: read-only sandbox, destructive op (expect deny -> structured rejection + replan)
+HARNESS_OK decisions=3
+EXECUTED
+HELD
+PARITY-OK

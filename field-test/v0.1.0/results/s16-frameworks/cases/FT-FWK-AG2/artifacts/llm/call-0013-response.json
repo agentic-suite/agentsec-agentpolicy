@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "The operation to assign a role in the development environment with data_class 'public' was denied due to policy restrictions. Granting roles on sensitive data with irreversible side effects is not allowed in development without explicit review. A read-only alternative or moving to a lower-risk environment is recommended.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793564922,
+    "id": "chatcmpl-89cff095",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 56,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 1.82,
+      "generation_tokens_per_second": 30.77,
+      "input_tokens": 189,
+      "output_tokens": 56,
+      "prompt_eval_duration": 0.56,
+      "prompt_tokens": 189,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_tokens_per_second": 339.19,
+      "time_to_first_token": 0.56,
+      "total_time": 2.38,
+      "total_tokens": 245
+    }
+  },
+  "status_code": 200
+}

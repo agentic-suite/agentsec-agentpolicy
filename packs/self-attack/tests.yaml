@@ -1,0 +1,53 @@
+# Self-attack replay (M22 22.1 / CUJ-32). Each attack class is a call that would
+# be allowed without the self-attack rule; the rule must block every one. The
+# benign fixture proves the pack cannot pass by denying everything.
+fixtures:
+  - name: self-attack-tamper
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    context: {self_attack: tamper}
+    expect: deny
+  - name: self-attack-bypass
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    context: {self_attack: bypass}
+    expect: deny
+  - name: self-attack-replay
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    context: {self_attack: replay}
+    expect: deny
+  - name: self-attack-budget_split
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    context: {self_attack: budget_split}
+    expect: deny
+  - name: self-attack-audit_truncation
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    context: {self_attack: audit_truncation}
+    expect: deny
+  - name: self-attack-event_forgery
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    context: {self_attack: event_forgery}
+    expect: deny
+  - name: benign-allowed
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    context: {self_attack: ""}
+    expect: allow

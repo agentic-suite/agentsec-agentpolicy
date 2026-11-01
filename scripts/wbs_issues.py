@@ -18,7 +18,6 @@ import json
 import os
 import re
 import subprocess
-import sys
 
 REPO = "agentic-suite/agentsec-agentpolicy"
 BRANCH = "main"
@@ -176,7 +175,7 @@ MILESTONES = {
              what="A Docker field-test harness driving a demo enforcer + the system-under-test, exercising every CUJ-1..33 across frameworks, with an honest published report.",
              how="Build the harness; the scenario matrix; framework coverage; the adversarial + self-attack runs; publish the report; fix every harness defect with a regression.",
              data="Field-test report; captured request/response pairs.", security="An honest report — misses named, not-tested list empty.",
-             edge="A P0 CUJ miss blocks the release.", prds=[4, 7, 19], deps="M0–M23"),
+             edge="A P0 CUJ miss blocks the release.", prds=[4, 7, 19], deps="M0-M23"),
     25: dict(name="Release readiness", part="wbs-v0.1.0-part13-fieldtest-release.md",
              why="Ship it: signed artifacts, evidence, audit, and the tag.",
              what="Release tooling (SBOM, SHA256SUMS, SLSA provenance), first-run evidence, security audit, the compliance/standards matrix, release notes, the tag + PyPI publish, and making the predecessor private.",
@@ -187,11 +186,11 @@ MILESTONES = {
 
 
 def run(args):
-    return subprocess.run(args, capture_output=True, text=True)
+    return subprocess.run(args, capture_output=True, text=True)  # noqa: S603 — fixed argv to `gh`
 
 
 def gh_json(args):
-    r = run(["gh"] + args)
+    r = run(["gh", *args])
     if r.returncode != 0:
         raise SystemExit(f"gh failed: {args}\n{r.stderr}")
     return json.loads(r.stdout or "null")

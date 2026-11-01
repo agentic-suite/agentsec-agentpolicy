@@ -1,0 +1,104 @@
+{
+  "body": {
+    "created_at": 1793564671,
+    "error": null,
+    "id": "resp_b2b14fcfa01c4db79e89285a",
+    "incomplete_details": null,
+    "max_output_tokens": null,
+    "metadata": {},
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "response",
+    "output": [
+      {
+        "arguments": null,
+        "call_id": null,
+        "content": [
+          {
+            "annotations": [],
+            "text": "",
+            "type": "output_text"
+          }
+        ],
+        "id": "msg_4d726f84c2c6478997c4702d",
+        "name": null,
+        "role": "assistant",
+        "status": "completed",
+        "summary": null,
+        "type": "message"
+      },
+      {
+        "arguments": "{\"kwargs\": {\"environment\": \"production\", \"data_class\": \"restricted\"}}",
+        "call_id": "call_367033d5",
+        "content": null,
+        "id": "fc_2ae8b790",
+        "name": "scn_decision-escalate-05",
+        "role": null,
+        "status": "completed",
+        "summary": null,
+        "type": "function_call"
+      }
+    ],
+    "previous_response_id": null,
+    "status": "completed",
+    "temperature": 0.7,
+    "text": null,
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "description": "Add two integers.",
+        "name": "add",
+        "parameters": {
+          "properties": {
+            "a": {
+              "title": "A",
+              "type": "integer"
+            },
+            "b": {
+              "title": "B",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "a",
+            "b"
+          ],
+          "title": "add_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      },
+      {
+        "description": "",
+        "name": "scn_decision-escalate-05",
+        "parameters": {
+          "properties": {
+            "kwargs": {
+              "additionalProperties": true,
+              "title": "Kwargs",
+              "type": "object"
+            }
+          },
+          "title": "scn_decision-escalate-05_args",
+          "type": "object"
+        },
+        "strict": false,
+        "type": "function"
+      }
+    ],
+    "top_p": 0.8,
+    "truncation": null,
+    "usage": {
+      "input_tokens": 317,
+      "input_tokens_details": {
+        "cached_tokens": 256
+      },
+      "output_tokens": 37,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 354
+    }
+  },
+  "status_code": 200
+}

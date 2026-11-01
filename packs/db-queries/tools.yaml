@@ -1,0 +1,23 @@
+version: '1.0'
+posture: balanced
+environments:
+  development:
+    criticality: 0.0
+  staging:
+    criticality: 0.1
+  production:
+    criticality: 0.7
+data_classes:
+  public:
+    sensitivity: 0.0
+  internal:
+    sensitivity: 0.2
+  restricted:
+    sensitivity: 0.5
+  customer_pii:
+    sensitivity: 1.0
+rules:
+- decision: deny
+  action: drop
+  environment: production
+  reason: DROP queries are never allowed in production.

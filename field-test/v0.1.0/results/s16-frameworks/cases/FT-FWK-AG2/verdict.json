@@ -1,0 +1,13 @@
+{
+  "id": "FT-FWK-AG2",
+  "status": "pass",
+  "class": "P/F|D",
+  "declared": false,
+  "grounded": true,
+  "assertions_total": 3,
+  "assertions_grounded": 2,
+  "llm_captured": true,
+  "run_id": "s16-frameworks",
+  "assertions": [{"name":"llm-endpoint-reachable","ok":true},{"name":"matrix-autogen","ok":true,"grounded":true,"cmd":"/Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/bin/python /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/scripts/run_field_agents.py autogen --plan B --llm-out /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/field-test/v0.1.0/results/s16-frameworks/cases/FT-FWK-AG2/artifacts/llm"},{"name":"autogen-captured","ok":true,"grounded":true,"cmd":"capture: 23 request(s) + 23 response(s)"},{"name":"no-secret-leak","ok":true,"grounded":true,"cmd":"scan artifacts for secrets"}
+]
+}

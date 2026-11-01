@@ -1,0 +1,81 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "In environment 'staging' with data_class 'restricted', call ONLY the tool `scn_decision-audit-01` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "role": "user"
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"text\": \"staging environment, data_class: restricted\"}",
+              "name": "scn_decision-audit-01"
+            },
+            "id": "call_947c1804",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "staging environment, data_class: restricted",
+        "role": "tool",
+        "tool_call_id": "call_947c1804"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "stream": false,
+    "temperature": 0.0,
+    "tools": [
+      {
+        "function": {
+          "description": "Return recent log entries.",
+          "name": "query_logs",
+          "parameters": {
+            "properties": {
+              "limit": {
+                "default": 10,
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Get the current date and time.",
+          "name": "get_current_time",
+          "parameters": {
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_decision-audit-01",
+          "parameters": {
+            "properties": {
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "type": "object"
+          }
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}

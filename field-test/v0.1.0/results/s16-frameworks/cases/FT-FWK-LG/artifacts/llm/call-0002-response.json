@@ -1,0 +1,47 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"This is a test escalation in production environment with internal data.\"}",
+                "name": "scn_decision-escalate-01"
+              },
+              "id": "call_fd4cef78",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793561434,
+    "id": "chatcmpl-66a5c68a",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 37,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 1.86,
+      "generation_tokens_per_second": 19.94,
+      "input_tokens": 565,
+      "output_tokens": 37,
+      "prompt_eval_duration": 0.48,
+      "prompt_tokens": 565,
+      "prompt_tokens_details": {
+        "cached_tokens": 512
+      },
+      "prompt_tokens_per_second": 110.91,
+      "time_to_first_token": 0.48,
+      "total_time": 2.33,
+      "total_tokens": 602
+    }
+  },
+  "status_code": 200
+}

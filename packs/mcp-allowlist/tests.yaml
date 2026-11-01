@@ -1,0 +1,21 @@
+fixtures:
+  - name: shadow-tool-unlisted-denied
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    agent_id: debug-bot
+    context:
+      tool_category: mcp
+      mcp_listed: false
+    expect: deny
+  - name: listed-mcp-tool-allowed
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    agent_id: debug-bot
+    context:
+      tool_category: mcp
+      mcp_listed: true
+    expect: allow

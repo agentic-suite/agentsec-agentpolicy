@@ -1,0 +1,47 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"In environment 'development' with data_class 'public', call ONLY the tool `scn_decision-allow-01` with valid arguments, then answer. Do not call any other tool. Do not skip.\"}",
+                "name": "scn_decision-allow-01"
+              },
+              "id": "call_7bd5a42e",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793566481,
+    "id": "chatcmpl-d3dbde74",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 67,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 2.16,
+      "generation_tokens_per_second": 31.09,
+      "input_tokens": 1274,
+      "output_tokens": 67,
+      "prompt_eval_duration": 0.33,
+      "prompt_tokens": 1274,
+      "prompt_tokens_details": {
+        "cached_tokens": 1024
+      },
+      "prompt_tokens_per_second": 760.39,
+      "time_to_first_token": 0.33,
+      "total_time": 2.48,
+      "total_tokens": 1341
+    }
+  },
+  "status_code": 200
+}

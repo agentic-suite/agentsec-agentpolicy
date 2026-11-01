@@ -11,7 +11,7 @@ the field test; the release carries an honest compatibility table.
 
 | Layer | How agentpolicy reaches it | Effort to support |
 |---|---|---|
-| **Harness hooks** (Claude Code `PreToolUse`, Cursor, Codex CLI, Gemini CLI) | The harness hook calls agentpolicy before the tool runs | Harness-agnostic — any hook can call the PDP |
+| **Harness hooks** (e.g. Claude Code `PreToolUse`, Codex CLI config) | The harness hook calls agentpolicy before the tool runs | Harness-agnostic — any hook can call the PDP |
 | **MCP proxy** (agentgate) | agentgate asks agentpolicy per `tools/call` | Protocol-layer, harness-agnostic |
 | **Confinement** (agentseatbelt/agentkernel) | The confinement layer asks before allowing a syscall/file/net action | Below-process, harness-agnostic |
 | **Credential issuance** (agentkeys) | Issuance asks whether the scope is allowed | Below-harness, harness-agnostic |
@@ -25,15 +25,17 @@ harness-compatibility mandate is satisfied by construction ([research matrix: 00
 
 | Harness | How agentpolicy is reached | v0.1.0 | v0.3.0 |
 |---|---|---|---|
-| **Claude Code** | `PreToolUse` hook → `agentpolicy evaluate` | ✅ (first adapter) | ✅ |
-| **Cursor** | hook / agentgate; `permissions.json` compiled by policyweave | ✅ | ✅ |
-| **GitHub Copilot** (agent mode) | weakest hook surface → covered via enterprise/process layer (agentseatbelt) | documented lower-layer | ✅ (documented) |
-| **OpenAI Codex CLI** | config/hook surface; agentgate | ✅ | ✅ |
-| **Gemini CLI** | config/hook surface; MCP-native via agentgate | ✅ | ✅ |
+| **Claude Code** | `PreToolUse` hook → `agentpolicy evaluate` | ✅ (first adapter; **field-tested live**) | ✅ |
+| **OpenAI Codex CLI** | config surface (`config.toml` provider → oMLX) + sandbox; agentgate | ✅ (**field-tested live**) | ✅ |
+| **GitHub Copilot** (agent mode) | weakest hook surface → covered via enterprise/process layer (agentseatbelt) | documented lower-layer (not field-tested) | ✅ (documented) |
+| **Cursor** | — | **not supported** (GUI IDE; no headless/evidence-capturing test surface) | ✗ (revisit if a headless surface ships) |
+| **Gemini CLI** | — | **not supported** (gemma local routing is classifier-only; the main loop requires Google Code Assist OAuth, sunset for this CLI build — `IneligibleTierError`) | ✗ (revisit if the CLI gate lifts or a local main-loop route ships) |
 
-> **Requirement:** all 5 Tier-1 harnesses are reachable at v0.1.0 through some enforcement point; **≥2 are
-> exercised end-to-end** in the field test. Copilot's closed hook surface is covered at a lower layer and
-> documented honestly.
+> **Requirement:** the **shipped** Tier-1 harnesses (Claude Code, Codex CLI) are reachable **and field-tested
+> end-to-end** at v0.1.0; Copilot's closed hook surface is covered at a lower layer and documented honestly.
+> Cursor and Gemini CLI are **explicitly not claimed as supported at v0.1.0** — declaring support without a
+> testable surface on the field-test box would be an unsupported claim; they are listed as not supported with
+> their reasons (see the field-test report, §Small-Group Run Journal Groups 20–22).
 
 ## Tier-2 — Agent frameworks
 
@@ -66,6 +68,6 @@ harness-compatibility mandate is satisfied by construction ([research matrix: 00
 ## The portability angle (agentpolicy × policyweave)
 
 agentpolicy is the **Cedar source of truth**; **policyweave** compiles one policy into each harness's native
-format (Claude Code rules, Cursor `permissions.json`, Codex/Gemini config). This closes the "policy portability
+format (Claude Code rules, Codex config). This closes the "policy portability
 across harnesses" whitespace (coverage-map row #14): multi-harness orgs maintain **one** policy, not N rule
 files. agentpolicy decides; policyweave distributes; the enforcers enforce.

@@ -1,0 +1,55 @@
+# Field-test compose stack — the field-test environment for agentpolicy.
+#
+# agentpolicy ships a CLI + a small HTTP/MCP server. This overlay *is* the whole
+# field-test stack: the agentpolicy CLI/SDK image (the system under test), used
+# for the Docker-required cases (server smoke, MCP ask path, container health).
+# There is **no LLM container** — the LLM is the local **oMLX** server on the
+# host (OpenAI-compatible), reached from the container via
+# `host.docker.internal:8000/v1`.
+#
+#   docker compose -f scripts/fieldtest/docker-compose.fieldtest.yml up -d agentpolicy
+#
+# The image is built from the repo root (scripts/fieldtest/agentpolicy.Dockerfile).
+# Results are written to field-test/<FT_VERSION>/results/<run-id>/ by the run
+# scripts, never into a container volume.
+#
+# `scripts/fieldtest/` is bind-mounted at /ft/scripts and the fixtures at
+# /ft/fixtures so cases can run helper scripts inside the container without
+# rebuilding the image.
+
+services:
+  agentpolicy:
+    build:
+      # Context is the repo root; --project-directory pins this (see lib.sh).
+      context: .
+      dockerfile: scripts/fieldtest/agentpolicy.Dockerfile
+    image: agentpolicy-fieldtest:${FT_TAG:-local}
+    environment:
+      AGENTPOLICY_LOG_LEVEL: info
+      # The LLM is the host oMLX server (OpenAI-compatible), reached via
+      # host.docker.internal. Used by the field agent matrix (Track B).
+      AGENTPOLICY_FIELD_ENDPOINT: ${FT_LLM_BASE_URL:-http://host.docker.internal:8000/v1}
+      AGENTPOLICY_FIELD_MODEL: ${FT_LLM_MODEL:-Qwen3-4B-Instruct-2507-4bit}
+      OPENAI_API_KEY: ${FT_LLM_API_KEY:-omlx-test}
+      OPENAI_BASE_URL: ${FT_LLM_BASE_URL:-http://host.docker.internal:8000/v1}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      # The SUT is "online" only when the CLI answers.
+      test: ["CMD", "agentpolicy", "--version"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 5s
+    volumes:
+      - ftdata:/data/agentpolicy
+      - ./scripts/fieldtest:/ft/scripts:ro
+      - ./scripts/fieldtest/fixtures:/ft/fixtures:ro
+      # The shipped packs + the field scenario matrix, so in-container runs use
+      # the real definitions, never a copy.
+      - ./packs:/ft/packs:ro
+      - ./tests/field:/ft/tests/field:ro
+    command: ["sleep", "infinity"]
+
+volumes:
+  ftdata:

@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "The decision is allowed in the development environment with internal data class.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793561438,
+    "id": "chatcmpl-b4c95efe",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 13,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.35,
+      "generation_tokens_per_second": 37.32,
+      "input_tokens": 387,
+      "output_tokens": 13,
+      "prompt_eval_duration": 0.21,
+      "prompt_tokens": 387,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 609.54,
+      "time_to_first_token": 0.21,
+      "total_time": 0.56,
+      "total_tokens": 400
+    }
+  },
+  "status_code": 200
+}

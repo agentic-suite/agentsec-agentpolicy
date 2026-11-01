@@ -109,8 +109,248 @@ process items per milestone (`.CI` commit, `.W` WBS checkpoint) are tracked here
 
 ## Progress
 
-**⬜ Not started.** M0 opens the build. As milestones close, dated checkpoints (commit refs + gate result) are
-appended here — matching agentwatch's / agentdrill's per-milestone checkpoints.
+**M0 — Port the predecessor codebase — ✅ closed (2026-10-30).** Branch `feat-0.1.0`.
+
+- **Commits:** `c760f68` (0.1/0.2/0.4) · `8428a74` (0.5) · `354d069` (0.6–0.CR + gates).
+- **Ported:** `agent-tooltrust` (MIT; source SHA `31655747ee4290b80adb04b2a300dd991b80e018`) → `agentpolicy`;
+  namespace / CLI / dist renamed; project version reset to `0.1.0`.
+- **Gate:** suite **1084 passed, 18 skipped** · coverage **95.7%** (`fail_under = 95`) · `ruff` zero ·
+  `mypy --strict` clean. Docker CI tests verified locally (16 passed).
+- **Items closed:** 0.D0 · 0.1–0.7 · 0.T · 0.C · 0.L · 0.CR · 0.D; 0.CI / 0.W recorded here.
+- **Noted (not an M0 defect):** the shipped `packs/*/tools.yaml` use the predecessor's older schema and fail
+  `PolicyDocument` validation — pre-existing upstream; **M4** owns pack content.
+
+**M1 — Foundation & identity — ✅ closed (2026-10-30).**
+
+- **Commit:** `91ba95c`. Identity / CLI / config / loader / `check` / `doctor`; reserved exit codes (0/1/2) with
+  fail-closed `ConfigError` (exit 2); `make setup`/`cov`/`lint`/`typecheck`; CI coverage gate (`fail_under = 95`);
+  foundation design + CLI reference docs.
+- **Gate:** suite **1105 passed** · coverage **95.8%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 1.D0 · 1.1–1.7 · 1.T · 1.C · 1.L · 1.CR · 1.D.
+- **Noted:** the v0.1.0 **Cedar** policy language is introduced by **M2**; M1 delivers the
+  loader/validator/`check` *framework*.
+
+**M2 — Cedar decision core (five outcomes) — ✅ closed (2026-10-30).**
+
+- **Commit:** `2ad5a09`. `src/agentpolicy/cedar/` — Cedar PDP (`cedarpy`), five-outcome shaper, mandatory
+  human-gate class, PRD 15/17 decision model (`Decision`/`Factor`/`Explanation`), sub-100 ms p99 latency;
+  `cedarpy` added as a dependency.
+- **Gate:** suite **1129 passed** · coverage **95.8%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 2.D0 · 2.1–2.5 · 2.T · 2.C · 2.L · 2.CR · 2.D.
+
+**M3 — Action normalization, taxonomy & contextual model — ✅ closed (2026-10-30).**
+
+- **Commit:** `65a1391`. `agentpolicy/canonical.py` (one canonical action → the Cedar request); tool-name
+  folding, dispatcher-bypass safety (`git push --force` → `force_push` denied), the 13-domain taxonomy, and the
+  contextual matrix.
+- **Gate:** suite **1141 passed** · coverage **95.8%** · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 3.D0 · 3.1–3.5 · 3.T · 3.C · 3.L · 3.CR · 3.D.
+
+**M4 — Rule packs, pack tooling & policy backends — ✅ closed (2026-10-30).**
+
+- **Commit:** `c6b6683`. Cedar rule-pack format (`pack_format.py`); the three incident-anchored launch packs
+  (destructive-commands / secret-in-output / mcp-allowlist); `pack validate`/`pack test` (both formats); the 5
+  legacy catalog packs migrated to the current schema; OPA/Rego peer backend.
+- **Gate:** suite **1169 passed** · coverage **95.6%** · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 4.D0 · 4.1–4.6 · 4.T · 4.C · 4.L · 4.CR · 4.D.
+
+**M5 — Explain-decision, reason codes & event schema — ✅ closed (2026-10-31).**
+
+- **Commit:** `fab651e` (see `5.CI`). `agentpolicy/reason_codes.py` (the closed registry — single source of
+  truth), `agentpolicy/explain.py` (explain artifact + verified actionability `suggested_change`), the offline
+  `agentpolicy explain` CLI (+`--json`), and `agentpolicy/agentwatch.py` (the
+  `agentwatch.security_event.v1` / `policy.decision` emitter with the shared `event_id`/`decision_id` join key).
+  The Cedar core now extracts the real matched rule (`forbid-*`/`permit-*` `@id`) and stamps
+  `policy_version` + `policy_hash` on every decision.
+- **Gate:** suite **1201 passed, 2 skipped** · coverage **95.46%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 5.D0 · 5.1–5.5 · 5.T · 5.C · 5.L · 5.CR · 5.D.
+- **Re-pointed:** the shaper now emits the PRD-canonical `default_deny` / `secret_detected` (M2 seeds
+  `no_matching_permit` / `sensitive_output` retired); `agentpolicy explain` runs the Cedar path offline.
+
+**M6 — Audit, policy versioning & tamper evidence — ✅ closed (2026-10-31).**
+
+- **Commit:** `1796da5` (see `6.CI`). `AuditEntry` carries provenance + the chain
+  (`seq`/`prev_hash`/`entry_hash`(=`chain_hash`)/`policy_version`/`policy_hash`/`matched_rule`/`decision_id`);
+  every sink (JSONL/SQLite/Postgres) assigns `seq` and persists the provenance; `rotation_anchor` links a rotated
+  segment to the prior head; `audit/versioning.py` pins the reviewed policy (`unreviewed_policy_change` flag);
+  `audit/evidence.py` produces the **offline EvidenceArtifact** (`verify()` re-derives the decision against the
+  pinned policy); `agentpolicy audit evidence` exposes it.
+- **Gate:** suite **1223 passed, 2 skipped** · coverage **95.54%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 6.D0 · 6.1–6.5 · 6.T · 6.C · 6.L · 6.CR · 6.D.
+- **Re-pointed:** one `AuditEntry` model now serves both the ported engine and the Cedar core; `from_decision`
+  reads the path-specific fields via `getattr`. The on-disk format is unchanged apart from the additive columns.
+
+**M7 — Ask round-trip, redaction & secrets-in-args — ✅ closed (2026-10-31).**
+
+- **Commit:** `ee25525` (see `7.CI`). `agentpolicy/ask.py` (ask-gate broker keyed on `ask_id`, action-identity
+  bound, **timeout = deny** → `human_gate_timeout`); `agentpolicy approve`/`deny`/`ask list`; `agentpolicy/redaction.py`
+  (**redact-and-allow** + **secrets-in-arguments** value scanning, `class`/`count`/`location` receipts; raw value
+  never returned or persisted).
+- **Gate:** suite **1248 passed, 2 skipped** · coverage **95.37%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 7.D0 · 7.1–7.4 · 7.T · 7.C · 7.L · 7.CR · 7.D.
+- **Reused:** the ask identity hash is escalation's `action_identity` (one canonical hash); the redaction pattern
+  set is `engine/output_inspector.py` (one pattern list).
+
+**M8 — Delivery surfaces & adapters — ✅ closed (2026-10-31).**
+
+- **Commit:** `5c88224` (see `8.CI`). Library surface `agentpolicy.api.evaluate` (+ exported as
+  `agentpolicy.evaluate`); the **validated adapter registry** (`adapters/registry.py`: unknown adapter / missing
+  extra / missing kwarg → `ConfigError`, exit 2); a shared `denial_message` rejection shape; all adapters
+  re-exported.
+- **Gate:** suite **1263 passed, 2 skipped** · coverage **95.07%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 8.D0 · 8.1–8.5 · 8.T · 8.C · 8.L · 8.CR · 8.D.
+- **Parity:** library / CLI / MCP / HTTP all delegate to the same engine (MCP+HTTP via `ServerCore`), so a caller
+  gets the same decision on every surface (R28).
+
+**M9 — Posture presets, init, diff & lint — ✅ closed (2026-10-31).**
+
+- **Commit:** `ccb2a6a` (see `9.CI`). Commented posture presets; `init` scaffold (`--adapter`/`--scaffold-dir` →
+  adapter stub + `QUICKSTART.md`); `diff` now classifies **kept / overridden / gaps** (+`--json`); new
+  `agentpolicy lint` (unreachable/over-permissive/unknown-tool/conflict/literal-secret findings, CI-failable);
+  new `agentpolicy export` (Cedar source + **policyweave** artifact).
+- **Gate:** suite **1286 passed, 2 skipped** · coverage **95.09%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 9.D0 · 9.1–9.5 · 9.T · 9.C · 9.L · 9.CR · 9.D.
+- **Reused:** `taxonomy.is_known_tool`, the `output_inspector` pattern set, and the M5 `policy_hash` (no drift).
+
+**M10 — Shadow mode, calibration & canary — ✅ closed (2026-10-31).**
+
+- **Commit:** `61627a9` (see `10.CI`). `agentpolicy/calibration.py` (shadow **false-block/miss** rates +
+  counterfactual threshold table); `agentpolicy/canary.py` (**deterministic** session-percentage canary,
+  `STAGES = 5/50/100`) integrated into `Engine._finalize` as `canary_percent`; `agentpolicy audit query --dry-run`;
+  `agentpolicy calibrate report` (+`--json`).
+- **Gate:** suite **1298 passed, 2 skipped** · coverage **95.11%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 10.D0 · 10.1–10.4 · 10.T · 10.C · 10.L · 10.CR · 10.D.
+- **Determinism:** canary cohort = `sha256(session_id) % 100`; calibration rates are pure functions of the trail.
+
+**M11 — CI regression suite & fail-closed hardening — ✅ closed (2026-10-31).**
+
+- **Commit:** `748ade9` (see `11.CI`). `agentpolicy/goldens.py` (golden replay + **deny→allow flip** detection);
+  `agentpolicy/agentdrill.py` (incident-replay gate: an un-blocked named incident fails the build);
+  `agentpolicy/compliance.py` (**computed** OWASP ASI/LLM + ATLAS coverage matrix → agentcomply);
+  `agentpolicy goldens check` / `drill check` / `compliance export`; **hypothesis** fuzz (never raises, never
+  allows a destructive production-PII action) + a distinct-failure-reason sweep.
+- **Gate:** suite **1324 passed, 2 skipped** · coverage **95.11%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 11.D0 · 11.1–11.4 · 11.T · 11.C · 11.L · 11.CR · 11.D.
+- **Note:** this closes the **v0.1.0 core** (a leaner release may tag here).
+
+**M12 — Session state, blast-radius budgets & rate limits — ✅ closed (2026-10-31).**
+
+- **Commit:** `616c65b` (see `12.CI`). Generic usage counters + capability ceilings (files/requests/spend/calls);
+  `rate_allow` token bucket with **`retry_after`**; budget state on **every** decision; exhaustion → **`rate-limit`**
+  (`budget_exhausted`/`rate_limited`); `agenthalt.HaltController` fires a halt event with evidence on hard
+  exhaustion.
+- **Gate:** suite **1339 passed, 2 skipped** · coverage **95.17%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 12.D0 · 12.1–12.4 · 12.T · 12.C · 12.L · 12.CR · 12.D.
+- **Re-pointed:** exhaustion is a reasoned `rate-limit`, not an opaque deny (PRD 18/R9); `call_budget` folds into
+  the `calls` dimension.
+
+**M13 — Exfil-sink, argument validation & tool hiding — ✅ closed (2026-10-31).**
+
+- **Commit:** `0efe897` (see `13.CI`). `engine/exfil.py` + `packs/exfil-sink` (exfil-sink rule class — sensitive
+  data to an `http`/`email`/`notify` sink is denied, naming **source + sink**); policy-declarable argument
+  validators (`regex` / `enum` / `path_root` / `url_allowlist` on `args_policy`); `capabilities` now also hides
+  tools the policy **unconditionally denies**.
+- **Gate:** suite **1358 passed, 2 skipped** · coverage **95.21%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 13.D0 · 13.1–13.3 · 13.T · 13.C · 13.L · 13.CR · 13.D.
+
+**M14 — Step-up, AuthZEN interop & adversarial suite — ✅ closed (2026-10-31).**
+
+- **Commit:** `f52102d` (see `14.CI`). Conformant **AuthZEN** `POST /access/v1/evaluation` (+ boxcarring +
+  decision context, `authzen.py`); **least-privilege step-up** on a 403 challenge (`stepup.py`, narrowed scope =
+  the verified M5 actionability variant + `acr_values`); the **MCP ask path** (`ask_create`/`approve`/`deny`/
+  `ask_resolve` over `ServerCore.ask_broker`); a consolidated **adversarial suite** (injection/obfuscation/
+  dispatcher/replay/tamper/flood — distinct reasons).
+- **Gate:** suite **1377 passed, 2 skipped** · coverage **95.12%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 14.D0 · 14.1–14.4 · 14.T · 14.C · 14.L · 14.CR · 14.D.
+
+**M15 — Freeze windows & data-class derivation — ✅ closed (2026-10-31).**
+
+- **Commit:** `5602335` (see `15.CI`). `agentpolicy/freeze.py` (declared, audited freezes; an active window
+  tightens a write to `escalate`/`freeze_active` and stamps `freeze_id`); `agentpolicy freeze` CLI; the
+  `packs/code-freeze` pack; `agentpolicy/data_class.py` (deterministic derivation: tag → glob → schema hint, with a
+  loud conflict).
+- **Gate:** suite **1398 passed, 2 skipped** · coverage **95.04%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 15.D0 · 15.1–15.3 · 15.T · 15.C · 15.L · 15.CR · 15.D.
+
+**M16 — Enrollment/probation & approval analytics — ✅ closed (2026-10-31).**
+
+- **Commit:** `fc3a1a2` (see `16.CI`). `agentpolicy/enrollment.py` (first-seen agent → **probation**; a gated write
+  escalates with `agent_probation`; `classify` logs the human decision); `packs/enrollment-probation`;
+  `agentwatch.classification_event` (fleet-inventory link); `agentpolicy/approvals.py` + `agentpolicy report
+  approvals` (approval rate, **latency**, shadow→enforce delta, **rubber-stamp gates**); gate records gain
+  `resolved_at`.
+- **Gate:** suite **1420 passed, 2 skipped** · coverage **95.06%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 16.D0 · 16.1–16.4 · 16.T · 16.C · 16.L · 16.CR · 16.D.
+
+**M17 — Nearest-permissible-action & multi-agent governance — ✅ closed (2026-10-31).**
+
+- **Commit:** `fedf517` (see `17.CI`). `explain.permitted_alternatives` (**verified-permissible**, agent-facing
+  variants — reusing the M5 actionability search; attached to the `ExplainArtifact`); delegation-chain scope
+  (`effective_environments`; an out-of-scope child action is denied naming the chain link); `Engine.inter_agent`
+  (an agent→agent request decided like any action); the `packs/multi-agent-delegation` pack.
+- **Gate:** suite **1431 passed, 2 skipped** · coverage **95.01%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 17.D0 · 17.1–17.4 · 17.T · 17.C · 17.L · 17.CR · 17.D.
+
+**M18 — Break-glass & dual-control — ✅ closed (2026-11-01).**
+
+- **Commit:** see `18.CI`. `agentpolicy/breakglass.py` (time-boxed elevation; mandatory logged reason; audited
+  `elevate`/`revert` events; **auto-revert on sweep/read**); `agentpolicy/dualcontrol.py` (quorum of **distinct**
+  approvers, action-identity-bound, TTL still applies); `cli/breakglass.py`; engine wiring (elevation waives the
+  identity/delegation **scope ceilings only**, stamps `break_glass_id` on every decision, and the mandatory
+  human-gate class is **never** bypassed — dual-control still applies inside a window).
+- **Gate:** suite **1489 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 18.D0 · 18.1–18.4 · 18.T · 18.C · 18.L · 18.CR · 18.D.
+
+**M19 — NL policy drafting — ✅ closed (2026-11-01).**
+
+- **Commit:** see `19.CI`. `agentpolicy/draft.py` (sentence → candidate Cedar rule; deterministic offline
+  default model; generated `tests.yaml` in the shipped pack format — a draft that does not compile, fails its
+  own test, or lints dirty is **rejected**; `pin` is the **human-review gate**, never auto-applied);
+  `cli/draft.py`. **Boundary lock:** the runtime decision path never calls a model (tested).
+- **Gate:** suite **1489 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 19.D0 · 19.1–19.3 · 19.T · 19.C · 19.L · 19.CR · 19.D.
+
+**M20 — Policy backtest & PR decision-diff — ✅ closed (2026-11-01).**
+
+- **Commit:** see `20.CI`. `agentpolicy/backtest.py` (replay a recorded agentwatch window against a candidate
+  vs the baseline; exact, reproducible flip set — newly-denied / newly-asked / newly-allowed / unchanged);
+  **read-only** (no fleet events) and **advisory** (watermarked `backtest`, excluded from live analytics and the
+  golden gate; states its coverage window + limits); `cli/backtest.py` (`--ci` attaches the diff to the PR step
+  summary, always exits 0).
+- **Gate:** suite **1489 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 20.D0 · 20.1–20.3 · 20.T · 20.C · 20.L · 20.CR · 20.D.
+
+**M21 — Narrow-only layering & action-space coverage report — ✅ closed (2026-11-01).**
+
+- **Commit:** see `21.CI`. `agentpolicy/layering.py` (`compose` = the intersection: rules concatenated parent-first
+  so a deny in any layer wins; `narrow_only_violations` reuses `lint._broadens` — one containment definition);
+  `agentpolicy/coverage.py` (four quadrants; `gap_unexplained` = dangerous minus out-of-scope); `check --parent`
+  (a widening overlay fails at PR time, naming the rule); `report coverage`.
+- **Gate:** suite **1545 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 21.D0 · 21.1–21.3 · 21.T · 21.C · 21.L · 21.CR · 21.D.
+
+**M22 — Self-attack pack & allow-justification — ✅ closed (2026-11-01).**
+
+- **Commit:** see `22.CI`. `packs/self-attack/` (a normal pack attacking agentpolicy's own surface — tamper /
+  bypass / replay / budget-split / audit-truncation / event-forgery, with a benign control fixture);
+  `agentpolicy/selfattack.py` + `self-attack check` + a Makefile target + a CI job (a miss blocks the release);
+  allow-justification (`types.Decision.matched_rule` + `clause`, the `Verdict` carries the matched rule, the
+  audit entry names it, and approvals flag always-allowed patterns).
+- **Gate:** suite **1545 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 22.D0 · 22.1–22.3 · 22.T · 22.C · 22.L · 22.CR · 22.D.
+
+**M23 — NFRs, hardening, parity closure & deferred-optional — ✅ closed (2026-11-01).**
+
+- **Commit:** see `23.CI`. `agentpolicy/nfr.py` (engine p99 < 100 ms, Python 3.10+, macOS/Linux, local-first);
+  `faultinject.py` (a fault at every engine stage → a reasoned deny, never an abort); `sandbox.py`
+  (env stripping, trust levels, `--network none`, audited pack runs); `cost.py` + `backtest --max-cost`
+  (abort + report); `parity.py` (absorption ledger, `parity_gate` green == no silent drops); `claims.py`
+  (claims linter vs the computed matrix) + `compliance claims`; `deferred.py` (R13/R14/R31 explicitly waived
+  with reasons).
+- **Gate:** suite **1545 passed, 18 skipped** · coverage **95%** (≥ 95) · `ruff` zero · `mypy --strict` clean.
+- **Items closed:** 23.D0 · 23.1–23.7 · 23.T · 23.C · 23.L · 23.CR · 23.D.
+
+**⬜ M24 — Field tests.** Next (M25 tags `v0.1.0`).
 
 ## Porting map (predecessor → agentpolicy)
 

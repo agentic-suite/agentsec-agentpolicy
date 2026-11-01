@@ -1,0 +1,11 @@
+{
+  "body": {
+    "error": {
+      "code": "incomplete_tool_call",
+      "message": "Model output contains an unrecoverable tool call. Previously delivered tool calls must not be executed again on retry.",
+      "param": null,
+      "type": "server_error"
+    }
+  },
+  "status_code": 500
+}

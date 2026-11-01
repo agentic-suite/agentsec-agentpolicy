@@ -1,0 +1,9 @@
+........                                                                 [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/_hypothesis_pytestplugin.py:487
+  /Users/deghosal/Desktop/code/github/agentic-suite/agentpolicy/.venv/lib/python3.13/site-packages/_hypothesis_pytestplugin.py:487: UserWarning: Skipping collection of '.hypothesis' directory - this usually means you've explicitly set the `norecursedirs` pytest config option, replacing rather than extending the default ignores.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+8 passed, 1 warning in 0.09s
+ok: 8 passed, 0 skipped (marker=-), 0 failed

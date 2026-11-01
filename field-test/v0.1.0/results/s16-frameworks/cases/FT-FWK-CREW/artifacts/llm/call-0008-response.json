@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "hello world",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793566611,
+    "id": "chatcmpl-5121b6cf",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 2,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.37,
+      "generation_tokens_per_second": 5.37,
+      "input_tokens": 416,
+      "output_tokens": 2,
+      "prompt_eval_duration": 0.46,
+      "prompt_tokens": 416,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 347.93,
+      "time_to_first_token": 0.46,
+      "total_time": 0.83,
+      "total_tokens": 418
+    }
+  },
+  "status_code": 200
+}

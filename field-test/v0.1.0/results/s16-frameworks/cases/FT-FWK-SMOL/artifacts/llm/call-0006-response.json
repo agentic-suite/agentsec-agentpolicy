@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Action:\n{\n  \"name\": \"final_answer\",\n  \"arguments\": \"Write actions in production on internal data require approval. Route to the on-call approver.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793566474,
+    "id": "chatcmpl-c3ae4d48",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 35,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 2.3,
+      "generation_tokens_per_second": 15.19,
+      "input_tokens": 1395,
+      "output_tokens": 35,
+      "prompt_eval_duration": 2.5,
+      "prompt_tokens": 1395,
+      "prompt_tokens_details": {
+        "cached_tokens": 1024
+      },
+      "prompt_tokens_per_second": 148.26,
+      "time_to_first_token": 2.5,
+      "total_time": 4.81,
+      "total_tokens": 1430
+    }
+  },
+  "status_code": 200
+}

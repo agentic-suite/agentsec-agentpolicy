@@ -56,14 +56,14 @@ M0 carries no new R-items; it establishes the engine, identity, and CLI surface 
 | **R37** | Nearest-permissible-action | CUJ-24 | M13 | Alternative verified-permissible; no internals leak · `tests/test_m13_alternatives.py` | New |
 | **R38** | Secrets-in-arguments | CUJ-15 | M13 | Arg secret scrubbed with receipt · `tests/test_m13_args_secrets.py` | New |
 | **R39** | Multi-agent governance depth (extends R25) | CUJ-28 | M14 | Child out-of-scope denied, chain link named · `tests/test_m14_delegation.py` | New |
-| **R40** | Break-glass with auto-revert | CUJ-25 | M14 | Expiry reverts without manual action · `tests/test_m14_breakglass.py` | New |
-| **R41** | Dual-control approvals | CUJ-26 | M14 | One approval ≠ release; two distinct approvers = release · `tests/test_m14_dualcontrol.py` | New |
-| **R42** | NL policy drafting (authoring-time) | CUJ-27 | M14 | Draft compiles, passes tests, waits for review · `tests/test_m14_draft.py` | New |
-| **R43** | Policy backtest & PR decision-diff | CUJ-29 | M15 | Flip set exact; read-only; watermarked; advisory · `tests/test_m15_backtest.py` | New ([PRD 23](23-enterprise-adoption-and-governance-hardening.md)) |
-| **R44** | Narrow-only policy layering | CUJ-30 | M15 | Widening overlay fails at `check`; floor holds under fuzz · `tests/test_m15_layering.py` | New |
-| **R45** | Action-space coverage report | CUJ-31 | M15 | Dangerous quadrant named; `gap:unexplained` = 0 · `tests/test_m15_coverage.py` | New |
-| **R46** | Self-attack pack (release cadence) | CUJ-32 | M15 | Seeded miss blocks the release; published with misses · `tests/test_m15_selfattack.py` | New |
-| **R47** | Allow-justification | CUJ-33 | M15 | Allow names permitting rule + version · `tests/test_m15_allow_justify.py` | New |
+| **R40** | Break-glass with auto-revert | CUJ-25 | M18 | Expiry reverts without manual action · `tests/test_m18_breakglass.py` | New |
+| **R41** | Dual-control approvals | CUJ-26 | M18 | One approval ≠ release; two distinct approvers = release · `tests/test_m18_dualcontrol.py` | New |
+| **R42** | NL policy drafting (authoring-time) | CUJ-27 | M19 | Draft compiles, passes tests, waits for review · `tests/test_m19_draft.py` | New |
+| **R43** | Policy backtest & PR decision-diff | CUJ-29 | M20 | Flip set exact; read-only; watermarked; advisory · `tests/test_m20_backtest.py` | New ([PRD 23](23-enterprise-adoption-and-governance-hardening.md)) |
+| **R44** | Narrow-only policy layering | CUJ-30 | M21 | Widening overlay fails at `check`; floor holds under fuzz · `tests/test_m21_layering.py` | New |
+| **R45** | Action-space coverage report | CUJ-31 | M21 | Dangerous quadrant named; `gap:unexplained` = 0 · `tests/test_m21_coverage.py` | New |
+| **R46** | Self-attack pack (release cadence) | CUJ-32 | M22 | Seeded miss blocks the release; published with misses · `tests/test_m22_selfattack.py` | New |
+| **R47** | Allow-justification | CUJ-33 | M22 | Allow names permitting rule + version · `tests/test_m22_allow_justify.py` | New |
 
 ## CUJ → requirement (reverse)
 

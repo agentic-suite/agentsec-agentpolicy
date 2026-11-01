@@ -1,0 +1,23 @@
+version: '1.0'
+posture: strict
+environments:
+  development:
+    criticality: 0.0
+  staging:
+    criticality: 0.1
+  production:
+    criticality: 0.7
+data_classes:
+  public:
+    sensitivity: 0.0
+  internal:
+    sensitivity: 0.2
+rules:
+- decision: deny
+  action: exec
+  environment: production
+  reason: Shell execution is blocked in production.
+- decision: escalate
+  action: exec
+  environment: staging
+  reason: Shell execution in staging requires approval.

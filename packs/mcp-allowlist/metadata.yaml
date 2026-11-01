@@ -1,0 +1,14 @@
+name: mcp-allowlist
+version: 0.1.0
+description: >-
+  Default-deny unknown MCP servers / tools — a tool call from a server that is
+  not on the allowlist is blocked (shadow-tool defence).
+incident_ref: incident-register#11
+min_agentpolicy: 0.1.0
+license: Apache-2.0
+trust: launch
+domains: [mcp]
+tool_count: 0
+tests_passing: 2
+last_updated: "2026-10-30"
+maintainer: agentic-suite

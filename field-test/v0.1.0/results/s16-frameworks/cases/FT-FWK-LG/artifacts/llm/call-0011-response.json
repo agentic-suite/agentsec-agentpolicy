@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "The input text \"staging environment with internal data class\" has been processed and returned as requested.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793561439,
+    "id": "chatcmpl-efa9b84b",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 20,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.52,
+      "generation_tokens_per_second": 38.61,
+      "input_tokens": 372,
+      "output_tokens": 20,
+      "prompt_eval_duration": 0.17,
+      "prompt_tokens": 372,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 670.83,
+      "time_to_first_token": 0.17,
+      "total_time": 0.69,
+      "total_tokens": 392
+    }
+  },
+  "status_code": 200
+}

@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Task completed in staging environment with public data class.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793566663,
+    "id": "chatcmpl-a86d0fd2",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 10,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.26,
+      "generation_tokens_per_second": 38.65,
+      "input_tokens": 384,
+      "output_tokens": 10,
+      "prompt_eval_duration": 0.17,
+      "prompt_tokens": 384,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 766.88,
+      "time_to_first_token": 0.17,
+      "total_time": 0.43,
+      "total_tokens": 394
+    }
+  },
+  "status_code": 200
+}

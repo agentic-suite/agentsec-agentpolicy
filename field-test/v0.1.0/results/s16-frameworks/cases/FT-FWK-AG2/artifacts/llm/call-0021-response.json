@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "The tool `scn_adversarial-blank-tool-07` received a malformed input due to the text being empty or blank. Please provide a valid, non-blank string as input.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793564932,
+    "id": "chatcmpl-6c17c944",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 40,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 1.08,
+      "generation_tokens_per_second": 37.09,
+      "input_tokens": 156,
+      "output_tokens": 40,
+      "prompt_eval_duration": 0.23,
+      "prompt_tokens": 156,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_tokens_per_second": 677.57,
+      "time_to_first_token": 0.23,
+      "total_time": 1.31,
+      "total_tokens": 196
+    }
+  },
+  "status_code": 200
+}

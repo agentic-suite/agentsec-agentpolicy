@@ -1,0 +1,14 @@
+name: destructive-commands
+version: 0.1.0
+description: >-
+  Blocks destructive / irreversible actions in production — the "Replit rule"
+  (a production database was deleted during a declared code freeze).
+incident_ref: incident-register#6
+min_agentpolicy: 0.1.0
+license: Apache-2.0
+trust: launch
+domains: [db, shell, cloud, git]
+tool_count: 0
+tests_passing: 4
+last_updated: "2026-10-30"
+maintainer: agentic-suite

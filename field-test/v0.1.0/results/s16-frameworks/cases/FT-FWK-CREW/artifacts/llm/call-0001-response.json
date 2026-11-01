@@ -1,0 +1,47 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"Task completed in environment 'development' with data_class 'public'.\"}",
+                "name": "scn_decision_allow_01"
+              },
+              "id": "call_f2c7588d",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793566609,
+    "id": "chatcmpl-fc37dec4",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 37,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 1.94,
+      "generation_tokens_per_second": 19.03,
+      "input_tokens": 327,
+      "output_tokens": 37,
+      "prompt_eval_duration": 0.27,
+      "prompt_tokens": 327,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 261.49,
+      "time_to_first_token": 0.27,
+      "total_time": 2.22,
+      "total_tokens": 364
+    }
+  },
+  "status_code": 200
+}

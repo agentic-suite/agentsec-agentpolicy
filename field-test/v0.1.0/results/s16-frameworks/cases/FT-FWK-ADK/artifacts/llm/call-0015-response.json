@@ -1,0 +1,38 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Access has been allowed to the staging environment with internal data class.",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793565885,
+    "id": "chatcmpl-de5b9484",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 13,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 0.35,
+      "generation_tokens_per_second": 37.59,
+      "input_tokens": 370,
+      "output_tokens": 13,
+      "prompt_eval_duration": 0.17,
+      "prompt_tokens": 370,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_tokens_per_second": 682.78,
+      "time_to_first_token": 0.17,
+      "total_time": 0.51,
+      "total_tokens": 383
+    }
+  },
+  "status_code": 200
+}

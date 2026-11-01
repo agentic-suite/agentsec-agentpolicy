@@ -1,0 +1,48 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"This is a test of the adversarial injection capability in the system.\"}",
+                "name": "scn_adversarial-injection-01"
+              },
+              "id": "call_3b466edd",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793565877,
+    "id": "chatcmpl-c19446c4",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 40,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 2.57,
+      "generation_tokens_per_second": 15.58,
+      "input_tokens": 673,
+      "model_load_duration": 2.05,
+      "output_tokens": 40,
+      "prompt_eval_duration": 0.88,
+      "prompt_tokens": 673,
+      "prompt_tokens_details": {
+        "cached_tokens": 512
+      },
+      "prompt_tokens_per_second": 183.69,
+      "time_to_first_token": 0.88,
+      "total_time": 3.44,
+      "total_tokens": 713
+    }
+  },
+  "status_code": 200
+}

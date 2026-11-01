@@ -1,0 +1,15 @@
+name: multi-agent-delegation
+version: 0.1.0
+description: >-
+  Delegation / scope rules — a delegated child agent (a non-empty
+  delegation_chain) may not act in production: the child scope is a proven
+  subset of its parent's, so an out-of-scope child action is blocked.
+incident_ref: incident-register#15
+min_agentpolicy: 0.1.0
+license: Apache-2.0
+trust: launch
+domains: [cloud, db, shell, git]
+tool_count: 0
+tests_passing: 3
+last_updated: "2026-10-31"
+maintainer: agentic-suite

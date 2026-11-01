@@ -1,0 +1,47 @@
+{
+  "body": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{\"text\": \"sensitive data must be handled with care in production environment for customer_pii class\"}",
+                "name": "scn_adversarial-whitespace-05"
+              },
+              "id": "call_f7b3b48f",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1793564926,
+    "id": "chatcmpl-8706c68b",
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 42,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "generation_duration": 1.1,
+      "generation_tokens_per_second": 38.32,
+      "input_tokens": 321,
+      "output_tokens": 42,
+      "prompt_eval_duration": 0.27,
+      "prompt_tokens": 321,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_tokens_per_second": 1167.62,
+      "time_to_first_token": 0.27,
+      "total_time": 1.37,
+      "total_tokens": 363
+    }
+  },
+  "status_code": 200
+}

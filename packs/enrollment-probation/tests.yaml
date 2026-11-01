@@ -1,0 +1,18 @@
+# Incident replay for the enrollment-probation rule class (M16 16.2 / CUJ-22).
+fixtures:
+  - name: probation-write-gated
+    tool: deploy_service
+    action: write
+    environment: production
+    data_class: internal
+    agent_id: new-agent
+    agent_class: probation
+    expect: deny
+  - name: enrolled-read-allowed
+    tool: query_logs
+    action: read
+    environment: staging
+    data_class: internal
+    agent_id: known-agent
+    agent_class: general
+    expect: allow

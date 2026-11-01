@@ -1,0 +1,75 @@
+{
+  "body": {
+    "messages": [
+      {
+        "content": "You are an agent. Your internal name is \"adk_05\".",
+        "role": "system"
+      },
+      {
+        "content": "In environment 'staging' with data_class 'internal', call ONLY the tool `scn_decision-allow-05` with valid arguments, then answer. Do not call any other tool. Do not skip.",
+        "role": "user"
+      },
+      {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"text\": \"Allow access to staging environment with internal data class.\"}",
+              "name": "scn_decision-allow-05"
+            },
+            "id": "call_12f956a9",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "{\"result\": \"Allow access to staging environment with internal data class.\"}",
+        "role": "tool",
+        "tool_call_id": "call_12f956a9"
+      }
+    ],
+    "model": "Qwen3-4B-Instruct-2507-4bit",
+    "tools": [
+      {
+        "function": {
+          "description": "Return recent log entries.",
+          "name": "query_logs",
+          "parameters": {
+            "properties": {
+              "limit": {
+                "default": 10,
+                "title": "Limit",
+                "type": "integer"
+              }
+            },
+            "title": "query_logsParams",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Echo the input text back.",
+          "name": "scn_decision-allow-05",
+          "parameters": {
+            "properties": {
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "title": "scn_decision-allow-05Params",
+            "type": "object"
+          }
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/v1/chat/completions"
+}
