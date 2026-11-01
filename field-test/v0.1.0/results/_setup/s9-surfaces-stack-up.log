@@ -150,3 +150,18 @@ agentpolicy 0.1.0
 agentpolicy 0.1.0
 [2026-11-01T19:11:20Z] SUT answers: agentpolicy --version OK
 [2026-11-01T19:11:20Z] stack READY
+[2026-11-01T19:24:07Z] waiting for stack readiness (timeout 180s)
+[2026-11-01T19:24:07Z]   agentpolicy: status=running health=starting
+[2026-11-01T19:24:09Z]   agentpolicy: status=running health=starting
+[2026-11-01T19:24:11Z]   agentpolicy: status=running health=starting
+[2026-11-01T19:24:13Z]   agentpolicy: status=running health=healthy
+[2026-11-01T19:24:13Z] services running + healthy
+agentpolicy 0.1.0
+[2026-11-01T19:24:14Z] SUT answers: agentpolicy --version OK
+[2026-11-01T19:24:14Z] stack READY
+[2026-11-01T19:24:15Z] waiting for stack readiness (timeout 180s)
+[2026-11-01T19:24:15Z]   agentpolicy: status=running health=healthy
+[2026-11-01T19:24:15Z] services running + healthy
+agentpolicy 0.1.0
+[2026-11-01T19:24:16Z] SUT answers: agentpolicy --version OK
+[2026-11-01T19:24:16Z] stack READY

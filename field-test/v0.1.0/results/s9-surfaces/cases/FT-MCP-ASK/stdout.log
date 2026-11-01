@@ -24,103 +24,42 @@
 #6 DONE 0.0s
 
 #7 [internal] load build context
-#7 transferring context: 131.14kB 0.0s done
+#7 transferring context: 32.16kB 0.0s done
 #7 DONE 0.0s
 
-#8 [2/9] RUN apt-get update     && apt-get install -y --no-install-recommends git curl procps ca-certificates     && rm -rf /var/lib/apt/lists/*
+#8 [6/9] COPY src /work/src
 #8 CACHED
 
 #9 [3/9] RUN pip install --no-cache-dir uv
 #9 CACHED
 
-#10 [4/9] WORKDIR /work
+#10 [5/9] COPY pyproject.toml README.md /work/
 #10 CACHED
 
-#11 [5/9] COPY pyproject.toml README.md /work/
-#11 DONE 0.0s
+#11 [2/9] RUN apt-get update     && apt-get install -y --no-install-recommends git curl procps ca-certificates     && rm -rf /var/lib/apt/lists/*
+#11 CACHED
 
-#12 [6/9] COPY src /work/src
-#12 DONE 0.1s
+#12 [8/9] COPY packs /work/packs
+#12 CACHED
 
 #13 [7/9] RUN uv pip install --system --no-cache-dir ".[dev]"
-#13 0.168 Using Python 3.13.18 environment at: /usr/local
-#13 2.085 Resolved 35 packages in 1.91s
-#13 2.089    Building agentsec-agentpolicy @ file:///work
-#13 2.117 Downloading ruff (9.6MiB)
-#13 2.157 Downloading pygments (1.2MiB)
-#13 2.159 Downloading cryptography (4.5MiB)
-#13 2.159 Downloading pydantic-core (2.0MiB)
-#13 2.164 Downloading hypothesis (1.1MiB)
-#13 2.165 Downloading ast-serialize (1.2MiB)
-#13 2.165 Downloading cedarpy (4.7MiB)
-#13 2.167 Downloading asyncpg (3.5MiB)
-#13 2.167 Downloading mypy (13.7MiB)
-#13 3.359       Built agentsec-agentpolicy @ file:///work
-#13 3.842  Downloaded hypothesis
-#13 3.928  Downloaded pygments
-#13 3.956  Downloaded ast-serialize
-#13 4.577  Downloaded pydantic-core
-#13 5.635  Downloaded asyncpg
-#13 6.205  Downloaded cedarpy
-#13 6.253  Downloaded cryptography
-#13 7.472  Downloaded ruff
-#13 7.949  Downloaded mypy
-#13 7.949 Prepared 35 packages in 5.86s
-#13 8.040 Installed 35 packages in 90ms
-#13 8.040  + agentsec-agentpolicy==0.1.0 (from file:///work)
-#13 8.040  + annotated-types==0.8.0
-#13 8.040  + anyio==4.16.0
-#13 8.040  + ast-serialize==0.13.1
-#13 8.040  + asyncpg==0.32.0
-#13 8.040  + cedarpy==4.12.2
-#13 8.040  + cffi==2.1.1
-#13 8.040  + coverage==7.17.0
-#13 8.040  + cryptography==50.0.2
-#13 8.040  + hypothesis==6.170.14
-#13 8.040  + idna==3.20
-#13 8.040  + iniconfig==2.3.1
-#13 8.040  + librt==0.16.0
-#13 8.040  + mypy==2.4.1
-#13 8.040  + mypy-extensions==1.1.0
-#13 8.040  + opentelemetry-api==1.45.2
-#13 8.040  + opentelemetry-sdk==1.45.2
-#13 8.040  + opentelemetry-semantic-conventions==0.66b2
-#13 8.040  + packaging==26.3
-#13 8.040  + pathspec==1.1.1
-#13 8.040  + pluggy==1.7.0
-#13 8.040  + pycparser==3.12
-#13 8.040  + pydantic==2.14.2
-#13 8.040  + pydantic-core==2.50.2
-#13 8.040  + pygments==2.21.0
-#13 8.040  + pytest==9.2.0
-#13 8.040  + pytest-cov==7.1.0
-#13 8.040  + pyyaml==6.0.3
-#13 8.040  + ruff==0.17.3
-#13 8.040  + sortedcontainers==2.4.0
-#13 8.040  + starlette==1.10.0
-#13 8.040  + types-pyyaml==6.0.12.20261030
-#13 8.040  + typing-extensions==4.16.0
-#13 8.040  + typing-inspection==0.4.4
-#13 8.040  + watchfiles==1.3.0
-#13 DONE 8.2s
+#13 CACHED
 
-#14 [8/9] COPY packs /work/packs
-#14 DONE 0.0s
+#14 [4/9] WORKDIR /work
+#14 CACHED
 
 #15 [9/9] RUN mkdir -p /data/agentpolicy/.agentpolicy
-#15 DONE 0.1s
+#15 CACHED
 
 #16 exporting to image
-#16 exporting layers
-#16 exporting layers 2.3s done
+#16 exporting layers done
 #16 exporting manifest sha256:7119ebcb65b1f42e604fbc46d9318b7e1ff64c63b2326b6ba9723fdddbd99104 done
 #16 exporting config sha256:f0f92e1af58c50f91fd04fbe4eab1d209d03132f2dfa543fd7d3b369a0dac958 done
-#16 exporting attestation manifest sha256:09453bb6ab0626974c569d80866fa9724f5f037e0c83151a48aa1d8de1eb4c42 done
-#16 exporting manifest list sha256:0b23cd574f95642167df72bef5e00f2f8bcc67f6a7521a88810bc4cae19c64d2 done
+#16 exporting attestation manifest sha256:a8abe8dc8feed48b732bbb70ea4eeb06f7350b315f68ffc7969b1c922d7268af done
+#16 exporting manifest list sha256:81a7f304a0e3a0764b8c1e92e3ab867ba82fb2c6257922bf6a5925b231799e8b done
 #16 naming to docker.io/library/agentpolicy-fieldtest:local done
-#16 unpacking to docker.io/library/agentpolicy-fieldtest:local
-#16 unpacking to docker.io/library/agentpolicy-fieldtest:local 0.5s done
-#16 DONE 2.8s
+#16 unpacking to docker.io/library/agentpolicy-fieldtest:local done
+#16 DONE 0.0s
 
 #17 resolving provenance for metadata file
 #17 DONE 0.0s

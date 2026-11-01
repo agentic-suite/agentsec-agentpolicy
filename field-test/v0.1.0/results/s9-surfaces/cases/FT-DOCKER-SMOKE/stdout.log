@@ -21,25 +21,25 @@
 #6 transferring context: 32.16kB 0.0s done
 #6 DONE 0.0s
 
-#7 [6/9] COPY src /work/src
+#7 [3/9] RUN pip install --no-cache-dir uv
 #7 CACHED
 
 #8 [7/9] RUN uv pip install --system --no-cache-dir ".[dev]"
 #8 CACHED
 
-#9 [8/9] COPY packs /work/packs
+#9 [4/9] WORKDIR /work
 #9 CACHED
 
-#10 [5/9] COPY pyproject.toml README.md /work/
+#10 [8/9] COPY packs /work/packs
 #10 CACHED
 
 #11 [2/9] RUN apt-get update     && apt-get install -y --no-install-recommends git curl procps ca-certificates     && rm -rf /var/lib/apt/lists/*
 #11 CACHED
 
-#12 [3/9] RUN pip install --no-cache-dir uv
+#12 [5/9] COPY pyproject.toml README.md /work/
 #12 CACHED
 
-#13 [4/9] WORKDIR /work
+#13 [6/9] COPY src /work/src
 #13 CACHED
 
 #14 [9/9] RUN mkdir -p /data/agentpolicy/.agentpolicy
@@ -49,8 +49,8 @@
 #15 exporting layers done
 #15 exporting manifest sha256:7119ebcb65b1f42e604fbc46d9318b7e1ff64c63b2326b6ba9723fdddbd99104 done
 #15 exporting config sha256:f0f92e1af58c50f91fd04fbe4eab1d209d03132f2dfa543fd7d3b369a0dac958 done
-#15 exporting attestation manifest sha256:7e3f87e668d769c5e554739c9d0fd88d2eff703aea84c9afe8d4daa534a28eb4 done
-#15 exporting manifest list sha256:6b5eac285f7508baee5a3243f9776ea196017d7968441c499acf4a22fa67d3e8 done
+#15 exporting attestation manifest sha256:25e99534eb8a9ce070cd85b7ede6a8aae5ffd56b5919278906703cd733e2f63b done
+#15 exporting manifest list sha256:29fc4710cb44db788370e491eba577d23ad8753535127bbfe9d9c3644e39c764 done
 #15 naming to docker.io/library/agentpolicy-fieldtest:local done
 #15 unpacking to docker.io/library/agentpolicy-fieldtest:local done
 #15 DONE 0.0s

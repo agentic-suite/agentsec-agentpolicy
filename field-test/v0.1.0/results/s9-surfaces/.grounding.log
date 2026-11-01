@@ -57,28 +57,28 @@ FT-AUTHZEN             PASS           grounded      2 grounded check(s)
 FT-ADAPTERS            PASS           grounded      2 grounded check(s)
 FT-MCP-ASK             PASS           grounded      2 grounded check(s)
 FT-DOCKER-SMOKE        PASS           grounded      2 grounded check(s)
-FT-NORM-OBFUSCATION    not run        —             no verdict
-FT-DISPATCHER          not run        —             no verdict
-FT-ADV-REPLAY          not run        —             no verdict
-FT-ADV-FLOOD           not run        —             no verdict
-FT-DENYSTORM           not run        —             no verdict
-FT-ADV-DISTINCT        not run        —             no verdict
-FT-SCOPE               not run        —             no verdict
-FT-STEPUP              not run        —             no verdict
-FT-FREEZE              not run        —             no verdict
-FT-DATACLASS           not run        —             no verdict
-FT-ENROLL              not run        —             no verdict
-FT-APPROVALS           not run        —             no verdict
-FT-ALT                 not run        —             no verdict
-FT-DELEGATION          not run        —             no verdict
-FT-INTERAGENT          not run        —             no verdict
-FT-DRAFT               not run        —             no verdict
-FT-DRAFT-LOCK          not run        —             no verdict
-FT-BACKTEST            not run        —             no verdict
-FT-BACKTEST-RO         not run        —             no verdict
-FT-FWK-LG              declared       —             no vendored framework repo / oMLX endpoint on the box; covered by the CI deterministic matrix + agent-build smoke
-FT-FWK-PAI             not run        —             no verdict
-FT-FWK-CREW            not run        —             no verdict
+FT-NORM-OBFUSCATION    PASS           grounded      2 grounded check(s)
+FT-DISPATCHER          PASS           grounded      2 grounded check(s)
+FT-ADV-REPLAY          PASS           grounded      2 grounded check(s)
+FT-ADV-FLOOD           PASS           grounded      2 grounded check(s)
+FT-DENYSTORM           PASS           grounded      2 grounded check(s)
+FT-ADV-DISTINCT        PASS           grounded      2 grounded check(s)
+FT-SCOPE               PASS           grounded      2 grounded check(s)
+FT-STEPUP              PASS           grounded      2 grounded check(s)
+FT-FREEZE              PASS           grounded      2 grounded check(s)
+FT-DATACLASS           PASS           grounded      2 grounded check(s)
+FT-ENROLL              PASS           grounded      2 grounded check(s)
+FT-APPROVALS           PASS           grounded      2 grounded check(s)
+FT-ALT                 PASS           grounded      2 grounded check(s)
+FT-DELEGATION          PASS           grounded      2 grounded check(s)
+FT-INTERAGENT          PASS           grounded      2 grounded check(s)
+FT-DRAFT               PASS           grounded      2 grounded check(s)
+FT-DRAFT-LOCK          PASS           grounded      2 grounded check(s)
+FT-BACKTEST            PASS           grounded      2 grounded check(s)
+FT-BACKTEST-RO         PASS           grounded      2 grounded check(s)
+FT-FWK-LG              FAIL           —             case failed
+FT-FWK-PAI             FAIL           —             case failed
+FT-FWK-CREW            FAIL           —             case failed
 FT-FWK-OAI             not run        —             no verdict
 FT-FWK-AG2             not run        —             no verdict
 FT-FWK-SMOL            not run        —             no verdict
@@ -100,6 +100,6 @@ FT-T1-CURSOR           declared       —             no Cursor host on the box;
 FT-T1-CODEX            declared       —             Codex CLI not installed on the box; reachable via its config/hook surface
 FT-T1-GEMINI           declared       —             Gemini CLI not installed on the box; reachable via its config/MCP surface
 
-census: 57 PASS (57 grounded, 0 over-claimed) · 0 FAIL
+census: 76 PASS (76 grounded, 0 over-claimed) · 3 FAIL
 
 deep-verification: every PASS is grounded.

@@ -74,6 +74,30 @@ is not grounded is not counted) + `scan_results.py` leak scan.
 - **Captured evidence:** `field-test/v0.1.0/results/s1-outcomes/cases/FT-DEC-*/` (`verdict.json`,
   `assertions.ndjson`, `commands.log`, `stdout/stderr`).
 
+### Groups 2–11 — the next ten suites (2026-11-01) — **57/57 ✅ PASS, deep-verified**
+Run one suite at a time (`run-suite.sh <suite>`, exit 0 each); each run's own deep-verification reported
+*"every PASS is grounded"* and *"leak scan: clean"*. **No failures, so nothing to fix**; every case below is
+`grounded=true`.
+
+| Group | Suite | Cases | Result | Findings / notes |
+|---|---|---|---|---|
+| 2 | `s0-regression` | 3 | ✅ 3/3 | `FT-REG-MATRIX` re-confirms the full **36×83 = 2,988-cell** deterministic matrix, 0 failures; `FT-REG-CLI`/`FT-REG-ACCEPT` pass |
+| 3 | `s2-explain` | 7 | ✅ 7/7 | deny explainability actionable + clause-level; audit chain + provenance; event-schema binding; offline evidence; allow-justification all grounded |
+| 4 | `s3-packs` | 7 | ✅ 7/7 | 3 launch packs block their incident; golden deny→allow flip rejected; drill; claims ledger; self-attack; compliance matrix |
+| 5 | `s4-policy` | 7 | ✅ 7/7 | posture, init, diff, lint, export, layer-narrow, coverage all behave per spec |
+| 6 | `s5-shadow` | 3 | ✅ 3/3 | shadow-mode compare, calibration, canary promotion |
+| 7 | `s6-budgets` | 5 | ✅ 5/5 | budget exhaust/retry/burst/state + halt all enforced |
+| 8 | `s7-data` | 7 | ✅ 7/7 | arg validation, http guard, exfil sink, secret hiding, arg redaction, redact receipt, verify — zero unmasked leaks |
+| 9 | `s8-ask` | 5 | ✅ 5/5 | ask round-trip + timeout + binding, dual-control, break-glass |
+| 10 | `s9-surfaces` | 5 | ✅ 5/5 | surface parity, authzen, adapters, MCP-ask, and `FT-DOCKER-SMOKE` (real container: stack up → ready → CLI) |
+| 11 | `s10-adversarial` | 8 | ✅ 8/8 | normalization/obfuscation, dispatcher, replay, flood, deny-storm, distinct-challenge, scope, step-up — **0 crafted allows** |
+
+- **What I fixed:** nothing across Groups 2–11 — all green on first run.
+- **Working:** every case in these ten suites.
+- **Not working:** nothing in these groups.
+- **Still open after this batch:** `s11-freeze`, `s12-enroll`, `s13-multiagent`, `s14-draft`, `s15-backtest`,
+  `s16-frameworks` (holds the 3 FAILs: `FT-FWK-CREW/LG/PAI`), `s17-nfr`, `s18-tier1` (4 declared).
+
 ---
 
 ## Environment

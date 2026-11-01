@@ -5,5 +5,5 @@
     warnings.warn(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-6 passed, 1 warning in 3.62s
+6 passed, 1 warning in 3.64s
 ok: 6 passed, 0 skipped (marker=-), 0 failed
