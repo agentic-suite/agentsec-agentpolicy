@@ -10,7 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and
 > [docs/architecture/porting-plan-v0.1.0.md](docs/architecture/porting-plan-v0.1.0.md).
 
-## [Unreleased]
+## [0.1.0] - 2026-11-01
+
+The first stable release: a local-first **Cedar** policy decision point for AI-agent actions, with five
+outcomes and full field-test evidence.
 
 ### Added
 
@@ -20,17 +23,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `TOOLTRUST_*` → `AGENTPOLICY_*`. Source commit `31655747ee4290b80adb04b2a300dd991b80e018`. Adds the ported
   suite (1084 passing), 5 rule packs, framework adapters, MCP server, audit sinks, and the predecessor's docs
   subset.
+- **M1–M23 — the decision engine and surfaces.** Cedar-primary policy with the five outcomes
+  (`allow` / `deny` / `ask` / `rate-limit` / `redact`), fail-closed semantics, explainability + audit
+  (agentwatch schema, hash-chained evidence), break-glass + dual-control, NL policy drafting, backtest,
+  layering + coverage, self-attack + allow-justification, and the NFR/hardening/parity work.
+- **M24 — field tests.** A runnable harness (`scripts/fieldtest/`), a 97-case matrix, deep verification (every
+  PASS re-derived; LLM not-logged ⇒ FAIL), Tier-1 harnesses driven **live** (Claude Code + Codex CLI against
+  local oMLX), and a hand-maintained
+  [field-test report](docs/field-test/v0.1.0/FIELD_TEST_REPORT.md) — **97/97 PASS**.
+- **M25 — release readiness.** Release tooling (`make release-dry-run` → wheel/sdist + CycloneDX SBOM +
+  `SHA256SUMS` + SLSA provenance, verified), [first-run evidence](docs/release/v0.1.0/FIRST_RUN_EVIDENCE.md),
+  a [security audit](docs/release/v0.1.0/SECURITY_AUDIT.md) (own threat model + dependency + secret scans),
+  the [compliance & standards matrix](docs/compliance/standards-matrix.md) (OWASP ASI/LLM + ATLAS + NIST/ISO/EU),
+  a [versioning policy](docs/reference/VERSIONING.md), and a
+  [docs audit](docs/release/v0.1.0/DOCS_AUDIT.md).
 
 ### Changed
 
 - **Version reset to `0.1.0`** — the initial port carried the predecessor's `0.2.0`.
 - **README merged** — agentpolicy's identity (five outcomes, local-first Cedar PDP, agentic-suite) combined with
   the ported engine's detail.
+- **License is Apache-2.0** — `pyproject.toml` metadata corrected to match `LICENSE` (was reported as MIT).
 
 ### Fixed
 
 - Docker-dependent tests (`test_docker_smoke`, `test_sse_integration`) now skip cleanly when no Docker daemon
   is reachable, matching `test_docker_console`.
+- `opentelemetry-api` bumped for `CVE-2026-114603`; the shipped runtime dependency closure scans clean
+  ([security audit](docs/release/v0.1.0/SECURITY_AUDIT.md)).
 
 ## [0.2.0] - 2026-08-15
 

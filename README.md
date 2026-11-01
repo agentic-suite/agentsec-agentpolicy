@@ -5,7 +5,7 @@
 [![CI](https://github.com/agentic-suite/agentsec-agentpolicy/actions/workflows/ci.yml/badge.svg)](https://github.com/agentic-suite/agentsec-agentpolicy/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
-[![Status: in development](https://img.shields.io/badge/status-in%20development-orange)](docs/wbs/v0.1.0/wbs-v0.1.0-index.md)
+[![Status: released v0.1.0](https://img.shields.io/badge/status-released%20v0.1.0-brightgreen)](docs/reference/release-notes-v0.1.0.md)
 [![Ruff](https://img.shields.io/badge/code%20style-ruff-000000)](https://github.com/astral-sh/ruff)
 [![Type checked](https://img.shields.io/badge/mypy-strict-blue)](https://github.com/python/mypy)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/agentic-suite/agentsec-agentpolicy/badge)](https://scorecard.dev/viewer/?uri=github.com/agentic-suite/agentsec-agentpolicy)
@@ -18,10 +18,12 @@ Part of the [agentic-suite](https://github.com/agentic-suite) — open-source, h
 </div>
 
 > [!NOTE]
-> **Status:** in development — the engine is **ported (M0)**; `v0.1.0` is not on PyPI yet.
-> The ported engine currently returns the predecessor's decision model (`allow` / `audit` / `escalate` / `deny`);
-> the [WBS](docs/wbs/v0.1.0/wbs-v0.1.0-index.md) re-points it to **Cedar** with the five outcomes below across
-> **M2–M23**, and `v0.1.0` tags at **M25**. · **License:** Apache-2.0
+> **Status: released — `v0.1.0`.** The engine is ported and hardened through **M0–M25**; the milestone releases
+> the five outcomes (`allow` / `deny` / `ask` / `rate-limit` / `redact`) over a **local-first Cedar** decision
+> point, with a published [field-test report](docs/field-test/v0.1.0/FIELD_TEST_REPORT.md), a
+> [security audit](docs/release/v0.1.0/SECURITY_AUDIT.md), a
+> [standards matrix](docs/compliance/standards-matrix.md), and a
+> [release plan](docs/release/v0.1.0/RELEASE_PLAN.md). · **License:** Apache-2.0
 
 ---
 
@@ -138,7 +140,12 @@ agentpolicy init --posture permissive  # Local dev, sandboxes
 
 ## Install
 
-`v0.1.0` is not on PyPI yet — the ported engine lands first (**M0**). Install from source:
+```sh
+pip install agentsec-agentpolicy     # v0.1.0
+agentpolicy --help
+```
+
+Or from source:
 
 ```sh
 git clone https://github.com/agentic-suite/agentsec-agentpolicy.git
